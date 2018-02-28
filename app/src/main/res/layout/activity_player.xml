@@ -7,14 +7,14 @@
 
         <variable
             name="viewModel"
-            type="com.pedersen.escaped.main.MainActivityViewModel" />
+            type="com.pedersen.escaped.main.PlayerActivityViewModel" />
     </data>
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/main_activity_bg"
-        tools:context="com.pedersen.escaped.main.MainActivity">
+        tools:context="com.pedersen.escaped.main.PlayerActivity">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="0dp"
@@ -65,7 +65,7 @@
             android:src="@drawable/main_activity_hint_pull"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <LinearLayout
+        <ListView
             android:id="@+id/hint_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -74,45 +74,7 @@
             android:orientation="vertical"
             android:rotation="10"
             app:layout_constraintLeft_toRightOf="@id/guideline2"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <TextView
-                style="@style/hint"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="- Hint 1" />
-
-            <TextView
-                style="@style/hint"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="- Hint 2" />
-
-            <TextView
-                style="@style/hint"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="- Hint 3" />
-
-            <TextView
-                style="@style/hint"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="- Hint 4" />
-
-            <TextView
-                style="@style/hint"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="- Hint 5" />
-
-            <TextView
-                style="@style/hint"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="- Hint 6" />
-
-        </LinearLayout>
+            app:layout_constraintTop_toBottomOf="@id/hori_guide_2" />
 
         <android.support.constraint.Guideline
             android:id="@+id/guideline"
