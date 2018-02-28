@@ -16,7 +16,7 @@
         tools:context="com.pedersen.escaped.login.LoginActivity">
 
         <Button
-            android:id="@+id/button1"
+            android:id="@+id/launch_players_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Login as Player"
@@ -31,7 +31,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Login as game master"
-            app:layout_constraintLeft_toRightOf="@id/button1"
+            app:layout_constraintLeft_toRightOf="@id/launch_players_button"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>

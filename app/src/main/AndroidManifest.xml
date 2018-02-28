@@ -12,7 +12,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".player.PlayerActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".login.LoginActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -22,6 +22,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".master.GameMasterActivity"></activity>
     </application>
 
 </manifest>

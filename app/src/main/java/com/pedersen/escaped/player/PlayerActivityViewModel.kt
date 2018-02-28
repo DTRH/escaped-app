@@ -7,5 +7,5 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
     var progress: Int = 0
         get() = 50
 
-    interface Commands {}
+    interface Commands
 }

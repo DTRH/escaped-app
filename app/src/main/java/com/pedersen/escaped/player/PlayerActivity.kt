@@ -14,6 +14,7 @@ import com.pedersen.escaped.R
 import com.pedersen.escaped.data.models.Hint
 import com.pedersen.escaped.databinding.ActivityPlayerBinding
 import io.greenerpastures.mvvm.ViewModelActivity
+import kotlinx.android.synthetic.main.activity_player.*
 import timber.log.Timber
 
 class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayerBinding>() {
@@ -23,6 +24,7 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
     override fun onCreate(savedInstanceState: Bundle?) {
         initialize(R.layout.activity_player, BR.viewModel, ({ PlayerActivityViewModel() }))
         super.onCreate(savedInstanceState)
+
 
         window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
@@ -41,8 +43,8 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
         hintList.add(Hint(6, "Blah bla", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."))
 
         val hintAdapter = HintsAdapter(this, hintList)
-        binding.hintContainer.adapter = hintAdapter
-        binding.hintContainer.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, id ->
+        hint_container.adapter = hintAdapter
+        hint_container.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, id ->
             Toast.makeText(this, "Click on " + hintList[position].header, Toast.LENGTH_SHORT).show()
         }
     }
@@ -94,8 +96,7 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
     companion object {
 
         fun newIntent(context: Context): Intent {
-            val intent = Intent(context, PlayerActivity::class.java)
-            return intent
+            return Intent(context, PlayerActivity::class.java)
 
         }
     }
