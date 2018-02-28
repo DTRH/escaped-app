@@ -7,14 +7,14 @@
 
         <variable
             name="viewModel"
-            type="com.pedersen.escaped.main.PlayerActivityViewModel" />
+            type="com.pedersen.escaped.player.PlayerActivityViewModel" />
     </data>
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/main_activity_bg"
-        tools:context="com.pedersen.escaped.main.PlayerActivity">
+        tools:context="com.pedersen.escaped.player.PlayerActivity">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="0dp"

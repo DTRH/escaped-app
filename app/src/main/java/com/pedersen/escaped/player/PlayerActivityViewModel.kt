@@ -1,4 +1,4 @@
-package com.pedersen.escaped.main
+package com.pedersen.escaped.player
 
 import io.greenerpastures.mvvm.BaseViewModel
 

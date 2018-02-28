@@ -4,7 +4,7 @@ import android.os.Bundle
 import com.pedersen.escaped.BR
 import com.pedersen.escaped.R
 import com.pedersen.escaped.databinding.ActivityLoginBinding
-import com.pedersen.escaped.main.PlayerActivity
+import com.pedersen.escaped.player.PlayerActivity
 import io.greenerpastures.mvvm.ViewModelActivity
 import kotlinx.android.synthetic.main.activity_login.*
 
