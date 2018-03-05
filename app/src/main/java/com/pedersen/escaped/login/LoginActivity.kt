@@ -20,7 +20,7 @@ class LoginActivity : ViewModelActivity<LoginActivityViewModel, ActivityLoginBin
             startActivity(intent)
         }
 
-        button2.setOnClickListener {
+        launch_game_master_button.setOnClickListener {
             val intent = GameMasterActivity.newIntent(this)
             startActivity(intent)
         }

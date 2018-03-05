@@ -34,4 +34,8 @@
         <item name="android:textSize">30sp</item>
     </style>
 
+    <style name="room_button">
+        <item name="android:layout_margin">30dp</item>
+    </style>
+
 </resources>

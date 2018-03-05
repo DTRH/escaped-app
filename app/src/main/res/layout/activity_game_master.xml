@@ -1,50 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="viewModel"
             type="com.pedersen.escaped.master.GameMasterActivityViewModel" />
     </data>
 
-    <android.support.constraint.ConstraintLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/game_master_activity_background"
-        tools:context="com.pedersen.escaped.master.GameMasterActivity">
+        android:layout_height="match_parent">
 
-        <Button
-            android:id="@+id/launch_room_one_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/game_master_activity_room_one_button"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@id/launch_room_two_button"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintHorizontal_chainStyle="spread"/>
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/game_master_activity_background"
+            tools:context="com.pedersen.escaped.master.GameMasterActivity">
 
-        <Button
-            android:id="@+id/launch_room_two_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/game_master_activity_room_two_button"
-            app:layout_constraintLeft_toRightOf="@id/launch_room_one_button"
-            app:layout_constraintRight_toLeftOf="@id/launch_dinner_room_button"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            <Button
+                android:id="@+id/launch_room_one_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/game_master_activity_room_one_button"
+                android:onClick="@{(v) -> viewModel.launchRoom(1)}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHorizontal_chainStyle="spread"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/launch_room_two_button"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
-            android:id="@+id/launch_dinner_room_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/game_master_activity_room_three_button"
-            app:layout_constraintLeft_toRightOf="@id/launch_room_two_button"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            <Button
+                android:id="@+id/launch_room_two_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/game_master_activity_room_two_button"
+                android:onClick="@{(v) -> viewModel.launchRoom(2)}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/launch_room_one_button"
+                app:layout_constraintRight_toLeftOf="@id/launch_dinner_room_button"
+                app:layout_constraintTop_toTopOf="parent" />
 
-    </android.support.constraint.ConstraintLayout>
+            <Button
+                android:id="@+id/launch_dinner_room_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/game_master_activity_room_three_button"
+                android:onClick="@{(v) -> viewModel.launchRoom(3)}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/launch_room_two_button"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </android.support.constraint.ConstraintLayout>
+
+        <FrameLayout
+            android:id="@+id/fragment_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </FrameLayout>
+
+
 </layout>

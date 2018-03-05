@@ -21,13 +21,13 @@
             android:layout_height="wrap_content"
             android:text="Login as Player"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@id/button2"
+            app:layout_constraintRight_toLeftOf="@id/launch_game_master_button"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_chainStyle="spread"/>
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/launch_game_master_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Login as game master"

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.pedersen.escaped.master.rooms.two.RoomTwoActivityViewModel" />
+    </data>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/game_master_activity_background"
+        tools:context=".master.rooms.two.RoomTwoActivity">
+
+        <TextView
+            android:id="@+id/web_one"
+            style="@style/room_button"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/colorAccent"
+            android:text="Webcam 1"
+            app:layout_constraintBottom_toTopOf="@id/room_control_button"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/web_two"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/web_two"
+            style="@style/room_button"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/colorAccent"
+            android:text="Webcam 2"
+            app:layout_constraintBottom_toTopOf="@id/hint_button"
+            app:layout_constraintLeft_toRightOf="@id/web_one"
+            app:layout_constraintRight_toLeftOf="@id/web_three"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/web_three"
+            style="@style/room_button"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/colorAccent"
+            android:text="Webcam 3"
+            app:layout_constraintBottom_toTopOf="@id/video_button"
+            app:layout_constraintLeft_toRightOf="@id/web_two"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/room_control_button"
+            style="@style/room_button"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/colorAccent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/hint_button"
+            app:layout_constraintTop_toBottomOf="@id/web_one" />
+
+        <Button
+            android:id="@+id/hint_button"
+            style="@style/room_button"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/colorAccent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/room_control_button"
+            app:layout_constraintRight_toLeftOf="@id/video_button"
+            app:layout_constraintTop_toBottomOf="@id/web_two" />
+
+        <Button
+            android:id="@+id/video_button"
+            style="@style/room_button"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/colorAccent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/hint_button"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/web_three" />
+
+
+    </android.support.constraint.ConstraintLayout>
+</layout>

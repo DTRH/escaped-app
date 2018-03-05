@@ -12,6 +12,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".player.PlayerActivity"
+            android:screenOrientation="landscape"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".login.LoginActivity"
@@ -22,7 +23,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".master.GameMasterActivity"></activity>
+        <activity
+            android:name=".master.GameMasterActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".master.rooms.one.RoomOneActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".master.rooms.two.RoomTwoActivity"
+            android:screenOrientation="landscape" />
+        <activity android:name=".master.rooms.dinner.DinnerRoomActivity"></activity>
     </application>
 
 </manifest>
