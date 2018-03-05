@@ -71,19 +71,22 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
     }
 
     private fun animateHint(id: Int) {
-        if (!hintList[id-1].hasAnimated)
-        Observable.timer(500, TimeUnit.MICROSECONDS, AndroidSchedulers.mainThread()).subscribe({
-            hintHeader.setCharacterDelay(50)
-            hintHeader.animateText(hintList[id - 1].header)
-        })
+        if (hintList[id-1].hasAnimated) {
+            hintHeader.text = hintList[id - 1].header
+            hintBody.text = hintList[id - 1].body
+        } else {
+            hintList[id - 1].hasAnimated = true
 
-        Observable.timer(2000, TimeUnit.MICROSECONDS, AndroidSchedulers.mainThread()).subscribe({
-            hintBody.setCharacterDelay(50)
-            hintBody.animateText(hintList[id - 1].body)
-        })
+            Observable.timer(500, TimeUnit.MICROSECONDS, AndroidSchedulers.mainThread()).subscribe({
+                hintHeader.setCharacterDelay(50)
+                hintHeader.animateText(hintList[id - 1].header)
+            })
 
-        hintList[id - 1].hasAnimated = true
-
+            Observable.timer(2000, TimeUnit.MICROSECONDS, AndroidSchedulers.mainThread()).subscribe({
+                hintBody.setCharacterDelay(50)
+                hintBody.animateText(hintList[id - 1].body)
+            })
+        }
     }
 
     override fun animateProgressBar(from: Int, to: Int) {
