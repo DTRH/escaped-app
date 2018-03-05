@@ -1,14 +1,12 @@
 package com.pedersen.escaped.player
 
+import android.animation.ObjectAnimator
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.BaseAdapter
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import com.pedersen.escaped.BR
 import com.pedersen.escaped.R
 import com.pedersen.escaped.data.models.Hint
@@ -17,15 +15,17 @@ import io.greenerpastures.mvvm.ViewModelActivity
 import kotlinx.android.synthetic.main.activity_player.*
 import timber.log.Timber
 
-class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayerBinding>() {
+class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayerBinding>(), PlayerActivityViewModel.Commands {
 
+    private var progressBarAnimation: ObjectAnimator = ObjectAnimator()
+    private lateinit var progressBar: ProgressBar
     private var hintList = ArrayList<Hint>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initialize(R.layout.activity_player, BR.viewModel, ({ PlayerActivityViewModel() }))
         super.onCreate(savedInstanceState)
 
-
+        // Remove all system UI
         window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                 or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -33,6 +33,8 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
                 or View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
                 or View.SYSTEM_UI_FLAG_IMMERSIVE)
 
+        // Bind to progressbar so we can animate it later
+        progressBar = binding.progressBar
 
         // Dummy list
         hintList.add(Hint(1, "Afrikastjerne", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."))
@@ -42,12 +44,20 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
         hintList.add(Hint(5, "lolkat", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."))
         hintList.add(Hint(6, "Blah bla", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."))
 
+
         val hintAdapter = HintsAdapter(this, hintList)
         hint_container.adapter = hintAdapter
         hint_container.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, id ->
             Toast.makeText(this, "Click on " + hintList[position].header, Toast.LENGTH_SHORT).show()
         }
     }
+
+    override fun animateProgressBar(from: Int, to: Int) {
+        progressBarAnimation = ObjectAnimator.ofInt(progressBar, "progress", from, to)
+        progressBarAnimation.duration = 2000
+        progressBarAnimation.start()
+    }
+
 
     inner class HintsAdapter(context: Context, notesList: ArrayList<Hint>) : BaseAdapter() {
 

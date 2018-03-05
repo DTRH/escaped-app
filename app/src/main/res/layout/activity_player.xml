@@ -52,7 +52,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:indeterminate="false"
-                android:progress="@{viewModel.progress}"
+
                 app:layout_constraintBottom_toTopOf="@id/guideline4"
                 app:layout_constraintLeft_toRightOf="@id/guideline3"
                 app:layout_constraintRight_toLeftOf="@id/guideline5" />
