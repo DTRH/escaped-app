@@ -10,97 +10,169 @@
             type="com.pedersen.escaped.player.PlayerActivityViewModel" />
     </data>
 
-    <android.support.constraint.ConstraintLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/main_activity_bg"
-        tools:context="com.pedersen.escaped.player.PlayerActivity">
-
+        android:layout_height="match_parent">
+        <!-- Main Layout -->
         <android.support.constraint.ConstraintLayout
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:background="@drawable/main_activity_progressbar"
-            app:layout_constraintBottom_toTopOf="@id/hori_guide_2"
-            app:layout_constraintLeft_toRightOf="@id/guideline"
-            app:layout_constraintRight_toLeftOf="@id/guideline2"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/main_activity_bg"
+            tools:context="com.pedersen.escaped.player.PlayerActivity">
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@drawable/main_activity_progressbar"
+                app:layout_constraintBottom_toTopOf="@id/hori_guide_2"
+                app:layout_constraintLeft_toRightOf="@id/guideline"
+                app:layout_constraintRight_toLeftOf="@id/guideline2"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <android.support.constraint.Guideline
+                    android:id="@+id/guideline3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.19" />
+
+                <android.support.constraint.Guideline
+                    android:id="@+id/guideline5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.75" />
+
+                <android.support.constraint.Guideline
+                    android:id="@+id/guideline4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintGuide_percent="0.67" />
+
+                <ProgressBar
+                    android:id="@+id/progress_bar"
+                    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:indeterminate="false"
+
+                    app:layout_constraintBottom_toTopOf="@id/guideline4"
+                    app:layout_constraintLeft_toRightOf="@id/guideline3"
+                    app:layout_constraintRight_toLeftOf="@id/guideline5" />
+            </android.support.constraint.ConstraintLayout>
+
+            <ImageView
+                android:id="@+id/hint_pull"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/main_activity_hint_pull"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ListView
+                android:id="@+id/hint_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="120dp"
+                android:orientation="vertical"
+                android:rotation="10"
+                app:layout_constraintLeft_toRightOf="@id/guideline2"
+                app:layout_constraintTop_toBottomOf="@id/hori_guide_2" />
 
             <android.support.constraint.Guideline
-                android:id="@+id/guideline3"
+                android:id="@+id/guideline"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.19" />
+                app:layout_constraintGuide_percent=".15" />
 
             <android.support.constraint.Guideline
-                android:id="@+id/guideline5"
+                android:id="@+id/guideline2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.75" />
+                app:layout_constraintGuide_percent=".60" />
 
             <android.support.constraint.Guideline
-                android:id="@+id/guideline4"
+                android:id="@+id/hori_guide_2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.67" />
+                app:layout_constraintGuide_percent="0.25" />
 
-            <ProgressBar
-                android:id="@+id/progress_bar"
-                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:indeterminate="false"
+            <FrameLayout
+                android:id="@+id/fragment_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
-                app:layout_constraintBottom_toTopOf="@id/guideline4"
-                app:layout_constraintLeft_toRightOf="@id/guideline3"
-                app:layout_constraintRight_toLeftOf="@id/guideline5" />
         </android.support.constraint.ConstraintLayout>
 
-        <ImageView
-            android:id="@+id/hint_pull"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/main_activity_hint_pull"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ListView
-            android:id="@+id/hint_container"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="120dp"
-            android:orientation="vertical"
-            android:rotation="10"
-            app:layout_constraintLeft_toRightOf="@id/guideline2"
-            app:layout_constraintTop_toBottomOf="@id/hori_guide_2" />
-
-        <android.support.constraint.Guideline
-            android:id="@+id/guideline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent=".15" />
-
-        <android.support.constraint.Guideline
-            android:id="@+id/guideline2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent=".60" />
-
-        <android.support.constraint.Guideline
-            android:id="@+id/hori_guide_2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.25" />
-
-        <FrameLayout
-            android:id="@+id/fragment_container"
+        <!-- Hint Layout -->
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/hint_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent">
 
-    </android.support.constraint.ConstraintLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@drawable/old_paper_background"
+                android:orientation="vertical"
+                android:padding="20dp"
+                app:layout_constraintLeft_toRightOf="@+id/vertical_one"
+                app:layout_constraintRight_toLeftOf="@+id/vertical_two"
+                app:layout_constraintTop_toBottomOf="@id/horizontal_one"
+                app:layout_constraintBottom_toTopOf="@id/horizontal_two"
+                android:visibility="@{viewModel.hintVisible}">
+
+                <ImageView
+                    android:layout_gravity="end"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_close"
+                    android:onClick="@{v -> viewModel.closeHint(v)}"/>
+
+                <com.pedersen.escaped.animations.TypeWriter
+                    android:id="@+id/hint_header_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="Header header header"/>
+
+                <com.pedersen.escaped.animations.TypeWriter
+                    android:id="@+id/hint_body_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="body body body body"/>
+            </LinearLayout>
+
+            <android.support.constraint.Guideline
+                android:id="@+id/vertical_one"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.10"/>
+
+            <android.support.constraint.Guideline
+                android:id="@+id/vertical_two"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.90"/>
+
+            <android.support.constraint.Guideline
+                android:id="@+id/horizontal_one"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.10" />
+
+            <android.support.constraint.Guideline
+                android:id="@+id/horizontal_two"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.90" />
+        </android.support.constraint.ConstraintLayout>
+    </FrameLayout>
 </layout>
