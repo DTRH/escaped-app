@@ -9,7 +9,7 @@ class HintFragment : ViewModelFragment<HintFragmentViewModel, HintFragmentBindin
 
     companion object {
 
-        fun newInstance(hintId: Int): HintFragment {
+        fun newInstance(hint: Hint): HintFragment {
             return HintFragment()
         }
     }

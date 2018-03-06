@@ -47,8 +47,6 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
 
         // Bind to hintView
         hintView = binding.hintLayout
-        hintHeader = binding.hintHeaderView
-        hintBody = binding.hintBodyView
 
         // Dummy list
         hintList.add(Hint(1, "Afrikastjerne", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."))
@@ -61,11 +59,11 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
         val hintAdapter = HintsAdapter(this, hintList)
         hint_container.adapter = hintAdapter
         hint_container.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, id ->
-            Toast.makeText(this, "Click on " + hintList[position].header, Toast.LENGTH_SHORT).show()
-            hintBody.text = ""
-            hintHeader.text = ""
             viewModel.isHintVisible = true
-            animateHint(hintList[position].id)
+
+            //animateHint(hintList[position].id)
+            val hintFragment = HintFragment.newInstance(hintList[position])
+            fragmentManager.beginTransaction().add(android.R.id.content, hintFragment).commit()
 
         }
     }
@@ -98,6 +96,8 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
     override fun closeHint() {
         if (viewModel.isHintVisible)
             viewModel.isHintVisible = false
+        hintBody.clearAnimation()
+        hintHeader.clearAnimation()
     }
 
     inner class HintsAdapter(context: Context, notesList: ArrayList<Hint>) : BaseAdapter() {
