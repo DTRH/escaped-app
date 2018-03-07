@@ -4,7 +4,12 @@ import android.animation.ObjectAnimator
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.animation.DynamicAnimation
+import android.support.animation.SpringAnimation
+import android.support.animation.SpringForce
 import android.support.constraint.ConstraintLayout
+import android.view.MotionEvent
+import android.view.ScaleGestureDetector
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
@@ -16,18 +21,23 @@ import com.pedersen.escaped.databinding.ActivityPlayerBinding
 import io.greenerpastures.mvvm.ViewModelActivity
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import kotlinx.android.synthetic.main.activity_player.*
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
+
 
 class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayerBinding>(), PlayerActivityViewModel.Commands {
 
     private var progressBarAnimation: ObjectAnimator = ObjectAnimator()
     private lateinit var progressBar: ProgressBar
+
     private var hintData = ArrayList<Hint>()
+
     private lateinit var hintView: ConstraintLayout
     private lateinit var hintHeader: TypeWriter
     private lateinit var hintBody: TypeWriter
+
+    lateinit var scaleYAnimation: SpringAnimation
+    lateinit var scaleGestureDetector: ScaleGestureDetector
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initialize(R.layout.activity_player, BR.viewModel, ({ PlayerActivityViewModel() }))
@@ -47,6 +57,9 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
         // Bind to hintView
         hintView = binding.hintLayout
 
+        // Bind puller
+        val hintPull = binding.hintPull
+
         // Dummy list
         hintData.add(Hint(1, "Afrikastjerne", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."))
         hintData.add(Hint(2, "Bloddiamant", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."))
@@ -65,10 +78,58 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
             fragmentManager.beginTransaction().replace(R.id.fragment_container, hintFragment).commit()
 
         }
+
+        scaleYAnimation = createSpringAnimation(
+                hintPull, SpringAnimation.SCALE_Y,
+                INITIAL_SCALE, STIFFNESS, DAMPING_RATIO
+        )
+
+        setupHintPullGesture(hintPull)
+
+        hintPull.setOnTouchListener { _, event ->
+            Timber.i("event: $event")
+            if (event.action == MotionEvent.ACTION_DOWN) {
+                Timber.i("event: Start Animation")
+                scaleYAnimation.start()
+            } else {
+                Timber.i("event: Cancel Animation")
+                // cancel animations so we can grab the view during previous animation
+                scaleYAnimation.cancel()
+
+                // pass touch event to ScaleGestureDetector
+                scaleGestureDetector.onTouchEvent(event)
+            }
+            true
+        }
+    }
+
+    private fun setupHintPullGesture(hintPull: ImageView) {
+        var scaleFactor = 1f
+        scaleGestureDetector = ScaleGestureDetector(this,
+                object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
+                    override fun onScale(detector: ScaleGestureDetector): Boolean {
+                        scaleFactor *= detector.scaleFactor
+                        hintPull.scaleY *= scaleFactor
+                        return true
+                    }
+                })
+    }
+
+    fun createSpringAnimation(view: View,
+                              property: DynamicAnimation.ViewProperty,
+                              finalPosition: Float,
+                              stiffness: Float,
+                              dampingRatio: Float): SpringAnimation {
+        val animation = SpringAnimation(view, property)
+        val spring = SpringForce(finalPosition)
+        spring.stiffness = stiffness
+        spring.dampingRatio = dampingRatio
+        animation.spring = spring
+        return animation
     }
 
     private fun animateHint(id: Int) {
-        if (hintData[id-1].hasAnimated) {
+        if (hintData[id - 1].hasAnimated) {
             hintHeader.text = hintData[id - 1].header
             hintBody.text = hintData[id - 1].body
         } else {
@@ -144,6 +205,10 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
     }
 
     companion object {
+
+        val INITIAL_SCALE = 1f
+        val STIFFNESS = SpringForce.STIFFNESS_MEDIUM
+        val DAMPING_RATIO = SpringForce.DAMPING_RATIO_HIGH_BOUNCY
 
         fun newIntent(context: Context): Intent {
             return Intent(context, PlayerActivity::class.java)
