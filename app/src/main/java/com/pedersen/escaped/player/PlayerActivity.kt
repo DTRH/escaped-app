@@ -13,7 +13,6 @@ import com.pedersen.escaped.R
 import com.pedersen.escaped.animations.TypeWriter
 import com.pedersen.escaped.data.models.Hint
 import com.pedersen.escaped.databinding.ActivityPlayerBinding
-import com.pedersen.escaped.extensions.bind
 import io.greenerpastures.mvvm.ViewModelActivity
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -25,7 +24,7 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
 
     private var progressBarAnimation: ObjectAnimator = ObjectAnimator()
     private lateinit var progressBar: ProgressBar
-    private var hintList = ArrayList<Hint>()
+    private var hintData = ArrayList<Hint>()
     private lateinit var hintView: ConstraintLayout
     private lateinit var hintHeader: TypeWriter
     private lateinit var hintBody: TypeWriter
@@ -49,40 +48,40 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
         hintView = binding.hintLayout
 
         // Dummy list
-        hintList.add(Hint(1, "Afrikastjerne", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."))
-        hintList.add(Hint(2, "Bloddiamant", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."))
-        hintList.add(Hint(3, "Menneskejagt?", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."))
-        hintList.add(Hint(4, "Butleren?", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."))
-        hintList.add(Hint(5, "lolkat", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."))
-        hintList.add(Hint(6, "Blah bla", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."))
+        hintData.add(Hint(1, "Afrikastjerne", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."))
+        hintData.add(Hint(2, "Bloddiamant", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."))
+        hintData.add(Hint(3, "Menneskejagt?", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."))
+        hintData.add(Hint(4, "Butleren?", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."))
+        hintData.add(Hint(5, "lolkat", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."))
+        hintData.add(Hint(6, "Blah bla", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."))
 
-        val hintAdapter = HintsAdapter(this, hintList)
-        hint_container.adapter = hintAdapter
-        hint_container.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, id ->
-            viewModel.isHintVisible = true
+        val hintAdapter = HintsAdapter(this, hintData)
+        val hintContainer = binding.hintContainer
 
-            //animateHint(hintList[position].id)
-            val hintFragment = HintFragment.newInstance(hintList[position])
-            fragmentManager.beginTransaction().add(android.R.id.content, hintFragment).commit()
+        hintContainer.adapter = hintAdapter
+        hintContainer.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, id ->
+
+            val hintFragment = HintFragment.newInstance(hintData[position])
+            fragmentManager.beginTransaction().replace(R.id.fragment_container, hintFragment).commit()
 
         }
     }
 
     private fun animateHint(id: Int) {
-        if (hintList[id-1].hasAnimated) {
-            hintHeader.text = hintList[id - 1].header
-            hintBody.text = hintList[id - 1].body
+        if (hintData[id-1].hasAnimated) {
+            hintHeader.text = hintData[id - 1].header
+            hintBody.text = hintData[id - 1].body
         } else {
-            hintList[id - 1].hasAnimated = true
+            hintData[id - 1].hasAnimated = true
 
             Observable.timer(500, TimeUnit.MICROSECONDS, AndroidSchedulers.mainThread()).subscribe({
                 hintHeader.setCharacterDelay(50)
-                hintHeader.animateText(hintList[id - 1].header)
+                hintHeader.animateText(hintData[id - 1].header)
             })
 
             Observable.timer(2000, TimeUnit.MICROSECONDS, AndroidSchedulers.mainThread()).subscribe({
                 hintBody.setCharacterDelay(50)
-                hintBody.animateText(hintList[id - 1].body)
+                hintBody.animateText(hintData[id - 1].body)
             })
         }
     }

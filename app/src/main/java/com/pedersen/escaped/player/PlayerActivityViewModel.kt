@@ -1,7 +1,6 @@
 package com.pedersen.escaped.player
 
 import android.databinding.Bindable
-import android.util.Log
 import android.view.View
 
 import com.pedersen.escaped.BR
