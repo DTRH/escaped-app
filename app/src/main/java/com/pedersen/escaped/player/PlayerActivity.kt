@@ -20,11 +20,7 @@ import com.pedersen.escaped.animations.TypeWriter
 import com.pedersen.escaped.data.models.Hint
 import com.pedersen.escaped.databinding.ActivityPlayerBinding
 import io.greenerpastures.mvvm.ViewModelActivity
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
 import timber.log.Timber
-import java.util.concurrent.TimeUnit
-
 
 class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayerBinding>(), PlayerActivityViewModel.Commands {
 
@@ -36,10 +32,6 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
     private lateinit var hintView: ConstraintLayout
     private lateinit var hintHeader: TypeWriter
     private lateinit var hintBody: TypeWriter
-    private lateinit var hintPull: ImageView
-
-    lateinit var scaleYAnimation: SpringAnimation
-    lateinit var scaleGestureDetector: ScaleGestureDetector
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initialize(R.layout.activity_player, BR.viewModel, ({ PlayerActivityViewModel() }))
@@ -60,10 +52,7 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
         hintView = binding.hintLayout
 
         // Bind puller
-        val hintPull = binding.hintPull
-        val positionSpringAnimation = PositionSpringAnimation(hintPull)
-
-
+        PositionSpringAnimation(binding.hintPull)
 
         // Dummy list
         hintData.add(Hint(1, "Afrikastjerne", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."))
@@ -73,7 +62,7 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
         hintData.add(Hint(5, "lolkat", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."))
         hintData.add(Hint(6, "Blah bla", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."))
 
-        val hintAdapter = HintsAdapter(this, hintData)
+        val hintAdapter = HintsAdapter(hintData)
         val hintContainer = binding.hintContainer
 
         hintContainer.adapter = hintAdapter
@@ -97,10 +86,9 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
         hintHeader.clearAnimation()
     }
 
-    inner class HintsAdapter(context: Context, notesList: ArrayList<Hint>) : BaseAdapter() {
+    inner class HintsAdapter(notesList: ArrayList<Hint>) : BaseAdapter() {
 
         private var list = notesList
-        private var context: Context? = context
 
         override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View? {
 
@@ -137,15 +125,11 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
     }
 
     private class ViewHolder(view: View?) {
-        val tvTitle: TextView = view?.findViewById<TextView>(R.id.id) as TextView
-        val tvContent: TextView = view?.findViewById<TextView>(R.id.header) as TextView
+        val tvTitle: TextView = view?.findViewById(R.id.id) as TextView
+        val tvContent: TextView = view?.findViewById(R.id.header) as TextView
     }
 
     companion object {
-
-        val INITIAL_SCALE = 1f
-        val STIFFNESS = SpringForce.STIFFNESS_MEDIUM
-        val DAMPING_RATIO = SpringForce.DAMPING_RATIO_HIGH_BOUNCY
 
         fun newIntent(context: Context): Intent {
             return Intent(context, PlayerActivity::class.java)

@@ -7,17 +7,10 @@ import android.view.View
 import android.view.ViewTreeObserver
 import com.pedersen.escaped.utils.SpringAnimationUtil.createSpringAnimation
 
-/**
- * Created by anderspedersen on 08/03/2018.
- */
 class PositionSpringAnimation(animatedView: View?) {
 
     private var animatedView: View? = null
-
-    private var xAnimation: SpringAnimation? = null
     private var yAnimation: SpringAnimation? = null
-
-    private var dX: Float = 0.toFloat()
     private var dY: Float = 0.toFloat()
 
     // create X and Y animations for view's initial position once it's known
@@ -28,7 +21,7 @@ class PositionSpringAnimation(animatedView: View?) {
         }
     }
 
-    var initY = 0f
+    private var initY = 0f
     private val touchListener = View.OnTouchListener { v, event ->
         when (event.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
