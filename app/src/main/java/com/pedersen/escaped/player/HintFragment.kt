@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.View
 import com.pedersen.escaped.BR
 import com.pedersen.escaped.R
-import com.pedersen.escaped.animations.TypeWriter
 import com.pedersen.escaped.data.models.Hint
 import com.pedersen.escaped.databinding.HintFragmentBinding
 import io.greenerpastures.mvvm.ViewModelFragment

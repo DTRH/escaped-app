@@ -15,6 +15,7 @@ import android.view.ViewGroup
 import android.widget.*
 import com.pedersen.escaped.BR
 import com.pedersen.escaped.R
+import com.pedersen.escaped.animations.PositionSpringAnimation
 import com.pedersen.escaped.animations.TypeWriter
 import com.pedersen.escaped.data.models.Hint
 import com.pedersen.escaped.databinding.ActivityPlayerBinding
@@ -35,6 +36,7 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
     private lateinit var hintView: ConstraintLayout
     private lateinit var hintHeader: TypeWriter
     private lateinit var hintBody: TypeWriter
+    private lateinit var hintPull: ImageView
 
     lateinit var scaleYAnimation: SpringAnimation
     lateinit var scaleGestureDetector: ScaleGestureDetector
@@ -59,6 +61,9 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
 
         // Bind puller
         val hintPull = binding.hintPull
+        val positionSpringAnimation = PositionSpringAnimation(hintPull)
+
+
 
         // Dummy list
         hintData.add(Hint(1, "Afrikastjerne", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."))
@@ -76,74 +81,6 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
 
             val hintFragment = HintFragment.newInstance(hintData[position])
             fragmentManager.beginTransaction().replace(R.id.fragment_container, hintFragment).commit()
-
-        }
-
-        scaleYAnimation = createSpringAnimation(
-                hintPull, SpringAnimation.SCALE_Y,
-                INITIAL_SCALE, STIFFNESS, DAMPING_RATIO
-        )
-
-        setupHintPullGesture(hintPull)
-
-        hintPull.setOnTouchListener { _, event ->
-            Timber.i("event: $event")
-            if (event.action == MotionEvent.ACTION_DOWN) {
-                Timber.i("event: Start Animation")
-                scaleYAnimation.start()
-            } else {
-                Timber.i("event: Cancel Animation")
-                // cancel animations so we can grab the view during previous animation
-                scaleYAnimation.cancel()
-
-                // pass touch event to ScaleGestureDetector
-                scaleGestureDetector.onTouchEvent(event)
-            }
-            true
-        }
-    }
-
-    private fun setupHintPullGesture(hintPull: ImageView) {
-        var scaleFactor = 1f
-        scaleGestureDetector = ScaleGestureDetector(this,
-                object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
-                    override fun onScale(detector: ScaleGestureDetector): Boolean {
-                        scaleFactor *= detector.scaleFactor
-                        hintPull.scaleY *= scaleFactor
-                        return true
-                    }
-                })
-    }
-
-    fun createSpringAnimation(view: View,
-                              property: DynamicAnimation.ViewProperty,
-                              finalPosition: Float,
-                              stiffness: Float,
-                              dampingRatio: Float): SpringAnimation {
-        val animation = SpringAnimation(view, property)
-        val spring = SpringForce(finalPosition)
-        spring.stiffness = stiffness
-        spring.dampingRatio = dampingRatio
-        animation.spring = spring
-        return animation
-    }
-
-    private fun animateHint(id: Int) {
-        if (hintData[id - 1].hasAnimated) {
-            hintHeader.text = hintData[id - 1].header
-            hintBody.text = hintData[id - 1].body
-        } else {
-            hintData[id - 1].hasAnimated = true
-
-            Observable.timer(500, TimeUnit.MICROSECONDS, AndroidSchedulers.mainThread()).subscribe({
-                hintHeader.setCharacterDelay(50)
-                hintHeader.animateText(hintData[id - 1].header)
-            })
-
-            Observable.timer(2000, TimeUnit.MICROSECONDS, AndroidSchedulers.mainThread()).subscribe({
-                hintBody.setCharacterDelay(50)
-                hintBody.animateText(hintData[id - 1].body)
-            })
         }
     }
 
