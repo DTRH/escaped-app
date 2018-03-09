@@ -32,13 +32,6 @@ class HintFragment : ViewModelFragment<HintFragmentViewModel, HintFragmentBindin
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val closeButton = binding.backButton
-
-        closeButton.setOnClickListener {
-            fragmentManager.beginTransaction().remove(fragmentManager.findFragmentById(R.id.fragment_container)).commit()
-        }
-
         hintHeaderView = binding.hintHeaderView
         hintBodyView = binding.hintBodyView
         hintHeaderView.setCharacterDelay(100L)
@@ -58,6 +51,9 @@ class HintFragment : ViewModelFragment<HintFragmentViewModel, HintFragmentBindin
                 })
     }
 
+    override fun closeHint() {
+        fragmentManager.beginTransaction().remove(fragmentManager.findFragmentById(R.id.fragment_container)).commit()
+    }
 
     companion object {
 

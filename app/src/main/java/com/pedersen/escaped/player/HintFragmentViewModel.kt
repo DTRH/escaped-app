@@ -1,6 +1,7 @@
 package com.pedersen.escaped.player
 
 import android.databinding.Bindable
+import android.view.View
 import com.pedersen.escaped.BR
 import com.pedersen.escaped.extensions.bind
 import io.greenerpastures.mvvm.BaseViewModel
@@ -15,11 +16,16 @@ class HintFragmentViewModel : BaseViewModel<HintFragmentViewModel.Commands>() {
 
     override fun onActive() {
         super.onActive()
-
         commandHandler?.animateHint(hintHeader, hintBody)
+    }
+
+    fun closeHint() {
+        commandHandler?.closeHint()
     }
 
     interface Commands {
         fun animateHint(header: String, body: String)
+
+        fun closeHint()
     }
 }
