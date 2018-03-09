@@ -4,12 +4,7 @@ import android.animation.ObjectAnimator
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.animation.DynamicAnimation
-import android.support.animation.SpringAnimation
-import android.support.animation.SpringForce
 import android.support.constraint.ConstraintLayout
-import android.view.MotionEvent
-import android.view.ScaleGestureDetector
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
@@ -26,9 +21,6 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
 
     private var progressBarAnimation: ObjectAnimator = ObjectAnimator()
     private lateinit var progressBar: ProgressBar
-
-    private var hintData = ArrayList<Hint>()
-
     private lateinit var hintView: ConstraintLayout
     private lateinit var hintHeader: TypeWriter
     private lateinit var hintBody: TypeWriter
@@ -54,21 +46,12 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
         // Bind puller
         PositionSpringAnimation(binding.hintPull)
 
-        // Dummy list
-        hintData.add(Hint(1, "Afrikastjerne", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."))
-        hintData.add(Hint(2, "Bloddiamant", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."))
-        hintData.add(Hint(3, "Menneskejagt?", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."))
-        hintData.add(Hint(4, "Butleren?", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."))
-        hintData.add(Hint(5, "lolkat", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."))
-        hintData.add(Hint(6, "Blah bla", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."))
-
-        val hintAdapter = HintsAdapter(hintData)
+        val hintAdapter = HintsAdapter(viewModel.hintList)
         val hintContainer = binding.hintContainer
 
         hintContainer.adapter = hintAdapter
-        hintContainer.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, id ->
-
-            val hintFragment = HintFragment.newInstance(hintData[position])
+        hintContainer.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
+            val hintFragment = HintFragment.newInstance(viewModel.hintList[position])
             fragmentManager.beginTransaction().replace(R.id.fragment_container, hintFragment).commit()
         }
     }
@@ -133,7 +116,6 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
 
         fun newIntent(context: Context): Intent {
             return Intent(context, PlayerActivity::class.java)
-
         }
     }
 }
