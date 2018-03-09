@@ -13,5 +13,13 @@ class HintFragmentViewModel : BaseViewModel<HintFragmentViewModel.Commands>() {
     @get:Bindable
     var hintBody by bind("", BR.hintBody)
 
-    interface Commands
+    override fun onActive() {
+        super.onActive()
+
+        commandHandler?.animateHint(hintHeader, hintBody)
+    }
+
+    interface Commands {
+        fun animateHint(header: String, body: String)
+    }
 }

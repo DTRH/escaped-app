@@ -4,7 +4,6 @@ import android.animation.ObjectAnimator
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.constraint.ConstraintLayout
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
@@ -20,8 +19,6 @@ import timber.log.Timber
 class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayerBinding>(), PlayerActivityViewModel.Commands {
 
     private var progressBarAnimation: ObjectAnimator = ObjectAnimator()
-    private lateinit var progressBar: ProgressBar
-    private lateinit var hintView: ConstraintLayout
     private lateinit var hintHeader: TypeWriter
     private lateinit var hintBody: TypeWriter
 
@@ -37,13 +34,7 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
                 or View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
                 or View.SYSTEM_UI_FLAG_IMMERSIVE)
 
-        // Bind to progressbar so we can animate it later
-        progressBar = binding.progressBar
-
-        // Bind to hintView
-        hintView = binding.hintLayout
-
-        // Bind puller
+        // Setup pull/spring animation for the hint puller
         PositionSpringAnimation(binding.hintPull)
 
         val hintAdapter = HintsAdapter(viewModel.hintList)
@@ -57,7 +48,7 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
     }
 
     override fun animateProgressBar(from: Int, to: Int) {
-        progressBarAnimation = ObjectAnimator.ofInt(progressBar, "progress", from, to)
+        progressBarAnimation = ObjectAnimator.ofInt(binding.progressBar, "progress", from, to)
         progressBarAnimation.duration = 2000
         progressBarAnimation.start()
     }
