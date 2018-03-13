@@ -21,6 +21,7 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
     private var progressBarAnimation: ObjectAnimator = ObjectAnimator()
     private lateinit var hintHeader: TypeWriter
     private lateinit var hintBody: TypeWriter
+    private lateinit var hintAdapter: BaseAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initialize(R.layout.activity_player, BR.viewModel, ({ PlayerActivityViewModel() }))
@@ -37,7 +38,7 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
         // Setup pull/spring animation for the hint puller
         PositionSpringAnimation(binding.hintPull)
 
-        val hintAdapter = HintsAdapter(viewModel.hintList)
+        hintAdapter = HintsAdapter(viewModel.hintList)
         val hintContainer = binding.hintContainer
 
         hintContainer.adapter = hintAdapter
@@ -60,6 +61,10 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
         hintHeader.clearAnimation()
     }
 
+    override fun updateHintList() {
+        hintAdapter.notifyDataSetChanged()
+    }
+
     inner class HintsAdapter(notesList: ArrayList<Hint>) : BaseAdapter() {
 
         private var list = notesList
@@ -79,8 +84,7 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
                 vh = view.tag as ViewHolder
             }
 
-            vh.tvTitle.text = list[position].id.toString()
-            vh.tvContent.text = list[position].header
+            vh.tvContent.text = list[position].title
 
             return view
         }
@@ -99,7 +103,6 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
     }
 
     private class ViewHolder(view: View?) {
-        val tvTitle: TextView = view?.findViewById(R.id.id) as TextView
         val tvContent: TextView = view?.findViewById(R.id.header) as TextView
     }
 

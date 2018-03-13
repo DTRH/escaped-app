@@ -1,6 +1,11 @@
 package com.pedersen.escaped.data.models
 
-/**
- * Created by anderspedersen on 22/02/2018.
- */
-data class Hint(val id: Int, val header: String, val body: String, var hasAnimated: Boolean = false)
+import com.google.gson.annotations.SerializedName
+
+data class Hint(
+        @SerializedName("id")
+        val id: String = "",
+        @SerializedName("title")
+        val title: String = "",
+        @SerializedName("body")
+        val body: String = "", var hasAnimated: Boolean = false)
