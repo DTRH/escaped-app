@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.pedersen.escaped.master.rooms.dinner.DinnerRoomActivityViewModel" />
+            type="com.pedersen.escaped.master.games.dinner.DinnerRoomActivityViewModel" />
     </data>
 
     <FrameLayout
@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/game_master_activity_background"
-            tools:context=".master.rooms.dinner.DinnerRoomActivity">
+            tools:context=".master.games.dinner.DinnerRoomActivity">
 
             <TextView
                 android:id="@+id/web_one"

@@ -28,12 +28,13 @@
             android:name=".master.GameMasterActivity"
             android:screenOrientation="landscape" />
         <activity
-            android:name=".master.rooms.one.RoomOneActivity"
+            android:name=".master.games.one.GameOneActivity"
             android:screenOrientation="landscape" />
         <activity
-            android:name=".master.rooms.two.RoomTwoActivity"
+            android:name=".master.games.two.GameTwoActivity"
             android:screenOrientation="landscape" />
-        <activity android:name=".master.rooms.dinner.DinnerRoomActivity"></activity>
+        <activity android:name=".master.games.dinner.DinnerRoomActivity"></activity>
+        <activity android:name=".master.controls.hints.HintControlsActivity" />
     </application>
 
 </manifest>

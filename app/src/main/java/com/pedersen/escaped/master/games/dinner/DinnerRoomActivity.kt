@@ -1,4 +1,4 @@
-package com.pedersen.escaped.master.rooms.dinner
+package com.pedersen.escaped.master.games.dinner
 
 import android.content.Context
 import android.content.Intent
@@ -9,7 +9,7 @@ import com.pedersen.escaped.databinding.ActivityDinnerRoomBinding
 import io.greenerpastures.mvvm.ViewModelActivity
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import com.pedersen.escaped.master.controls.hints.HintControlsFragment
+import com.pedersen.escaped.master.controls.hints.HintControlsActivity
 
 class DinnerRoomActivity : ViewModelActivity<DinnerRoomActivityViewModel, ActivityDinnerRoomBinding>(), DinnerRoomActivityViewModel.Commands {
 
@@ -22,8 +22,7 @@ class DinnerRoomActivity : ViewModelActivity<DinnerRoomActivityViewModel, Activi
     }
 
     override fun launchHintControls() {
-        val hintControlsFragment = HintControlsFragment.newInstance()
-        fragmentManager.beginTransaction().replace(R.id.fragment_container, hintControlsFragment).commit()
+
     }
 
     override fun launchVideoControls() {

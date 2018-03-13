@@ -7,14 +7,17 @@
 
         <variable
             name="viewModel"
-            type="com.pedersen.escaped.master.rooms.one.RoomOneActivityViewModel" />
+            type="com.pedersen.escaped.master.games.one.GameOneActivityViewModel" />
     </data>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/game_master_activity_background"
-        tools:context="com.pedersen.escaped.master.rooms.one.RoomOneActivity">
+        tools:context="com.pedersen.escaped.master.games.one.GameOneActivity">
 
         <TextView
             android:id="@+id/web_one"
@@ -58,6 +61,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:background="@color/colorAccent"
+            android:text="ROOM CONTROLS"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@id/hint_button"
@@ -69,6 +73,8 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:background="@color/colorAccent"
+            android:text="HINT CONTROLS"
+            android:onClick="@{_ -> viewModel.launchHintControls()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toRightOf="@id/room_control_button"
             app:layout_constraintRight_toLeftOf="@id/video_button"
@@ -80,6 +86,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:background="@color/colorAccent"
+            android:text="VIDEO CONTROLS"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toRightOf="@id/hint_button"
             app:layout_constraintRight_toRightOf="parent"
@@ -87,4 +94,11 @@
 
 
     </android.support.constraint.ConstraintLayout>
+
+        <FrameLayout
+            android:id="@+id/fragment_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </FrameLayout>
 </layout>

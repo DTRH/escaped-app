@@ -1,4 +1,4 @@
-package com.pedersen.escaped.master.rooms.dinner
+package com.pedersen.escaped.master.games.dinner
 
 import io.greenerpastures.mvvm.BaseViewModel
 

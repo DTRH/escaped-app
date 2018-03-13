@@ -54,12 +54,7 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
         progressBarAnimation.start()
     }
 
-    override fun closeHint() {
-        if (viewModel.isHintVisible)
-            viewModel.isHintVisible = false
-        hintBody.clearAnimation()
-        hintHeader.clearAnimation()
-    }
+
 
     override fun updateHintList() {
         hintAdapter.notifyDataSetChanged()

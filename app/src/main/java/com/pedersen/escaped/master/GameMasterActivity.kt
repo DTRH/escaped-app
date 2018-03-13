@@ -6,9 +6,9 @@ import android.os.Bundle
 import com.pedersen.escaped.BR
 import com.pedersen.escaped.R
 import com.pedersen.escaped.databinding.ActivityGameMasterBinding
-import com.pedersen.escaped.master.rooms.dinner.DinnerRoomActivity
-import com.pedersen.escaped.master.rooms.one.RoomOneActivity
-import com.pedersen.escaped.master.rooms.two.RoomTwoActivity
+import com.pedersen.escaped.master.games.dinner.DinnerRoomActivity
+import com.pedersen.escaped.master.games.one.GameOneActivity
+import com.pedersen.escaped.master.games.two.GameTwoActivity
 import io.greenerpastures.mvvm.ViewModelActivity
 
 class GameMasterActivity : ViewModelActivity<GameMasterActivityViewModel, ActivityGameMasterBinding>(), GameMasterActivityViewModel.Commands {
@@ -18,16 +18,15 @@ class GameMasterActivity : ViewModelActivity<GameMasterActivityViewModel, Activi
         super.onCreate(savedInstanceState)
     }
 
-    override fun launchRoom(id: Int) {
+    override fun launchGameActivity(id: Int) {
         when (id) {
-            1 -> startActivity(RoomOneActivity.newIntent(this))
-            2 -> startActivity(RoomTwoActivity.newIntent(this))
+            1 -> startActivity(GameOneActivity.newIntent(this))
+            2 -> startActivity(GameTwoActivity.newIntent(this))
             3 -> startActivity(DinnerRoomActivity.newIntent(this))
         }
     }
 
     companion object {
-
         fun newIntent(context: Context): Intent {
             return Intent(context, GameMasterActivity::class.java)
         }

@@ -1,37 +1,25 @@
-package com.pedersen.escaped.player
+package com.pedersen.escaped.master.games.one
 
 import android.databinding.Bindable
-import android.view.View
-
-import com.pedersen.escaped.BR
-import com.pedersen.escaped.data.models.Hint
-import com.pedersen.escaped.extensions.bind
-import io.greenerpastures.mvvm.BaseViewModel
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import timber.log.Timber
 import com.pedersen.escaped.BuildConfig
+import com.pedersen.escaped.data.models.Hint
+import io.greenerpastures.mvvm.BaseViewModel
+import timber.log.Timber
 
-
-class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>() {
+class GameOneActivityViewModel : BaseViewModel<GameOneActivityViewModel.Commands>() {
 
     @get:Bindable
     var hintList = ArrayList<Hint>()
 
-    @get:Bindable
-    var progress: Int = 0
-        set(value) {
-            if (value == field) return
-            commandHandler?.animateProgressBar(field, value)
-            field = value
-            notifyPropertyChanged(BR.progress)
-        }
+    override fun onActive() {
+        super.onActive()
 
-    init {
         val firebaseInstance = FirebaseDatabase.getInstance()
-        val hintsDatabase = firebaseInstance.getReference("games").child(BuildConfig.gameId.toString()).child("hints")
+        val hintsDatabase = firebaseInstance.getReference("games").child("1").child("hints")
         // Read from the firebaseInstance
         hintsDatabase.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -41,7 +29,7 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
                     val hint = hintChild.getValue(Hint::class.java)
                     hint?.let { hintList.add(it) }
                 }
-                commandHandler?.updateHintList()
+                //commandHandler?.updateHintList()
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -50,17 +38,23 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
                 Timber.w("Failed to read value: $e")
             }
         })
+
     }
 
-    override fun onActive() {
-        super.onActive()
-        progress = 50
-    }
+
+    fun launchHintControls() = commandHandler?.launchHintControls()
+
+    fun launchVideoControls() = commandHandler?.launchVideoControls()
+
+    fun launchRoomControls() = commandHandler?.launchRoomControls()
 
     interface Commands {
 
-        fun animateProgressBar(from: Int, to: Int)
+        fun launchHintControls()
 
-        fun updateHintList()
+        fun launchVideoControls()
+
+        fun launchRoomControls()
+
     }
 }

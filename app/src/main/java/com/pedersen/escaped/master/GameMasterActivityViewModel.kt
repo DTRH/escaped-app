@@ -5,11 +5,11 @@ import io.greenerpastures.mvvm.BaseViewModel
 class GameMasterActivityViewModel : BaseViewModel<GameMasterActivityViewModel.Commands>() {
 
     fun launchRoom(id: Int) {
-        commandHandler?.launchRoom(id)
+        commandHandler?.launchGameActivity(id)
     }
 
     interface Commands {
 
-        fun launchRoom(id: Int)
+        fun launchGameActivity(id: Int)
     }
 }

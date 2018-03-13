@@ -7,14 +7,14 @@
 
         <variable
             name="viewModel"
-            type="com.pedersen.escaped.master.rooms.two.RoomTwoActivityViewModel" />
+            type="com.pedersen.escaped.master.games.two.GameTwoActivityViewModel" />
     </data>
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/game_master_activity_background"
-        tools:context=".master.rooms.two.RoomTwoActivity">
+        tools:context=".master.games.two.GameTwoActivity">
 
         <TextView
             android:id="@+id/web_one"

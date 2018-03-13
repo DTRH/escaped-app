@@ -5,12 +5,13 @@
 
         <variable
             name="viewModel"
-            type="com.pedersen.escaped.master.controls.hints.HintControlsFragmentViewModel" />
+            type="com.pedersen.escaped.master.controls.hints.HintControlsActivityViewModel" />
     </data>
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@drawable/old_paper_background">
 
     </android.support.constraint.ConstraintLayout>
 </layout>
