@@ -146,7 +146,7 @@
                     android:id="@+id/hint_header_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    tools:text="Header header header"/>
+                    tools:text="Heatitleatitleader"/>
 
                 <com.pedersen.escaped.animations.TypeWriter
                     android:id="@+id/hint_body_view"

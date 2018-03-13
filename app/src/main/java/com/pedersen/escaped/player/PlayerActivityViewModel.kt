@@ -7,9 +7,17 @@ import com.pedersen.escaped.BR
 import com.pedersen.escaped.data.models.Hint
 import com.pedersen.escaped.extensions.bind
 import io.greenerpastures.mvvm.BaseViewModel
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.ValueEventListener
+import timber.log.Timber
+import com.pedersen.escaped.BuildConfig
+
 
 class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>() {
 
+    @get:Bindable
     var hintList = ArrayList<Hint>()
 
     @get:Bindable
@@ -28,17 +36,27 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
         super.onActive()
         progress = 50
 
-        buildHints()
-    }
+        val firebaseInstance = FirebaseDatabase.getInstance()
+        val hintsDatabase = firebaseInstance.getReference("games").child(BuildConfig.gameId.toString()).child("hints")
+        // Read from the firebaseInstance
+        hintsDatabase.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                for (hintChild in dataSnapshot.children) {
+                    val hint = hintChild.getValue(Hint::class.java)
+                    hint?.let { hintList.add(it) }
+                }
+                commandHandler?.updateHintList()
+            }
 
-    private fun buildHints() {
-        // Dummy list
-        hintList.add(Hint(1, "Afrikastjerne", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."))
-        hintList.add(Hint(2, "Bloddiamant", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."))
-        hintList.add(Hint(3, "Menneskejagt?", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."))
-        hintList.add(Hint(4, "Butleren?", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."))
-        hintList.add(Hint(5, "lolkat", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."))
-        hintList.add(Hint(6, "Blah bla", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."))
+            override fun onCancelled(error: DatabaseError) {
+                // Failed to read value
+                val e = error.toException().toString()
+                Timber.w("Failed to read value: $e")
+            }
+        })
+
     }
 
     fun closeHint(view: View) {
@@ -50,5 +68,7 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
         fun animateProgressBar(from: Int, to: Int)
 
         fun closeHint()
+
+        fun updateHintList()
     }
 }

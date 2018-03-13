@@ -62,7 +62,7 @@ class HintFragment : ViewModelFragment<HintFragmentViewModel, HintFragmentBindin
 
         fun newInstance(hint: Hint): HintFragment {
             val args = Bundle(2)
-            args.putString(HINT_HEADER, hint.header)
+            args.putString(HINT_HEADER, hint.title)
             args.putString(HINT_BODY, hint.body)
             val fragment = HintFragment()
             fragment.arguments = args

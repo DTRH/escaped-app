@@ -37,10 +37,36 @@ android {
             enabled = true
         }
     }
+
+    flavorDimensions "permission"
+
+    productFlavors {
+        master {
+            dimension "permission"
+            versionNameSuffix "-gm"
+            buildConfigField("Boolean", "isMaster", "true")
+            buildConfigField("Integer", "gameId", "0")
+        }
+        gameOne {
+            dimension "permission"
+            versionNameSuffix "-game-one"
+            buildConfigField("Boolean", "isMaster", "false")
+            buildConfigField("Integer", "gameId", "1")
+        }
+        gameTwo {
+            dimension "permission"
+            versionNameSuffix "-game-two"
+            buildConfigField("Boolean", "isMaster", "false")
+            buildConfigField("Integer", "gameId", "2")
+        }
+    }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    // Gson
+    compile 'com.google.code.gson:gson:2.8.2'
 
     // MVVM kit
     implementation "io.greenerpastures:mvvm-kit:$mvvm_version"
@@ -50,6 +76,7 @@ dependencies {
     implementation "com.android.support:support-v4:$android_support_version"
     implementation "com.android.support:design:$android_support_version"
     implementation "com.android.support:support-v4:$android_support_version"
+    implementation 'com.google.firebase:firebase-database:11.8.0'
     kapt "com.android.databinding:compiler:$android_plugin_version"
 
     // Support libraries required for using mvvm-kit
@@ -73,3 +100,6 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 }
+
+
+apply plugin: 'com.google.gms.google-services'
