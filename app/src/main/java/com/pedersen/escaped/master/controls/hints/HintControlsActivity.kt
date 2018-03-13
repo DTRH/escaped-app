@@ -11,10 +11,14 @@ import io.greenerpastures.mvvm.ViewModelActivity
 class HintControlsActivity : ViewModelActivity<HintControlsActivityViewModel, HintControlsFragmentBinding>(), HintControlsActivityViewModel.Commands {
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        initialize(R.layout.hint_controls_fragment, BR.viewModel, ({ HintControlsActivityViewModel() }))
+        val intent = intent
+        initialize(R.layout.hint_controls_fragment, BR.viewModel, ({ HintControlsActivityViewModel(intent.extras[GAME_ID].toString())}))
         super.onCreate(savedInstanceState)
     }
 
+    override fun updateHintList() {
+
+    }
 
     companion object {
 
