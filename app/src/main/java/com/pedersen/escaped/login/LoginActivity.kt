@@ -2,6 +2,7 @@ package com.pedersen.escaped.login
 
 import android.os.Bundle
 import com.pedersen.escaped.BR
+import com.pedersen.escaped.BuildConfig
 import com.pedersen.escaped.R
 import com.pedersen.escaped.databinding.ActivityLoginBinding
 import com.pedersen.escaped.master.GameMasterActivity
@@ -14,21 +15,16 @@ class LoginActivity : ViewModelActivity<LoginActivityViewModel, ActivityLoginBin
     override fun onCreate(savedInstanceState: Bundle?) {
         initialize(R.layout.activity_login, BR.viewModel, ({ LoginActivityViewModel() }))
         super.onCreate(savedInstanceState)
+    }
 
-        launch_players_button.setOnClickListener {
+    override fun onResume() {
+        super.onResume()
+        if (!BuildConfig.isMaster) {
             val intent = PlayerActivity.newIntent(this)
             startActivity(intent)
-        }
-
-        launch_game_master_button.setOnClickListener {
+        } else {
             val intent = GameMasterActivity.newIntent(this)
             startActivity(intent)
         }
     }
-
-
-
-
-
-
 }
