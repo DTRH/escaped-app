@@ -38,9 +38,9 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
         // Setup pull/spring animation for the hint puller
         PositionSpringAnimation(binding.hintPull)
 
+        // Setup the adapter and container that will
         hintAdapter = HintsAdapter(viewModel.hintList)
         val hintContainer = binding.hintContainer
-
         hintContainer.adapter = hintAdapter
         hintContainer.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
             val hintFragment = HintFragment.newInstance(viewModel.hintList[position])
