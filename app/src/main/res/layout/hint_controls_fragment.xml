@@ -47,7 +47,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Edit hint"
-                android:enabled="@{viewModel.isEnabled}"
+                android:enabled="@{viewModel.isEditable}"
                 android:onClick="@{_ -> viewModel.editHint()}"/>
 
             <Button
@@ -55,7 +55,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Delete hint"
-                android:enabled="@{viewModel.isEnabled}"
+                android:enabled="@{viewModel.isDeletable}"
                 android:onClick="@{_ -> viewModel.deleteHint()}"/>
 
 

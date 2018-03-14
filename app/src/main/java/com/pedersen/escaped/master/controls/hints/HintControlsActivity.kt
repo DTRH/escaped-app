@@ -15,7 +15,6 @@ import io.greenerpastures.mvvm.ViewModelActivity
 class HintControlsActivity : ViewModelActivity<HintControlsActivityViewModel, HintControlsFragmentBinding>(), HintControlsActivityViewModel.Commands {
 
     private lateinit var hintAdapter: BaseAdapter
-    private var selectedId: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val intent = intent
@@ -30,8 +29,16 @@ class HintControlsActivity : ViewModelActivity<HintControlsActivityViewModel, Hi
         val hintContainer = binding.listContainer
         hintContainer.adapter = hintAdapter
         hintContainer.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
-            view.setBackgroundColor(ContextCompat.getColor(this, R.color.colorAccent))
-            selectedId = viewModel.hintList[position].id
+
+            if (viewModel.selectedId.contains(viewModel.hintList[position].id)) {
+                viewModel.selectedId.remove(viewModel.hintList[position].id)
+                view.setBackgroundColor(ContextCompat.getColor(this, android.R.color.transparent))
+            } else {
+                viewModel.selectedId.add(viewModel.hintList[position].id)
+                view.setBackgroundColor(ContextCompat.getColor(this, R.color.colorAccent))
+            }
+            viewModel.notifyPropertyChanged(BR.deletable)
+            viewModel.notifyPropertyChanged(BR.editable)
         }
     }
 

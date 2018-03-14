@@ -16,12 +16,18 @@ class HintControlsActivityViewModel : BaseViewModel<HintControlsActivityViewMode
     var gameId: Int = 0
 
     @get:Bindable
-    var hintList = ArrayList<Hint>()
-    set(value) {}
+    var selectedId: ArrayList<String> = ArrayList()
 
     @get:Bindable
-    var isEnabled by bind(false, BR.enabled)
+    var hintList = ArrayList<Hint>()
 
+    @get:Bindable
+    var isDeletable: Boolean = false
+        get() = !selectedId.isEmpty()
+
+    @get:Bindable
+    var isEditable: Boolean = false
+        get() = selectedId.size == 1
 
     override fun onActive() {
         super.onActive()
