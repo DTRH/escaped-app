@@ -29,11 +29,11 @@ class HintControlsActivityViewModel : BaseViewModel<HintControlsActivityViewMode
     var isEditable: Boolean = false
         get() = selectedId.size == 1
 
+    private val firebaseInstance = FirebaseDatabase.getInstance()
+    private val hintsDatabase = firebaseInstance.getReference("games").child(gameId.toString()).child("hints")
     override fun onActive() {
         super.onActive()
 
-        val firebaseInstance = FirebaseDatabase.getInstance()
-        val hintsDatabase = firebaseInstance.getReference("games").child(gameId.toString()).child("hints")
         // Read from the firebaseInstance
         hintsDatabase.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -58,7 +58,14 @@ class HintControlsActivityViewModel : BaseViewModel<HintControlsActivityViewMode
 
     fun editHint() {}
 
-    fun deleteHint() {}
+    fun deleteHint() {
+        for (selection in selectedId) {
+            for (hint in hintList) {
+                if (hint.id.contentEquals(selection))
+                    hintsDatabase
+            }
+        }
+    }
 
     interface Commands {
 
