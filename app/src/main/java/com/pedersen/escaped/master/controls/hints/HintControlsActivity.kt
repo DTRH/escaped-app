@@ -4,14 +4,12 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
-import android.support.v4.content.res.ResourcesCompat
 import android.widget.AdapterView
 import android.widget.BaseAdapter
 import com.pedersen.escaped.BR
 import com.pedersen.escaped.R
 import com.pedersen.escaped.data.models.adapters.HintsAdapter
 import com.pedersen.escaped.databinding.HintControlsFragmentBinding
-import com.pedersen.escaped.player.HintFragment
 import io.greenerpastures.mvvm.ViewModelActivity
 
 class HintControlsActivity : ViewModelActivity<HintControlsActivityViewModel, HintControlsFragmentBinding>(), HintControlsActivityViewModel.Commands {
@@ -22,7 +20,9 @@ class HintControlsActivity : ViewModelActivity<HintControlsActivityViewModel, Hi
     override fun onCreate(savedInstanceState: Bundle?) {
         val intent = intent
         val id = intent.extras.get(GAME_ID)
-        initialize(R.layout.hint_controls_fragment, BR.viewModel, ({ HintControlsActivityViewModel().apply { gameId = id as Int } }))
+        initialize(R.layout.hint_controls_fragment, BR.viewModel, ({ HintControlsActivityViewModel().apply {
+            gameId = id as Int
+        } }))
         super.onCreate(savedInstanceState)
 
         // Setup the adapter and container that will

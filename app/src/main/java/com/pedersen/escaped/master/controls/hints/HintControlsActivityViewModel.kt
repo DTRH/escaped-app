@@ -17,6 +17,7 @@ class HintControlsActivityViewModel : BaseViewModel<HintControlsActivityViewMode
 
     @get:Bindable
     var hintList = ArrayList<Hint>()
+    set(value) {}
 
     @get:Bindable
     var isEnabled by bind(false, BR.enabled)

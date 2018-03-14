@@ -33,8 +33,10 @@
         <activity
             android:name=".master.games.two.GameTwoActivity"
             android:screenOrientation="landscape" />
-        <activity android:name=".master.games.dinner.DinnerRoomActivity"></activity>
-        <activity android:name=".master.controls.hints.HintControlsActivity" />
+        <activity android:name=".master.games.dinner.DinnerRoomActivity" />
+        <activity
+            android:name=".master.controls.hints.HintControlsActivity"
+            android:screenOrientation="landscape"/>
     </application>
 
 </manifest>
