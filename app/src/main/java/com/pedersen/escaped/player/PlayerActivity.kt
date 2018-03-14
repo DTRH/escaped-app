@@ -5,25 +5,18 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
 import android.widget.*
 import com.pedersen.escaped.BR
 import com.pedersen.escaped.R
 import com.pedersen.escaped.animations.PositionSpringAnimation
-import com.pedersen.escaped.animations.TypeWriter
-import com.pedersen.escaped.data.models.Hint
 import com.pedersen.escaped.databinding.ActivityPlayerBinding
 import io.greenerpastures.mvvm.ViewModelActivity
-import timber.log.Timber
-import android.view.LayoutInflater
 import com.pedersen.escaped.data.models.adapters.HintsAdapter
 
 
 class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayerBinding>(), PlayerActivityViewModel.Commands {
 
     private var progressBarAnimation: ObjectAnimator = ObjectAnimator()
-    private lateinit var hintHeader: TypeWriter
-    private lateinit var hintBody: TypeWriter
     private lateinit var hintAdapter: BaseAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
