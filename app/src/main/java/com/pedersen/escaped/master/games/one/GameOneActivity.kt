@@ -28,7 +28,7 @@ class GameOneActivity : ViewModelActivity<GameOneActivityViewModel, ActivityGame
     }
 
     override fun launchHintControls() {
-        startActivity(HintControlsActivity.newIntent(this, BuildConfig.gameId))
+        startActivity(HintControlsActivity.newIntent(this, 1))
     }
 
     override fun launchVideoControls() {

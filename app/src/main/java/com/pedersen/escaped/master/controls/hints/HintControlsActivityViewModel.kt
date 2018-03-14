@@ -9,12 +9,19 @@ import com.pedersen.escaped.data.models.Hint
 import io.greenerpastures.mvvm.BaseViewModel
 import timber.log.Timber
 
-class HintControlsActivityViewModel(private var gameId: String) : BaseViewModel<HintControlsActivityViewModel.Commands>() {
+class HintControlsActivityViewModel : BaseViewModel<HintControlsActivityViewModel.Commands>() {
 
-    init {
-        val gameId = this.gameId
+    var gameId: Int = 0
+
+    @get:Bindable
+    var hintList = ArrayList<Hint>()
+
+
+    override fun onActive() {
+        super.onActive()
+
         val firebaseInstance = FirebaseDatabase.getInstance()
-        val hintsDatabase = firebaseInstance.getReference("games").child(gameId).child("hints")
+        val hintsDatabase = firebaseInstance.getReference("games").child(gameId.toString()).child("hints")
         // Read from the firebaseInstance
         hintsDatabase.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -34,14 +41,6 @@ class HintControlsActivityViewModel(private var gameId: String) : BaseViewModel<
             }
         })
     }
-
-    override fun onActive() {
-        super.onActive()
-    }
-
-    @get:Bindable
-    var hintList = ArrayList<Hint>()
-
 
     interface Commands {
 
