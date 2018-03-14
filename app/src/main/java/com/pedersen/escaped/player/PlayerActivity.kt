@@ -15,6 +15,9 @@ import com.pedersen.escaped.data.models.Hint
 import com.pedersen.escaped.databinding.ActivityPlayerBinding
 import io.greenerpastures.mvvm.ViewModelActivity
 import timber.log.Timber
+import android.view.LayoutInflater
+import com.pedersen.escaped.data.models.adapters.HintsAdapter
+
 
 class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayerBinding>(), PlayerActivityViewModel.Commands {
 
@@ -39,7 +42,7 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
         PositionSpringAnimation(binding.hintPull)
 
         // Setup the adapter and container that will
-        hintAdapter = HintsAdapter(viewModel.hintList)
+        hintAdapter = HintsAdapter(this, viewModel.hintList)
         val hintContainer = binding.hintContainer
         hintContainer.adapter = hintAdapter
         hintContainer.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
@@ -54,51 +57,8 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
         progressBarAnimation.start()
     }
 
-
-
     override fun updateHintList() {
         hintAdapter.notifyDataSetChanged()
-    }
-
-    inner class HintsAdapter(notesList: ArrayList<Hint>) : BaseAdapter() {
-
-        private var list = notesList
-
-        override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View? {
-
-            val view: View?
-            val vh: ViewHolder
-
-            if (convertView == null) {
-                view = layoutInflater.inflate(R.layout.hint_list_item, parent, false)
-                vh = ViewHolder(view)
-                view.tag = vh
-                Timber.i("set Tag for ViewHolder, position: $position")
-            } else {
-                view = convertView
-                vh = view.tag as ViewHolder
-            }
-
-            vh.tvContent.text = list[position].title
-
-            return view
-        }
-
-        override fun getItem(position: Int): Any {
-            return list[position]
-        }
-
-        override fun getItemId(position: Int): Long {
-            return position.toLong()
-        }
-
-        override fun getCount(): Int {
-            return list.size
-        }
-    }
-
-    private class ViewHolder(view: View?) {
-        val tvContent: TextView = view?.findViewById(R.id.header) as TextView
     }
 
     companion object {

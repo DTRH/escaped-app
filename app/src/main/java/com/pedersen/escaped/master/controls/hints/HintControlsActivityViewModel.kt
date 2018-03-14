@@ -12,9 +12,9 @@ import timber.log.Timber
 class HintControlsActivityViewModel(private var gameId: String) : BaseViewModel<HintControlsActivityViewModel.Commands>() {
 
     init {
-        val progress = this.gameId
+        val gameId = this.gameId
         val firebaseInstance = FirebaseDatabase.getInstance()
-        val hintsDatabase = firebaseInstance.getReference("games").child(progress).child("hints")
+        val hintsDatabase = firebaseInstance.getReference("games").child(gameId).child("hints")
         // Read from the firebaseInstance
         hintsDatabase.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -34,9 +34,6 @@ class HintControlsActivityViewModel(private var gameId: String) : BaseViewModel<
             }
         })
     }
-
-    @get:Bindable
-    var progress: Int = 0
 
     override fun onActive() {
         super.onActive()

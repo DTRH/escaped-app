@@ -18,6 +18,7 @@ class HintControlsActivity : ViewModelActivity<HintControlsActivityViewModel, Hi
 
     override fun updateHintList() {
 
+
     }
 
     companion object {
