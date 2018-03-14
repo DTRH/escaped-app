@@ -5,7 +5,9 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.pedersen.escaped.BR
 import com.pedersen.escaped.data.models.Hint
+import com.pedersen.escaped.extensions.bind
 import io.greenerpastures.mvvm.BaseViewModel
 import timber.log.Timber
 
@@ -15,6 +17,9 @@ class HintControlsActivityViewModel : BaseViewModel<HintControlsActivityViewMode
 
     @get:Bindable
     var hintList = ArrayList<Hint>()
+
+    @get:Bindable
+    var isEnabled by bind(false, BR.enabled)
 
 
     override fun onActive() {
@@ -41,6 +46,12 @@ class HintControlsActivityViewModel : BaseViewModel<HintControlsActivityViewMode
             }
         })
     }
+
+    fun createHint() {}
+
+    fun editHint() {}
+
+    fun deleteHint() {}
 
     interface Commands {
 

@@ -33,7 +33,34 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toRightOf="@id/list_container" />
+            app:layout_constraintLeft_toRightOf="@id/list_container">
+
+            <Button
+                android:id="@+id/create_hint_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Create hint"
+                android:onClick="@{_ -> viewModel.createHint()}"/>
+
+            <Button
+                android:id="@+id/edit_hint_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Edit hint"
+                android:enabled="@{viewModel.isEnabled}"
+                android:onClick="@{_ -> viewModel.editHint()}"/>
+
+            <Button
+                android:id="@+id/delete_hint_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Delete hint"
+                android:enabled="@{viewModel.isEnabled}"
+                android:onClick="@{_ -> viewModel.deleteHint()}"/>
+
+
+
+        </LinearLayout>
 
     </android.support.constraint.ConstraintLayout>
 </layout>
