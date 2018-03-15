@@ -2,7 +2,9 @@ package com.pedersen.escaped.master.controls.hints
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
 import android.view.View
 import android.widget.AdapterView
@@ -17,6 +19,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import com.google.firebase.database.*
 import com.pedersen.escaped.data.models.Hint
+import kotlinx.android.synthetic.main.hint_controls_fragment.*
 import timber.log.Timber
 
 class HintControlsActivity : ViewModelActivity<HintControlsActivityViewModel, HintControlsFragmentBinding>(), HintControlsActivityViewModel.Commands {
@@ -68,6 +71,15 @@ class HintControlsActivity : ViewModelActivity<HintControlsActivityViewModel, Hi
                                 Context.INPUT_METHOD_SERVICE) as InputMethodManager
                         imm.hideSoftInputFromWindow(v.windowToken, 0)
                         viewModel.notifyPropertyChanged(BR.creatable)
+
+                        // Remove all system UI
+                        window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
+                                or View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
+                                or View.SYSTEM_UI_FLAG_IMMERSIVE)
+
                         return@setOnEditorActionListener true
                     }
                     false
@@ -108,6 +120,8 @@ class HintControlsActivity : ViewModelActivity<HintControlsActivityViewModel, Hi
     override fun createHint() {
         val newHint = Hint(System.currentTimeMillis().toString(), binding.headerInput.text.toString(), binding.bodyInput.text.toString(), false)
         hintsDatabase.push().setValue(newHint)
+        binding.headerInput.text.clear()
+        binding.bodyInput.text.clear()
     }
 
     override fun deleteHint() {
@@ -118,11 +132,17 @@ class HintControlsActivity : ViewModelActivity<HintControlsActivityViewModel, Hi
                 }
             }
         }
+
+        for (i in 0 until hintContainer.childCount) {
+            val listItem = hintContainer.getChildAt(i)
+            listItem.setBackgroundColor(Color.WHITE)
+        }
         viewModel.selectedId.clear()
     }
 
     override fun editHint() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val snackbar: Snackbar = Snackbar.make(root, "Not implemented yet", Snackbar.LENGTH_LONG)
+        snackbar.show()
     }
 
     override fun checkCreatable(): Boolean = (binding.headerInput.length() != 0 && binding.bodyInput.length() != 0)
