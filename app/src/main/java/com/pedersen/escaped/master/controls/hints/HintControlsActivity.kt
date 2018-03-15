@@ -15,6 +15,7 @@ import com.pedersen.escaped.databinding.HintControlsFragmentBinding
 import io.greenerpastures.mvvm.ViewModelActivity
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import com.pedersen.escaped.data.models.Hint
 
 class HintControlsActivity : ViewModelActivity<HintControlsActivityViewModel, HintControlsFragmentBinding>(), HintControlsActivityViewModel.Commands {
 
@@ -75,14 +76,13 @@ class HintControlsActivity : ViewModelActivity<HintControlsActivityViewModel, Hi
                 or View.SYSTEM_UI_FLAG_IMMERSIVE)
     }
 
-    override fun updateHintList() {
-        hintAdapter.notifyDataSetChanged()
+    override fun createHint() {
+        val newHint = Hint(System.currentTimeMillis().hashCode().toString(), binding.headerInput.text.toString(), binding.)
     }
 
-    override fun checkCreatable(): Boolean {
-        return (binding.headerInput.length() != 0 && binding.bodyInput.length() != 0)
-    }
+    override fun updateHintList() = hintAdapter.notifyDataSetChanged()
 
+    override fun checkCreatable(): Boolean = (binding.headerInput.length() != 0 && binding.bodyInput.length() != 0)
 
     companion object {
 
