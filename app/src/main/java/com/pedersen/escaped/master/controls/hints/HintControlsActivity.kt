@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
-import android.view.KeyEvent
+import android.view.View
 import android.widget.AdapterView
 import android.widget.BaseAdapter
 import android.widget.ListView
@@ -15,11 +15,6 @@ import com.pedersen.escaped.databinding.HintControlsFragmentBinding
 import io.greenerpastures.mvvm.ViewModelActivity
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.TextView
-import android.widget.TextView.OnEditorActionListener
-import android.R.drawable.edit_text
-import android.app.PendingIntent.getActivity
-
 
 class HintControlsActivity : ViewModelActivity<HintControlsActivityViewModel, HintControlsFragmentBinding>(), HintControlsActivityViewModel.Commands {
 
@@ -27,9 +22,9 @@ class HintControlsActivity : ViewModelActivity<HintControlsActivityViewModel, Hi
     private lateinit var hintContainer: ListView
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val intent = intent
-        val id = intent.extras.get(GAME_ID)
         initialize(R.layout.hint_controls_fragment, BR.viewModel, ({ HintControlsActivityViewModel().apply {
+            val intent = intent
+            val id = intent.extras.get(GAME_ID)
             gameId = id as Int
         } }))
         super.onCreate(savedInstanceState)
@@ -62,6 +57,18 @@ class HintControlsActivity : ViewModelActivity<HintControlsActivityViewModel, Hi
             viewModel.notifyPropertyChanged(BR.deletable)
             viewModel.notifyPropertyChanged(BR.editable)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        // Remove all system UI
+        window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
+                or View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
+                or View.SYSTEM_UI_FLAG_IMMERSIVE)
     }
 
     override fun updateHintList() {

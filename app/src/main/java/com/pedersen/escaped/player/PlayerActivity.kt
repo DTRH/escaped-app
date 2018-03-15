@@ -23,14 +23,6 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
         initialize(R.layout.activity_player, BR.viewModel, ({ PlayerActivityViewModel() }))
         super.onCreate(savedInstanceState)
 
-        // Remove all system UI
-        window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
-                or View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
-                or View.SYSTEM_UI_FLAG_IMMERSIVE)
-
         // Setup pull/spring animation for the hint puller
         PositionSpringAnimation(binding.hintPull)
 
@@ -42,6 +34,22 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
             val hintFragment = HintFragment.newInstance(viewModel.hintList[position])
             fragmentManager.beginTransaction().replace(R.id.fragment_container, hintFragment).commit()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        // Remove all system UI
+        window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
+                or View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
+                or View.SYSTEM_UI_FLAG_IMMERSIVE)
+    }
+
+    override fun onBackPressed() {
+        // DO NOTHING
     }
 
     override fun animateProgressBar(from: Int, to: Int) {

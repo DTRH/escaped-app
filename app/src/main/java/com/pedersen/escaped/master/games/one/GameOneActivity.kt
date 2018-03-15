@@ -3,6 +3,7 @@ package com.pedersen.escaped.master.games.one
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import com.pedersen.escaped.BR
 import com.pedersen.escaped.BuildConfig
 import com.pedersen.escaped.R
@@ -15,6 +16,18 @@ class GameOneActivity : ViewModelActivity<GameOneActivityViewModel, ActivityGame
     override fun onCreate(savedInstanceState: Bundle?) {
         initialize(R.layout.activity_game_one, BR.viewModel, ({ GameOneActivityViewModel() }))
         super.onCreate(savedInstanceState)
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        // Remove all system UI
+        window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
+                or View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
+                or View.SYSTEM_UI_FLAG_IMMERSIVE)
     }
 
     override fun onBackPressed() {
