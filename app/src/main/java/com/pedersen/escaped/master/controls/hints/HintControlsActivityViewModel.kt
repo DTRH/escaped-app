@@ -38,6 +38,7 @@ class HintControlsActivityViewModel : BaseViewModel<HintControlsActivityViewMode
         // Read from the firebaseInstance
         hintsDatabase.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
+                hintList.clear()
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
                 for (hintChild in dataSnapshot.children) {
@@ -63,7 +64,6 @@ class HintControlsActivityViewModel : BaseViewModel<HintControlsActivityViewMode
         for (selection in selectedId) {
             for (hint in hintList) {
                 if (hint.id.contentEquals(selection))
-                    hintList.clear()
                     hintsDatabase.child(hint.id).removeValue()
             }
         }
