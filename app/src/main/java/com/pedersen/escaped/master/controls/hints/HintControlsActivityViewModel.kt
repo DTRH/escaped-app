@@ -10,8 +10,6 @@ import timber.log.Timber
 
 class HintControlsActivityViewModel : BaseViewModel<HintControlsActivityViewModel.Commands>() {
 
-    var gameId: Int = 0
-
     @get:Bindable
     var selectedId: ArrayList<String> = ArrayList()
 
@@ -30,57 +28,22 @@ class HintControlsActivityViewModel : BaseViewModel<HintControlsActivityViewMode
     var isCreatable: Boolean = false
         get() = commandHandler!!.checkCreatable()
 
-    private val firebaseInstance = FirebaseDatabase.getInstance()
-    private lateinit var hintsDatabase: DatabaseReference
-
-    override fun onActive() {
-        super.onActive()
-
-        hintsDatabase = firebaseInstance.getReference("games").child(gameId.toString()).child(
-                "hints")
-
-        // Read from the firebaseInstance
-        hintsDatabase.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                hintList.clear()
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                for (hintChild in dataSnapshot.children) {
-                    val hint = hintChild.getValue(Hint::class.java)
-                    hint?.let { hintList.add(it) }
-                }
-                commandHandler?.updateHintList()
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                // Failed to read value
-                val e = error.toException().toString()
-                Timber.w("Failed to read value: $e")
-            }
-        })
-    }
-
     fun createHint() = commandHandler?.createHint()
 
-    fun editHint() {}
+    fun deleteHint() = commandHandler?.createHint()
 
-    fun deleteHint() {
-        for (selection in selectedId) {
-            for (hint in hintList) {
-                if (hint.id.contentEquals(selection))
-                    hintsDatabase.child(hint.id).removeValue()
-            }
-        }
-        selectedId.clear()
-    }
+    fun editHint() = commandHandler?.editHint()
 
     interface Commands {
 
-        fun createHint()
-
         fun checkCreatable(): Boolean
 
-        fun updateHintList()
+        fun createHint()
+
+        fun deleteHint()
+
+        fun editHint()
+
     }
 
 }
