@@ -22,11 +22,13 @@ class HintControlsActivity : ViewModelActivity<HintControlsActivityViewModel, Hi
     private lateinit var hintContainer: ListView
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        initialize(R.layout.hint_controls_fragment, BR.viewModel, ({ HintControlsActivityViewModel().apply {
-            val intent = intent
-            val id = intent.extras.get(GAME_ID)
-            gameId = id as Int
-        } }))
+        initialize(R.layout.hint_controls_fragment, BR.viewModel, ({
+            HintControlsActivityViewModel().apply {
+                val intent = intent
+                val id = intent.extras.get(GAME_ID)
+                gameId = id as Int
+            }
+        }))
         super.onCreate(savedInstanceState)
 
         // Setup keyboard behavior
@@ -34,8 +36,10 @@ class HintControlsActivity : ViewModelActivity<HintControlsActivityViewModel, Hi
                 { v, actionId, event ->
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
                         // hide virtual keyboard
-                        val imm = this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                        val imm = this.getSystemService(
+                                Context.INPUT_METHOD_SERVICE) as InputMethodManager
                         imm.hideSoftInputFromWindow(v.windowToken, 0)
+                        viewModel.notifyPropertyChanged(BR.creatable)
                         return@setOnEditorActionListener true
                     }
                     false
@@ -76,7 +80,7 @@ class HintControlsActivity : ViewModelActivity<HintControlsActivityViewModel, Hi
     }
 
     override fun checkCreatable(): Boolean {
-        return binding.headerInput.length() != 0 && binding.bodyInput.length() != 0
+        return (binding.headerInput.length() != 0 && binding.bodyInput.length() != 0)
     }
 
 
