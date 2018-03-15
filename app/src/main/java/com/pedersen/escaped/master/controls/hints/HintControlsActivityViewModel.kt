@@ -30,7 +30,7 @@ class HintControlsActivityViewModel : BaseViewModel<HintControlsActivityViewMode
 
     fun createHint() = commandHandler?.createHint()
 
-    fun deleteHint() = commandHandler?.createHint()
+    fun deleteHint() = commandHandler?.deleteHint()
 
     fun editHint() = commandHandler?.editHint()
 

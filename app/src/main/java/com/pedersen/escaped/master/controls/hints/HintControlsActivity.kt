@@ -45,6 +45,7 @@ class HintControlsActivity : ViewModelActivity<HintControlsActivityViewModel, Hi
                 // whenever data at this location is updated.
                 for (hintChild in dataSnapshot.children) {
                     val hint = hintChild.getValue(Hint::class.java)
+                    hint.let { hint!!.key = hintChild.key }
                     hint?.let { viewModel.hintList.add(it) }
                 }
 
@@ -111,7 +112,7 @@ class HintControlsActivity : ViewModelActivity<HintControlsActivityViewModel, Hi
         for (selection in viewModel.selectedId) {
             for (hint in viewModel.hintList) {
                 if (hint.id.contentEquals(selection))
-                    hintsDatabase.child(hint.id).removeValue()
+                    hintsDatabase.child(hint.key).removeValue()
             }
         }
         viewModel.selectedId.clear()
