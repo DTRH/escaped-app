@@ -1,10 +1,7 @@
 package com.pedersen.escaped.master.controls.hints
 
 import android.databinding.Bindable
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import com.pedersen.escaped.BR
 import com.pedersen.escaped.data.models.Hint
 import com.pedersen.escaped.extensions.bind
@@ -30,9 +27,13 @@ class HintControlsActivityViewModel : BaseViewModel<HintControlsActivityViewMode
         get() = selectedId.size == 1
 
     private val firebaseInstance = FirebaseDatabase.getInstance()
-    private val hintsDatabase = firebaseInstance.getReference("games").child(gameId.toString()).child("hints")
+    private lateinit var hintsDatabase: DatabaseReference
+
     override fun onActive() {
         super.onActive()
+
+        hintsDatabase = firebaseInstance.getReference("games").child(gameId.toString()).child(
+                "hints")
 
         // Read from the firebaseInstance
         hintsDatabase.addValueEventListener(object : ValueEventListener {
@@ -62,12 +63,17 @@ class HintControlsActivityViewModel : BaseViewModel<HintControlsActivityViewMode
         for (selection in selectedId) {
             for (hint in hintList) {
                 if (hint.id.contentEquals(selection))
-                    hintsDatabase
+                    hintList.clear()
+                    hintsDatabase.child(hint.id).removeValue()
             }
         }
+        selectedId.clear()
+        //commandHandler?.updateHintList()
     }
 
     interface Commands {
+
+       // fun unselectAll()
 
         fun updateHintList()
     }

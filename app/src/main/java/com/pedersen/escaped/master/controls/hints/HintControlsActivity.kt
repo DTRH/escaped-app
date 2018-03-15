@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.widget.AdapterView
 import android.widget.BaseAdapter
+import android.widget.ListView
 import com.pedersen.escaped.BR
 import com.pedersen.escaped.R
 import com.pedersen.escaped.data.models.adapters.HintsAdapter
@@ -15,6 +16,7 @@ import io.greenerpastures.mvvm.ViewModelActivity
 class HintControlsActivity : ViewModelActivity<HintControlsActivityViewModel, HintControlsFragmentBinding>(), HintControlsActivityViewModel.Commands {
 
     private lateinit var hintAdapter: BaseAdapter
+    private lateinit var hintContainer: ListView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val intent = intent
@@ -26,7 +28,7 @@ class HintControlsActivity : ViewModelActivity<HintControlsActivityViewModel, Hi
 
         // Setup the adapter and container that will
         hintAdapter = HintsAdapter(this, viewModel.hintList)
-        val hintContainer = binding.listContainer
+        hintContainer = binding.listContainer
         hintContainer.adapter = hintAdapter
         hintContainer.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
 
@@ -45,6 +47,7 @@ class HintControlsActivity : ViewModelActivity<HintControlsActivityViewModel, Hi
     override fun updateHintList() {
         hintAdapter.notifyDataSetChanged()
     }
+
 
     companion object {
 

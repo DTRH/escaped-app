@@ -18,26 +18,26 @@ class GameOneActivityViewModel : BaseViewModel<GameOneActivityViewModel.Commands
     override fun onActive() {
         super.onActive()
 
-        val firebaseInstance = FirebaseDatabase.getInstance()
-        val hintsDatabase = firebaseInstance.getReference("games").child("1").child("hints")
-        // Read from the firebaseInstance
-        hintsDatabase.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                for (hintChild in dataSnapshot.children) {
-                    val hint = hintChild.getValue(Hint::class.java)
-                    hint?.let { hintList.add(it) }
-                }
-                //commandHandler?.updateHintList()
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                // Failed to read value
-                val e = error.toException().toString()
-                Timber.w("Failed to read value: $e")
-            }
-        })
+//        val firebaseInstance = FirebaseDatabase.getInstance()
+//        val hintsDatabase = firebaseInstance.getReference("games").child("1").child("hints")
+//        // Read from the firebaseInstance
+//        hintsDatabase.addValueEventListener(object : ValueEventListener {
+//            override fun onDataChange(dataSnapshot: DataSnapshot) {
+//                // This method is called once with the initial value and again
+//                // whenever data at this location is updated.
+//                for (hintChild in dataSnapshot.children) {
+//                    val hint = hintChild.getValue(Hint::class.java)
+//                    hint?.let { hintList.add(it) }
+//                }
+//                //commandHandler?.updateHintList()
+//            }
+//
+//            override fun onCancelled(error: DatabaseError) {
+//                // Failed to read value
+//                val e = error.toException().toString()
+//                Timber.w("Failed to read value: $e")
+//            }
+//        })
 
     }
 
