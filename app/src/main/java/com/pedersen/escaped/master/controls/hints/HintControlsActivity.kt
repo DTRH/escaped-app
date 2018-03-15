@@ -86,6 +86,8 @@ class HintControlsActivity : ViewModelActivity<HintControlsActivityViewModel, Hi
                 viewModel.selectedId.add(viewModel.hintList[position].id)
                 view.setBackgroundColor(ContextCompat.getColor(this, R.color.colorAccent))
             }
+
+            viewModel.notifyPropertyChanged(BR.selectedId)
             viewModel.notifyPropertyChanged(BR.deletable)
             viewModel.notifyPropertyChanged(BR.editable)
         }
@@ -111,8 +113,9 @@ class HintControlsActivity : ViewModelActivity<HintControlsActivityViewModel, Hi
     override fun deleteHint() {
         for (selection in viewModel.selectedId) {
             for (hint in viewModel.hintList) {
-                if (hint.id.contentEquals(selection))
+                if (hint.id.contentEquals(selection)) {
                     hintsDatabase.child(hint.key).removeValue()
+                }
             }
         }
         viewModel.selectedId.clear()

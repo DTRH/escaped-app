@@ -1,12 +1,9 @@
 package com.pedersen.escaped.master.controls.hints
 
 import android.databinding.Bindable
-import com.google.firebase.database.*
-import com.pedersen.escaped.BR
+import android.view.View
 import com.pedersen.escaped.data.models.Hint
-import com.pedersen.escaped.extensions.bind
 import io.greenerpastures.mvvm.BaseViewModel
-import timber.log.Timber
 
 class HintControlsActivityViewModel : BaseViewModel<HintControlsActivityViewModel.Commands>() {
 
@@ -45,5 +42,4 @@ class HintControlsActivityViewModel : BaseViewModel<HintControlsActivityViewMode
         fun editHint()
 
     }
-
 }
