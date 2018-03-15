@@ -26,6 +26,10 @@ class HintControlsActivityViewModel : BaseViewModel<HintControlsActivityViewMode
     var isEditable: Boolean = false
         get() = selectedId.size == 1
 
+    @get:Bindable
+    var isCreatable: Boolean = false
+    get() = commandHandler!!.checkCreatable()
+
     private val firebaseInstance = FirebaseDatabase.getInstance()
     private lateinit var hintsDatabase: DatabaseReference
 
@@ -73,7 +77,7 @@ class HintControlsActivityViewModel : BaseViewModel<HintControlsActivityViewMode
 
     interface Commands {
 
-       // fun unselectAll()
+       fun checkCreatable() : Boolean
 
         fun updateHintList()
     }

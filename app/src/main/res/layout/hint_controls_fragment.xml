@@ -1,66 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+        xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <data>
+  <data>
 
-        <variable
-            name="viewModel"
-            type="com.pedersen.escaped.master.controls.hints.HintControlsActivityViewModel" />
-    </data>
+    <variable
+        name="viewModel"
+        type="com.pedersen.escaped.master.controls.hints.HintControlsActivityViewModel" />
+  </data>
 
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/old_paper_background"
-        android:padding="20dp">
+  <android.support.constraint.ConstraintLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@drawable/old_paper_background"
+      android:padding="20dp">
 
-        <ListView
-            android:id="@+id/list_container"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:background="@android:color/white"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toLeftOf="@+id/controls_container" />
+    <ListView
+        android:id="@+id/list_container"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/controls_container"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <LinearLayout
-            android:id="@+id/controls_container"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:orientation="vertical"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toRightOf="@id/list_container">
+    <LinearLayout
+        android:paddingStart="20dp"
+        android:id="@+id/controls_container"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:focusableInTouchMode="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/list_container"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-            <Button
-                android:id="@+id/create_hint_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Create hint"
-                android:onClick="@{_ -> viewModel.createHint()}"/>
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="Overskrift"
+          android:labelFor="@+id/header_input"/>
 
-            <Button
-                android:id="@+id/edit_hint_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Edit hint"
-                android:enabled="@{viewModel.isEditable}"
-                android:onClick="@{_ -> viewModel.editHint()}"/>
+      <EditText
+          android:id="@+id/header_input"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:background="@android:color/white"
+          android:maxLines="1"
+          android:singleLine="true" />
 
-            <Button
-                android:id="@+id/delete_hint_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Delete hint"
-                android:enabled="@{viewModel.isDeletable}"
-                android:onClick="@{_ -> viewModel.deleteHint()}"/>
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="Tekst"
+          android:labelFor="@+id/body_input"/>
+
+      <EditText
+          android:id="@+id/body_input"
+          android:layout_width="match_parent"
+          android:layout_height="100dp"
+          android:gravity="top"
+          android:background="@android:color/white"
+          android:singleLine="true"
+          android:imeOptions="actionDone" />
+
+      <Button
+          android:id="@+id/create_hint_button"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:onClick="@{_ -> viewModel.createHint()}"
+          android:enabled="@{viewModel.creatable}"
+          android:text="Create hint" />
+
+      <Button
+          android:id="@+id/edit_hint_button"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:enabled="@{viewModel.isEditable}"
+          android:onClick="@{_ -> viewModel.editHint()}"
+          android:text="Edit hint" />
+
+      <Button
+          android:id="@+id/delete_hint_button"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:enabled="@{viewModel.isDeletable}"
+          android:onClick="@{_ -> viewModel.deleteHint()}"
+          android:text="Delete hint" />
 
 
+    </LinearLayout>
 
-        </LinearLayout>
-
-    </android.support.constraint.ConstraintLayout>
+  </android.support.constraint.ConstraintLayout>
 </layout>
