@@ -33,6 +33,8 @@ class HintControlsActivity : ViewModelActivity<HintControlsActivityViewModel, Hi
         initialize(R.layout.hint_controls_fragment, BR.viewModel, ({ HintControlsActivityViewModel() }))
         super.onCreate(savedInstanceState)
 
+        gameId = intent.extras.get(GAME_ID) as Int
+
         hintsDatabase = firebaseInstance.getReference("games").child(gameId.toString()).child("hints")
 
         // Read from the firebaseInstance
@@ -101,7 +103,8 @@ class HintControlsActivity : ViewModelActivity<HintControlsActivityViewModel, Hi
     }
 
     override fun createHint() {
-        val newHint = Hint(System.currentTimeMillis().hashCode().toString(), binding.headerInput.text.toString(), binding.bodyInput.text.toString(), false)
+        val newHint = Hint(System.currentTimeMillis().toString(), binding.headerInput.text.toString(), binding.bodyInput.text.toString(), false)
+        hintsDatabase.push().setValue(newHint)
     }
 
     override fun deleteHint() {
