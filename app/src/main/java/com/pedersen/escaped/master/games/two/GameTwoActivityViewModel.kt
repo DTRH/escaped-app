@@ -1,8 +1,27 @@
 package com.pedersen.escaped.master.games.two
 
+import android.databinding.Bindable
+import com.pedersen.escaped.data.models.Hint
 import io.greenerpastures.mvvm.BaseViewModel
 
 class GameTwoActivityViewModel :  BaseViewModel<GameTwoActivityViewModel.Commands>() {
 
-    interface Commands
+    @get:Bindable
+    var hintList = ArrayList<Hint>()
+
+    fun launchHintControls() = commandHandler?.launchHintControls()
+
+    fun launchVideoControls() = commandHandler?.launchVideoControls()
+
+    fun launchRoomControls() = commandHandler?.launchRoomControls()
+
+    interface Commands {
+
+        fun launchHintControls()
+
+        fun launchVideoControls()
+
+        fun launchRoomControls()
+
+    }
 }

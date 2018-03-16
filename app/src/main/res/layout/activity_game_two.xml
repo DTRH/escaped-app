@@ -10,6 +10,12 @@
             type="com.pedersen.escaped.master.games.two.GameTwoActivityViewModel" />
     </data>
 
+    <FrameLayout
+        android:id="@+id/root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -58,6 +64,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:background="@color/colorAccent"
+            android:text="ROOM CONTROLS"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@id/hint_button"
@@ -69,6 +76,8 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:background="@color/colorAccent"
+            android:text="HINT CONTROLS"
+            android:onClick="@{_ -> viewModel.launchHintControls()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toRightOf="@id/room_control_button"
             app:layout_constraintRight_toLeftOf="@id/video_button"
@@ -80,6 +89,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:background="@color/colorAccent"
+            android:text="VIDEO CONTROLS"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toRightOf="@id/hint_button"
             app:layout_constraintRight_toRightOf="parent"
@@ -87,4 +97,11 @@
 
 
     </android.support.constraint.ConstraintLayout>
+
+        <FrameLayout
+            android:id="@+id/fragment_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </FrameLayout>
 </layout>
