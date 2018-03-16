@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
+import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.BaseAdapter
@@ -122,6 +123,7 @@ class HintControlsActivity : ViewModelActivity<HintControlsActivityViewModel, Hi
         hintsDatabase.push().setValue(newHint)
         binding.headerInput.text.clear()
         binding.bodyInput.text.clear()
+        viewModel.notifyPropertyChanged(BR.creatable)
     }
 
     override fun deleteHint() {
@@ -131,6 +133,7 @@ class HintControlsActivity : ViewModelActivity<HintControlsActivityViewModel, Hi
                     hintsDatabase.child(hint.key).removeValue()
                 }
             }
+            Timber.i("SelectedIds: ${viewModel.selectedId}")
         }
 
         for (i in 0 until hintContainer.childCount) {
@@ -138,6 +141,9 @@ class HintControlsActivity : ViewModelActivity<HintControlsActivityViewModel, Hi
             listItem.setBackgroundColor(Color.WHITE)
         }
         viewModel.selectedId.clear()
+        viewModel.notifyPropertyChanged(BR.creatable)
+        viewModel.notifyPropertyChanged(BR.editable)
+        viewModel.notifyPropertyChanged(BR.deletable)
     }
 
     override fun editHint() {
