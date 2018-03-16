@@ -24,7 +24,7 @@ import timber.log.Timber
 
 class HintControlsActivity : ViewModelActivity<HintControlsActivityViewModel, HintControlsFragmentBinding>(), HintControlsActivityViewModel.Commands {
 
-    var gameId: Int = 0
+    private var gameId: Int = 0
 
     private lateinit var hintAdapter: BaseAdapter
     private lateinit var hintContainer: ListView
