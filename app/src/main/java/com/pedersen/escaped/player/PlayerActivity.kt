@@ -5,41 +5,61 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
 import android.widget.*
+import com.google.firebase.database.*
 import com.pedersen.escaped.BR
+import com.pedersen.escaped.BuildConfig
 import com.pedersen.escaped.R
 import com.pedersen.escaped.animations.PositionSpringAnimation
-import com.pedersen.escaped.animations.TypeWriter
 import com.pedersen.escaped.data.models.Hint
 import com.pedersen.escaped.databinding.ActivityPlayerBinding
 import io.greenerpastures.mvvm.ViewModelActivity
+import com.pedersen.escaped.data.models.adapters.HintsAdapter
 import timber.log.Timber
+
 
 class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayerBinding>(), PlayerActivityViewModel.Commands {
 
+    private val gameId: Int = BuildConfig.gameId
+
     private var progressBarAnimation: ObjectAnimator = ObjectAnimator()
-    private lateinit var hintHeader: TypeWriter
-    private lateinit var hintBody: TypeWriter
+
     private lateinit var hintAdapter: BaseAdapter
+    private lateinit var hintContainer: ListView
+
+    private val firebaseInstance = FirebaseDatabase.getInstance()
+    private lateinit var hintsDatabase: DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initialize(R.layout.activity_player, BR.viewModel, ({ PlayerActivityViewModel() }))
         super.onCreate(savedInstanceState)
 
-        // Remove all system UI
-        window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
-                or View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
-                or View.SYSTEM_UI_FLAG_IMMERSIVE)
+        hintsDatabase = firebaseInstance.getReference("games").child(BuildConfig.gameId.toString()).child("hints")
+        // Read from the firebaseInstance
+        hintsDatabase.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                viewModel.hintList.clear()
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                for (hintChild in dataSnapshot.children) {
+                    val hint = hintChild.getValue(Hint::class.java)
+                    hint?.let { viewModel.hintList.add(it) }
+                }
+                hintAdapter.notifyDataSetChanged()
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                // Failed to read value
+                val e = error.toException().toString()
+                Timber.w("Failed to read value: $e")
+            }
+        })
 
         // Setup pull/spring animation for the hint puller
         PositionSpringAnimation(binding.hintPull)
 
         // Setup the adapter and container that will
-        hintAdapter = HintsAdapter(viewModel.hintList)
+        hintAdapter = HintsAdapter(this, viewModel.hintList)
         val hintContainer = binding.hintContainer
         hintContainer.adapter = hintAdapter
         hintContainer.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
@@ -48,62 +68,26 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        // Remove all system UI
+        window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
+                or View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
+                or View.SYSTEM_UI_FLAG_IMMERSIVE)
+    }
+
+    override fun onBackPressed() {
+        // DO NOTHING
+    }
+
     override fun animateProgressBar(from: Int, to: Int) {
         progressBarAnimation = ObjectAnimator.ofInt(binding.progressBar, "progress", from, to)
         progressBarAnimation.duration = 2000
         progressBarAnimation.start()
-    }
-
-    override fun closeHint() {
-        if (viewModel.isHintVisible)
-            viewModel.isHintVisible = false
-        hintBody.clearAnimation()
-        hintHeader.clearAnimation()
-    }
-
-    override fun updateHintList() {
-        hintAdapter.notifyDataSetChanged()
-    }
-
-    inner class HintsAdapter(notesList: ArrayList<Hint>) : BaseAdapter() {
-
-        private var list = notesList
-
-        override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View? {
-
-            val view: View?
-            val vh: ViewHolder
-
-            if (convertView == null) {
-                view = layoutInflater.inflate(R.layout.hint_list_item, parent, false)
-                vh = ViewHolder(view)
-                view.tag = vh
-                Timber.i("set Tag for ViewHolder, position: $position")
-            } else {
-                view = convertView
-                vh = view.tag as ViewHolder
-            }
-
-            vh.tvContent.text = list[position].title
-
-            return view
-        }
-
-        override fun getItem(position: Int): Any {
-            return list[position]
-        }
-
-        override fun getItemId(position: Int): Long {
-            return position.toLong()
-        }
-
-        override fun getCount(): Int {
-            return list.size
-        }
-    }
-
-    private class ViewHolder(view: View?) {
-        val tvContent: TextView = view?.findViewById(R.id.header) as TextView
     }
 
     companion object {
