@@ -74,14 +74,16 @@
             <!-- Hint Container -->
             <ListView
                 android:id="@+id/hint_container"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 android:layout_marginStart="30dp"
-                android:layout_marginTop="120dp"
+
                 android:orientation="vertical"
                 android:rotation="10"
                 app:layout_constraintLeft_toRightOf="@id/guideline2"
-                app:layout_constraintTop_toBottomOf="@id/hori_guide_2" />
+                app:layout_constraintTop_toBottomOf="@id/hori_guide_2"
+                app:layout_constraintRight_toLeftOf="@id/verti_two"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
             <android.support.constraint.Guideline
                 android:id="@+id/guideline"
@@ -104,6 +106,13 @@
                 android:orientation="horizontal"
                 app:layout_constraintGuide_percent="0.25" />
 
+            <android.support.constraint.Guideline
+                android:id="@+id/verti_two"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.90"/>
+
         </android.support.constraint.ConstraintLayout>
 
         <!-- Hint Layout -->
@@ -121,40 +130,6 @@
                 app:layout_constraintTop_toBottomOf="@id/horizontal_one"
                 app:layout_constraintBottom_toTopOf="@id/horizontal_two"
                 />
-
-            <!--
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:background="@drawable/old_paper_background"
-                android:orientation="vertical"
-                android:padding="20dp"
-                app:layout_constraintLeft_toRightOf="@+id/vertical_one"
-                app:layout_constraintRight_toLeftOf="@+id/vertical_two"
-                app:layout_constraintTop_toBottomOf="@id/horizontal_one"
-                app:layout_constraintBottom_toTopOf="@id/horizontal_two"
-                android:visibility="@{viewModel.hintVisible}">
-
-                <ImageView
-                    android:layout_gravity="end"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_close"
-                    android:onClick="@{v -> viewModel.closeHint(v)}"/>
-
-                <com.pedersen.escaped.animations.TypeWriter
-                    android:id="@+id/hint_header_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    tools:text="Heatitleatitleader"/>
-
-                <com.pedersen.escaped.animations.TypeWriter
-                    android:id="@+id/hint_body_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    tools:text="body body body body"/>
-            </LinearLayout>
-            -->
             
             <android.support.constraint.Guideline
                 android:id="@+id/vertical_one"

@@ -1,7 +1,6 @@
 package com.pedersen.escaped.master.controls.hints
 
 import android.databinding.Bindable
-import android.view.View
 import com.pedersen.escaped.data.models.Hint
 import io.greenerpastures.mvvm.BaseViewModel
 

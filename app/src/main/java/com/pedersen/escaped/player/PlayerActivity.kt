@@ -25,7 +25,6 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
     private var progressBarAnimation: ObjectAnimator = ObjectAnimator()
 
     private lateinit var hintAdapter: BaseAdapter
-    private lateinit var hintContainer: ListView
 
     private val firebaseInstance = FirebaseDatabase.getInstance()
     private lateinit var hintsDatabase: DatabaseReference
@@ -34,7 +33,7 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
         initialize(R.layout.activity_player, BR.viewModel, ({ PlayerActivityViewModel() }))
         super.onCreate(savedInstanceState)
 
-        hintsDatabase = firebaseInstance.getReference("games").child(BuildConfig.gameId.toString()).child("hints")
+        hintsDatabase = firebaseInstance.getReference("games").child(gameId.toString()).child("hints")
         // Read from the firebaseInstance
         hintsDatabase.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
