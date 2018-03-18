@@ -15,8 +15,8 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".login.LoginActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:screenOrientation="landscape">
+            android:screenOrientation="landscape"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -35,7 +35,10 @@
         <activity android:name=".master.games.dinner.DinnerRoomActivity" />
         <activity
             android:name=".master.controls.hints.HintControlsActivity"
-            android:screenOrientation="landscape"/>
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".master.controls.games.GameControlsActivity"
+            android:screenOrientation="landscape" />
     </application>
 
 </manifest>
