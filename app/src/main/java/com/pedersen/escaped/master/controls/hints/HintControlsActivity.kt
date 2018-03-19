@@ -6,7 +6,6 @@ import android.graphics.Color
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
-import android.view.View
 import android.widget.AdapterView
 import android.widget.BaseAdapter
 import android.widget.ListView

@@ -10,6 +10,7 @@ import com.pedersen.escaped.databinding.ActivityGameMasterBinding
 import com.pedersen.escaped.master.games.dinner.DinnerRoomActivity
 import com.pedersen.escaped.master.games.one.GameOneActivity
 import com.pedersen.escaped.master.games.two.GameTwoActivity
+import com.pedersen.escaped.utils.AppUtils
 import io.greenerpastures.mvvm.ViewModelActivity
 
 class GameMasterActivity : ViewModelActivity<GameMasterActivityViewModel, ActivityGameMasterBinding>(), GameMasterActivityViewModel.Commands {
@@ -23,12 +24,7 @@ class GameMasterActivity : ViewModelActivity<GameMasterActivityViewModel, Activi
         super.onResume()
 
         // Remove all system UI
-        window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
-                or View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
-                or View.SYSTEM_UI_FLAG_IMMERSIVE)
+        AppUtils.clearWindow(window)
     }
 
     override fun onBackPressed() {
