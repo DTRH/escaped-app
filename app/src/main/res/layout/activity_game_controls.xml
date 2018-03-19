@@ -10,6 +10,7 @@
     </data>
 
     <android.support.constraint.ConstraintLayout
+        android:id="@+id/root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/game_master_activity_background"
@@ -52,32 +53,33 @@
             app:layout_constraintLeft_toRightOf="@id/label_time_played"
             tools:text="---------"/>
 
-        <ImageView
+        <Button
             android:id="@+id/wipe_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            android:src="@drawable/ic_replay_white_48dp" />
+            android:onClick="@{() -> viewModel.restartGame()}"
+            android:background="@drawable/ic_replay_white_48dp" />
 
-        <ImageView
+        <Button
             android:id="@+id/play_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toLeftOf="@id/pause_button"
             android:layout_marginBottom="50dp"
-            android:src="@drawable/ic_play_circle_outline_white_48dp"/>
+            android:background="@drawable/ic_play_circle_outline_white_48dp"/>
 
-        <ImageView
+        <Button
             android:id="@+id/pause_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toRightOf="@id/play_button"
             android:layout_marginBottom="50dp"
-            android:src="@drawable/ic_pause_circle_outline_white_48dp"/>
+            android:background="@drawable/ic_pause_circle_outline_white_48dp"/>
     </android.support.constraint.ConstraintLayout>
 </layout>
