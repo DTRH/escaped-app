@@ -2,11 +2,11 @@ package com.pedersen.escaped.master.controls.games
 
 import android.databinding.Bindable
 import com.google.firebase.database.*
+import com.pedersen.escaped.BR
 import com.pedersen.escaped.master.controls.games.GameControlsActivityViewModel.GameState.*
 import io.greenerpastures.mvvm.BaseViewModel
 import timber.log.Timber
 import java.util.HashMap
-
 
 
 class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewModel.Commands>() {
@@ -17,26 +17,36 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
     private var databaseReference = firebaseInstance.getReference("games")
 
     @get:Bindable
+    var playable: Boolean = false
+        get() = gameState == READY || gameState == PAUSED
+
+    @get:Bindable
+    var pausable: Boolean = false
+        get() = gameState == PLAYING
+
+    @get:Bindable
     var gameState: GameState = UNKNOWN
-    set(value) {
-        when (value) {
-            UNKNOWN -> {
-                Timber.i("Game mode changed to: UNKNOWN")
+        set(value) {
+            when (value) {
+                UNKNOWN -> {
+                    Timber.i("Game mode changed to: UNKNOWN")
+                }
+                READY -> {
+                    Timber.i("Game mode changed to: READY")
+                }
+                PLAYING -> {
+                    Timber.i("Game mode changed to: PLAYING")
+                }
+                PAUSED -> {
+                    Timber.i("Game mode changed to: PAUSED")
+                }
+                ENDED -> {
+                    Timber.i("Game mode changed to: ENDED")
+                }
             }
-            READY -> {
-                Timber.i("Game mode changed to: READY")
-            }
-            PLAYING -> {
-                Timber.i("Game mode changed to: PLAYING")
-            }
-            PAUSED -> {
-                Timber.i("Game mode changed to: PAUSED")
-            }
-            ENDED -> {
-                Timber.i("Game mode changed to: ENDED")
-            }
+            notifyPropertyChanged(BR.playable)
+            notifyPropertyChanged(BR.pausable)
         }
-    }
 
     override fun onActive() {
         super.onActive()
