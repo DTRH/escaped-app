@@ -59,7 +59,7 @@
             android:layout_height="48dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            android:onClick="@{() -> viewModel.restartGame()}"
+            android:onClick="@{() -> viewModel.initRestartGame()}"
             android:background="@drawable/ic_replay_white_48dp" />
 
         <Button

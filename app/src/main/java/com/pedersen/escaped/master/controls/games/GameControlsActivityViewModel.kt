@@ -5,30 +5,43 @@ import com.google.firebase.database.*
 import com.pedersen.escaped.master.controls.games.GameControlsActivityViewModel.GameState.*
 import io.greenerpastures.mvvm.BaseViewModel
 import timber.log.Timber
+import java.util.HashMap
+
+
 
 class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewModel.Commands>() {
 
     var gameId: Int = 0
 
     private val firebaseInstance = FirebaseDatabase.getInstance()
-    private lateinit var stateListener: DatabaseReference
+    private var databaseReference = firebaseInstance.getReference("games")
 
     @get:Bindable
     var gameState: GameState = UNKNOWN
     set(value) {
         when (value) {
-            UNKNOWN -> TODO()
-            READY -> TODO()
-            PLAYING -> TODO()
-            PAUSED -> TODO()
-            ENDED -> TODO()
+            UNKNOWN -> {
+                Timber.i("Game mode changed to: UNKNOWN")
+            }
+            READY -> {
+                Timber.i("Game mode changed to: READY")
+            }
+            PLAYING -> {
+                Timber.i("Game mode changed to: PLAYING")
+            }
+            PAUSED -> {
+                Timber.i("Game mode changed to: PAUSED")
+            }
+            ENDED -> {
+                Timber.i("Game mode changed to: ENDED")
+            }
         }
     }
 
     override fun onActive() {
         super.onActive()
 
-        stateListener = firebaseInstance.getReference("games").child(gameId.toString()).child("state")
+        val stateListener = databaseReference.child(gameId.toString()).child("state")
         stateListener.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val gameState = dataSnapshot.value as String
@@ -50,9 +63,15 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
         })
     }
 
-    fun restartGame() {
+    fun initRestartGame() {
         Timber.i("Game restarted")
         commandHandler?.showRestartDialog()
+    }
+
+    fun doRestartGame() {
+        val stateUpdate = HashMap<String, Any>()
+        stateUpdate.put("state", "playing")
+        databaseReference.child(gameId.toString()).updateChildren(stateUpdate)
     }
 
     enum class GameState {
@@ -64,4 +83,6 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
         fun showRestartDialog()
 
     }
+
+
 }

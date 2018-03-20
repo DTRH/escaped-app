@@ -27,10 +27,12 @@ class GameControlsActivity : ViewModelActivity<GameControlsActivityViewModel, Ac
 
         simpleAlert.setButton(AlertDialog.BUTTON_POSITIVE, "OK", {
             dialogInterface, i ->
+            this.viewModel.doRestartGame()
         })
 
         simpleAlert.show()
     }
+
 
     companion object {
 
