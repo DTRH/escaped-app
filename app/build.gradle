@@ -44,18 +44,21 @@ android {
         master {
             dimension "permission"
             versionNameSuffix "-gm"
+            applicationId "com.pedersen.escaped.master"
             buildConfigField("Boolean", "isMaster", "true")
             buildConfigField("Integer", "gameId", "0")
         }
         gameOne {
             dimension "permission"
             versionNameSuffix "-game-one"
+            applicationId "com.pedersen.escaped.one"
             buildConfigField("Boolean", "isMaster", "false")
             buildConfigField("Integer", "gameId", "1")
         }
         gameTwo {
             dimension "permission"
             versionNameSuffix "-game-two"
+            applicationId "com.pedersen.escaped.two"
             buildConfigField("Boolean", "isMaster", "false")
             buildConfigField("Integer", "gameId", "2")
         }

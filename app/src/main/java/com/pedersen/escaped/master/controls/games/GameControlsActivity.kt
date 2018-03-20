@@ -1,12 +1,9 @@
 package com.pedersen.escaped.master.controls.games
 
 import android.app.AlertDialog
-import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import com.google.firebase.database.*
 import com.pedersen.escaped.BR
 import com.pedersen.escaped.R
 import com.pedersen.escaped.databinding.ActivityGameControlsBinding
@@ -27,7 +24,7 @@ class GameControlsActivity : ViewModelActivity<GameControlsActivityViewModel, Ac
 
         simpleAlert.setButton(AlertDialog.BUTTON_POSITIVE, "OK", {
             dialogInterface, i ->
-            this.viewModel.doRestartGame()
+            viewModel.doRestartGame()
         })
 
         simpleAlert.show()

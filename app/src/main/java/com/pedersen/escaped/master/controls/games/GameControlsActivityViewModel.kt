@@ -1,12 +1,15 @@
 package com.pedersen.escaped.master.controls.games
 
 import android.databinding.Bindable
-import com.google.firebase.database.*
-import com.pedersen.escaped.BR
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.pedersen.escaped.master.controls.games.GameControlsActivityViewModel.GameState.*
 import io.greenerpastures.mvvm.BaseViewModel
+import org.threeten.bp.Instant
 import timber.log.Timber
-import java.util.HashMap
+import java.util.*
 
 
 class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewModel.Commands>() {
@@ -44,8 +47,7 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
                     Timber.i("Game mode changed to: ENDED")
                 }
             }
-            notifyPropertyChanged(BR.playable)
-            notifyPropertyChanged(BR.pausable)
+            notifyChange()
         }
 
     override fun onActive() {
@@ -81,6 +83,8 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
     fun doRestartGame() {
         val stateUpdate = HashMap<String, Any>()
         stateUpdate.put("state", "playing")
+        val deadline: Instant = Instant.now().plusSeconds(3600)
+        stateUpdate.put("deadline", deadline.toString())
         databaseReference.child(gameId.toString()).updateChildren(stateUpdate)
     }
 
@@ -93,6 +97,4 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
         fun showRestartDialog()
 
     }
-
-
 }
