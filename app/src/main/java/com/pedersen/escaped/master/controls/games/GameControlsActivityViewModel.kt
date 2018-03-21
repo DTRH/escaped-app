@@ -38,6 +38,8 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
     override fun onActive() {
         super.onActive()
 
+
+        // I believe there is an issue with when does deadline get set.
         val stateListener = databaseReference.child(gameId.toString()).child("state")
         stateListener.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -47,7 +49,6 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
                     "ready" -> gameState = READY
                     "playing" -> {
                         gameState = PLAYING
-                        this@GameControlsActivityViewModel.resumeTimer(Duration.between(deadline, Instant.now()))
                     }
                     "paused" -> gameState = PAUSED
                     "ended" -> gameState = ENDED
@@ -66,6 +67,7 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
         timerListener.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 deadline = Instant.parse(dataSnapshot.value as CharSequence?)
+                this@GameControlsActivityViewModel.resumeTimer(Duration.between(deadline, Instant.now()))
                 Timber.i("Debug: Updated game deadline to: $deadline")
             }
 
@@ -78,6 +80,7 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
     }
 
     fun pause() {
+
         Timber.i("Debug: Pause clicked!")
         setPausedTime()
 
@@ -101,6 +104,7 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
             doRestartGame()
     }
 
+    // FIX DOUBLE TIMER ISSUE
     private fun resumeTimer(between: Duration) {
         object : CountDownTimer(between.abs().toMillis(), 1000) {
 
@@ -125,9 +129,7 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
         val deadline: Instant = Instant.now().plusSeconds(3600)
         stateUpdate.put("deadline", deadline.toString())
         Timber.i("Debug: Seginding state playing, deadline $deadline")
-        databaseReference.child(gameId.toString()).updateChildren(stateUpdate, { databaseError, databaseReference ->
-            Timber.i("Done!")
-        })
+        databaseReference.child(gameId.toString()).updateChildren(stateUpdate)
     }
 
     enum class GameState {
