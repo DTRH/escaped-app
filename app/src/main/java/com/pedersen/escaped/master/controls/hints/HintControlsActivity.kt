@@ -97,6 +97,7 @@ class HintControlsActivity : ViewModelActivity<HintControlsActivityViewModel, Hi
             viewModel.notifyPropertyChanged(BR.selectedId)
             viewModel.notifyPropertyChanged(BR.deletable)
             viewModel.notifyPropertyChanged(BR.editable)
+
         }
     }
 
