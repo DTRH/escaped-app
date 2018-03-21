@@ -28,6 +28,7 @@ class GameControlsActivity : ViewModelActivity<GameControlsActivityViewModel, Ac
         })
 
         simpleAlert.show()
+
     }
 
 

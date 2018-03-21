@@ -10,11 +10,15 @@ import io.greenerpastures.mvvm.BaseViewModel
 import org.threeten.bp.Instant
 import timber.log.Timber
 import java.util.*
+import android.os.CountDownTimer
+import org.threeten.bp.Duration
 
 
 class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewModel.Commands>() {
 
     var gameId: Int = 0
+    lateinit var deadline: Instant
+    lateinit var timerText: String
 
     private val firebaseInstance = FirebaseDatabase.getInstance()
     private var databaseReference = firebaseInstance.getReference("games")
@@ -53,6 +57,8 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
     override fun onActive() {
         super.onActive()
 
+
+
         val stateListener = databaseReference.child(gameId.toString()).child("state")
         stateListener.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -73,6 +79,45 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
                 Timber.w("Failed to read value: $e")
             }
         })
+
+        val timerListener = databaseReference.child(gameId.toString()).child("deadline")
+        timerListener.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                deadline = dataSnapshot.value as Instant
+                Timber.i("Updated game state to: $gameState")
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                // Failed to read value
+                val e = error.toException().toString()
+                Timber.w("Failed to read value: $e")
+            }
+        })
+    }
+
+    fun pause() {
+
+    }
+
+    fun play() {
+        if (gameState == PAUSED) {
+            gameState = PLAYING
+            resumeTimer(Duration.between(deadline, Instant.now()))
+        } else
+            doRestartGame()
+    }
+
+    private fun resumeTimer(between: Duration) {
+        object : CountDownTimer(between.toMillis(), 1000) {
+
+            override fun onTick(millisUntilFinished: Long) {
+                timerText = "seconds remaining: " + (millisUntilFinished / 1000)
+            }
+
+            override fun onFinish() {
+                timerText = "done!"
+            }
+        }.start()
     }
 
     fun initRestartGame() {
