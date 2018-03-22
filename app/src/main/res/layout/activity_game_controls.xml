@@ -82,6 +82,7 @@
             android:layout_marginBottom="50dp"
             android:background="@drawable/ic_pause_circle_outline_white_48dp"
             android:enabled="@{viewModel.pausable}"
+            android:onClick="@{_ -> viewModel.pause()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toRightOf="@id/play_button"
             app:layout_constraintRight_toRightOf="parent" />

@@ -5,21 +5,22 @@ import com.pedersen.escaped.master.controls.games.GameControlsActivityViewModel.
 import io.greenerpastures.mvvm.BaseViewModel
 import org.threeten.bp.Instant
 import timber.log.Timber
-import java.util.*
 import android.os.CountDownTimer
 import com.google.firebase.database.*
 import com.pedersen.escaped.BR
 import com.pedersen.escaped.extensions.bind
 import org.threeten.bp.Duration
+import kotlin.collections.HashMap
 
 
 class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewModel.Commands>() {
 
     var gameId: Int = 0
-    var deadline: Instant = Instant.now()
+    private var deadline: Instant = Instant.now()
+    private var counter: CountDownTimer? = null
 
     @get:Bindable
-    var timer by bind("", BR.timer)
+    var timerTxt by bind("", BR.timer)
 
     private val firebaseInstance = FirebaseDatabase.getInstance()
     private var databaseReference = firebaseInstance.getReference("games")
@@ -38,8 +39,6 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
     override fun onActive() {
         super.onActive()
 
-
-        // I believe there is an issue with when does deadline get set.
         val stateListener = databaseReference.child(gameId.toString()).child("state")
         stateListener.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -49,6 +48,8 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
                     "ready" -> gameState = READY
                     "playing" -> {
                         gameState = PLAYING
+                        resumeTimer(Duration.between(Instant.now(), this@GameControlsActivityViewModel.deadline))
+
                     }
                     "paused" -> gameState = PAUSED
                     "ended" -> gameState = ENDED
@@ -80,42 +81,53 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
     }
 
     fun pause() {
-
         Timber.i("Debug: Pause clicked!")
         setPausedTime()
-
+        val stateUpdate = HashMap<String, Any>()
+        stateUpdate.put("state", "paused")
+        Timber.i("Debug: Sending state paused")
+        databaseReference.child(gameId.toString()).updateChildren(stateUpdate)
     }
 
     private fun setPausedTime() {
         Timber.i("Debug: Pause clicked!")
-
+        commandHandler?.setPausedTimer()
     }
 
-    fun play() {
+    suspend fun play() {
         Timber.i("Debug: Play clicked!")
         if (gameState == PAUSED) {
-            Timber.i("Debug: Game was paused, prepare to set it to playing!")
-            val stateUpdate = HashMap<String, Any>()
-            stateUpdate.put("state", "playing")
-            databaseReference.child(gameId.toString()).updateChildren(stateUpdate)
-            Timber.i("Debug: Attempted to set state: playing")
+            Timber.i("Debug: Game is currently paused, prepare to set it to playing and update deadline based on pause duration!")
+            val stateAndDeadlineUpdate = HashMap<String, Any>()
+            stateAndDeadlineUpdate.put("state", "playing")
+            val newDeadline = deadline.plusMillis(Duration.between(Instant.parse(
+                    commandHandler?.getPausedTimer()), Instant.now()).abs().toMillis())
+            stateAndDeadlineUpdate.put("deadline", newDeadline.toString())
+            databaseReference.child(gameId.toString()).updateChildren(stateAndDeadlineUpdate)
+            Timber.i("Debug: Sending state change to Firebase: playing, and new Deadline: $newDeadline")
         } else
-            Timber.d("Debug: Not paused, doRestartGame()")
+            Timber.d("Debug: Game is not paused -> doRestartGame()")
             doRestartGame()
     }
 
-    // FIX DOUBLE TIMER ISSUE
     private fun resumeTimer(between: Duration) {
-        object : CountDownTimer(between.abs().toMillis(), 1000) {
+        counter = object : CountDownTimer(between.abs().toMillis(), 1000) {
 
             override fun onTick(millisUntilFinished: Long) {
-                timer = "Debug: seconds remaining: " + (millisUntilFinished / 1000)
+                timerTxt = "Debug: seconds remaining: " + (millisUntilFinished / 1000)
             }
 
             override fun onFinish() {
-                timer = "Debug: done!"
+                timerTxt = "Debug: done!"
             }
         }.start()
+    }
+
+    private fun killTimer() {
+        if (counter != null) {
+            counter!!.cancel()
+            counter = null
+        }
     }
 
     fun initRestartGame() {
@@ -139,6 +151,10 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
     interface Commands {
 
         fun showRestartDialog()
+
+        fun setPausedTimer()
+
+        suspend fun getPausedTimer() : String
 
     }
 }
