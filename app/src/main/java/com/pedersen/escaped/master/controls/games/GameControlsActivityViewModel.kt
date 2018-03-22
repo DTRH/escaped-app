@@ -1,16 +1,18 @@
 package com.pedersen.escaped.master.controls.games
 
 import android.databinding.Bindable
-import com.pedersen.escaped.master.controls.games.GameControlsActivityViewModel.GameState.*
-import io.greenerpastures.mvvm.BaseViewModel
-import org.threeten.bp.Instant
-import timber.log.Timber
 import android.os.CountDownTimer
-import com.google.firebase.database.*
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.pedersen.escaped.BR
 import com.pedersen.escaped.extensions.bind
+import com.pedersen.escaped.master.controls.games.GameControlsActivityViewModel.GameState.*
+import io.greenerpastures.mvvm.BaseViewModel
 import org.threeten.bp.Duration
-import kotlin.collections.HashMap
+import org.threeten.bp.Instant
+import timber.log.Timber
 
 
 class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewModel.Commands>() {
@@ -20,7 +22,7 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
     private var counter: CountDownTimer? = null
 
     @get:Bindable
-    var timerTxt by bind("", BR.timer)
+    var timerTxt by bind("", BR.timerTxt)
 
     private val firebaseInstance = FirebaseDatabase.getInstance()
     private var databaseReference = firebaseInstance.getReference("games")
@@ -87,6 +89,7 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
         stateUpdate.put("state", "paused")
         Timber.i("Debug: Sending state paused")
         databaseReference.child(gameId.toString()).updateChildren(stateUpdate)
+        killTimer()
     }
 
     private fun setPausedTime() {
@@ -94,7 +97,7 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
         commandHandler?.setPausedTimer()
     }
 
-    suspend fun play() {
+    fun play() {
         Timber.i("Debug: Play clicked!")
         if (gameState == PAUSED) {
             Timber.i("Debug: Game is currently paused, prepare to set it to playing and update deadline based on pause duration!")
@@ -154,7 +157,7 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
 
         fun setPausedTimer()
 
-        suspend fun getPausedTimer() : String
+        fun getPausedTimer() : String
 
     }
 }

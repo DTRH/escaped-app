@@ -68,9 +68,6 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    // Prefekt - SharedPreferences
-    implementation 'com.stylingandroid.prefekt:prefekt:1.0.0'
-
     // Gson
     compile 'com.google.code.gson:gson:2.8.2'
 
@@ -113,8 +110,3 @@ dependencies {
 
 
 apply plugin: 'com.google.gms.google-services'
-kotlin {
-    experimental {
-        coroutines "enable"
-    }
-}
