@@ -10,17 +10,16 @@ import com.pedersen.escaped.R
 import com.pedersen.escaped.databinding.ActivityGameControlsBinding
 import io.greenerpastures.mvvm.ViewModelActivity
 import org.threeten.bp.Instant
-import com.pedersen.escaped.BuildConfig
-
 
 class GameControlsActivity : ViewModelActivity<GameControlsActivityViewModel, ActivityGameControlsBinding>(), GameControlsActivityViewModel.Commands {
 
+    private var gameId: Int = 0
     private lateinit var sharedPref: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val int = intent.extras.get(GameControlsActivity.GAME_ID) as Int
+        gameId = intent.extras.get(GameControlsActivity.GAME_ID) as Int
         initialize(R.layout.activity_game_controls, BR.viewModel,
-                   ({ GameControlsActivityViewModel().apply { gameId = int } }))
+                   ({ GameControlsActivityViewModel().apply { viewModel.gameId = this@GameControlsActivity.gameId } }))
         super.onCreate(savedInstanceState)
 
         sharedPref = getPreferences(Context.MODE_PRIVATE)
@@ -32,7 +31,7 @@ class GameControlsActivity : ViewModelActivity<GameControlsActivityViewModel, Ac
         restartDialog.setMessage("This will delete any current game content!")
 
         restartDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", { dialogInterface, i ->
-            viewModel.doRestartGame()
+            viewModel.startNewGame()
         })
 
         restartDialog.show()
@@ -40,18 +39,19 @@ class GameControlsActivity : ViewModelActivity<GameControlsActivityViewModel, Ac
 
     override fun setPausedTimer() {
         val editor = sharedPref.edit()
-        if (BuildConfig.gameId == 1)
-            editor.putString(PAUSED_TIME_GAME_ONE, Instant.now().toString())
-        else
-            editor.putString(PAUSED_TIME_GAME_TWO, Instant.now().toString())
+        when (gameId) {
+            1 -> editor.putString(PAUSED_TIME_GAME_ONE, Instant.now().toString())
+            2 -> editor.putString(PAUSED_TIME_GAME_TWO, Instant.now().toString())
+        }
         editor.apply()
     }
 
     override fun getPausedTimer(): String {
-        return if (BuildConfig.gameId == 1)
-            sharedPref.getString(PAUSED_TIME_GAME_ONE, "")
-        else
-            sharedPref.getString(PAUSED_TIME_GAME_TWO, "")
+        return when (gameId) {
+            1 -> sharedPref.getString(PAUSED_TIME_GAME_ONE, "")
+            2 -> sharedPref.getString(PAUSED_TIME_GAME_TWO, "")
+            else -> "No paused time found for gameId: $gameId"
+        }
     }
 
     companion object {
