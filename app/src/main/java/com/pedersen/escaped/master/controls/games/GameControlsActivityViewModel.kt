@@ -9,6 +9,7 @@ import com.google.firebase.database.ValueEventListener
 import com.pedersen.escaped.BR
 import com.pedersen.escaped.extensions.bind
 import com.pedersen.escaped.master.controls.games.GameControlsActivityViewModel.GameState.*
+import com.pedersen.escaped.utils.AppUtils
 import io.greenerpastures.mvvm.BaseViewModel
 import org.threeten.bp.Duration
 import org.threeten.bp.Instant
@@ -129,7 +130,7 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
         counter = object : CountDownTimer(between.abs().toMillis(), 1000) {
 
             override fun onTick(millisUntilFinished: Long) {
-                timerTxt = "Debug: seconds remaining: " + (millisUntilFinished / 1000)
+                timerTxt = AppUtils.getDurationBreakdown(millisUntilFinished)
             }
 
             override fun onFinish() {
@@ -152,6 +153,7 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
     }
 
     fun startNewGame() {
+        killTimer()
         Timber.i("Game restarting")
         val stateUpdate = HashMap<String, Any>()
         stateUpdate.put("state", "playing")

@@ -19,7 +19,7 @@ class GameControlsActivity : ViewModelActivity<GameControlsActivityViewModel, Ac
     override fun onCreate(savedInstanceState: Bundle?) {
         gameId = intent.extras.get(GameControlsActivity.GAME_ID) as Int
         initialize(R.layout.activity_game_controls, BR.viewModel,
-                   ({ GameControlsActivityViewModel().apply { viewModel.gameId = this@GameControlsActivity.gameId } }))
+                   ({ GameControlsActivityViewModel().apply { gameId = this@GameControlsActivity.gameId } }))
         super.onCreate(savedInstanceState)
 
         sharedPref = getPreferences(Context.MODE_PRIVATE)
