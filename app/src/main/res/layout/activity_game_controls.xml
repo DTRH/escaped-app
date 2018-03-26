@@ -31,6 +31,7 @@
             android:layout_height="wrap_content"
             android:paddingStart="20dp"
             android:textColor="@color/primaryTextColor"
+            android:text="@{viewModel.idTxt}"
             app:layout_constraintBottom_toBottomOf="@id/label_game_id"
             app:layout_constraintLeft_toRightOf="@id/label_game_id"
             tools:text="2" />
@@ -54,6 +55,23 @@
             app:layout_constraintLeft_toRightOf="@id/label_time_played"
             tools:text="---------" />
 
+        <TextView
+            android:id="@+id/label_game_state"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/primaryTextColor"
+            app:layout_constraintTop_toBottomOf="@id/label_time_played"
+            android:text="Game state:"/>
+
+        <TextView
+            android:id="@+id/label_data_game_master"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/primaryTextColor"
+            app:layout_constraintBottom_toBottomOf="@id/label_game_state"
+            app:layout_constraintLeft_toRightOf="@id/label_game_state"
+            android:text="@{viewModel.stateTxt}"/>
+
         <Button
             android:id="@+id/wipe_button"
             android:layout_width="48dp"
@@ -68,7 +86,7 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginBottom="50dp"
-            android:background="@drawable/ic_play_circle_outline_white_48dp"
+            android:background="@drawable/play_selector"
             android:enabled="@{viewModel.playable}"
             android:onClick="@{_ -> viewModel.play()}"
             app:layout_constraintBottom_toBottomOf="parent"

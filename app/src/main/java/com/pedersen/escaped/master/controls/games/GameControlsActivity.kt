@@ -13,7 +13,7 @@ import org.threeten.bp.Instant
 
 class GameControlsActivity : ViewModelActivity<GameControlsActivityViewModel, ActivityGameControlsBinding>(), GameControlsActivityViewModel.Commands {
 
-    private var gameId: Int = 0
+    var gameId: Int = 0
     private lateinit var sharedPref: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,16 +37,16 @@ class GameControlsActivity : ViewModelActivity<GameControlsActivityViewModel, Ac
         restartDialog.show()
     }
 
-    override fun setPausedTimer() {
+    override fun setPausedTimer(id: Int) {
         val editor = sharedPref.edit()
-        when (gameId) {
+        when (id) {
             1 -> editor.putString(PAUSED_TIME_GAME_ONE, Instant.now().toString())
             2 -> editor.putString(PAUSED_TIME_GAME_TWO, Instant.now().toString())
         }
         editor.apply()
     }
 
-    override fun getPausedTimer(): String {
+    override fun getPausedTimer(id: Int): String {
         return when (gameId) {
             1 -> sharedPref.getString(PAUSED_TIME_GAME_ONE, "")
             2 -> sharedPref.getString(PAUSED_TIME_GAME_TWO, "")

@@ -26,7 +26,7 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
         set(value) {
             field = value
             if (counter != null) {
-                this.resumeTimer(Duration.between(field, Instant.now()))
+                resumeTimer(Duration.between(field, Instant.now()))
             }
         }
 
@@ -41,6 +41,14 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
     var timerTxt by bind("", BR.timerTxt)
 
     @get:Bindable
+    var stateTxt: String = ""
+        get() = gameState.toString()
+
+    @get:Bindable
+    var idTxt: String = ""
+        get() = gameId.toString()
+
+    @get:Bindable
     var playable: Boolean = false
         get() = gameState == READY || gameState == PAUSED || gameState == ENDED
 
@@ -49,7 +57,7 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
         get() = gameState == PLAYING
 
     @get:Bindable
-    var gameState by bind(UNKNOWN, BR.gameState, BR.playable, BR.pausable)
+    private var gameState by bind(UNKNOWN, BR.gameState, BR.playable, BR.pausable, BR.stateTxt, BR.idTxt)
 
     override fun onActive() {
         super.onActive()
@@ -58,8 +66,10 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
         databaseReference.child(gameId.toString()).child(
                 "state").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val data = dataSnapshot.value as String
-                setState(data.toLowerCase())
+                if (dataSnapshot.value != null && dataSnapshot.value != "") {
+                    val data = dataSnapshot.value as String
+                    setState(data.toLowerCase())
+                }
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -73,7 +83,8 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
         databaseReference.child(gameId.toString()).child(
                 "deadline").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                deadline = Instant.parse(dataSnapshot.value as CharSequence?)
+                if (dataSnapshot.value != "" && dataSnapshot.value != null)
+                    deadline = Instant.parse(dataSnapshot.value as CharSequence?)
                 Timber.i("Debug: Updated game deadline to: $deadline")
             }
 
@@ -91,8 +102,8 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
             "ready" -> gameState = READY
             "playing" -> {
                 if (gameState == PAUSED) {
-                    resumeTimer(Duration.between(Instant.parse(commandHandler?.getPausedTimer()),
-                                                 deadline))
+                    resumeTimer(Duration.between(Instant.parse(commandHandler?.getPausedTimer(gameId)),
+                            deadline))
                 } else
                     resumeTimer(Duration.between(Instant.now(), deadline))
                 gameState = PLAYING
@@ -105,7 +116,7 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
 
     fun pause() {
         Timber.i("Debug: Pause clicked!")
-        commandHandler?.setPausedTimer()
+        commandHandler?.setPausedTimer(gameId)
         val update = HashMap<String, Any>()
         update["state"] = "paused"
         Timber.i("Debug: Sending state paused")
@@ -119,14 +130,14 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
         update["state"] = "playing"
         if (gameState == PAUSED) {
             val newDeadline = deadline.plusMillis(Duration.between(Instant.parse(
-                    commandHandler?.getPausedTimer()), Instant.now()).abs().toMillis())
+                    commandHandler?.getPausedTimer(gameId)), Instant.now()).abs().toMillis())
             update["deadline"] = newDeadline.toString()
         }
         databaseReference.child(gameId.toString()).updateChildren(update)
     }
 
     private fun resumeTimer(between: Duration) {
-        killTimer()
+        counter?.cancel()
         counter = object : CountDownTimer(between.abs().toMillis(), 1000) {
 
             override fun onTick(millisUntilFinished: Long) {
@@ -139,26 +150,18 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
         }.start()
     }
 
-    //
-    private fun killTimer() {
-        if (counter != null) {
-            counter!!.cancel()
-            counter = null
-        }
-    }
-
     fun initRestartGame() {
         Timber.i("Game restart prompted")
         commandHandler?.showRestartDialog()
     }
 
     fun startNewGame() {
-        killTimer()
+        counter?.cancel()
         Timber.i("Game restarting")
         val stateUpdate = HashMap<String, Any>()
-        stateUpdate.put("state", "playing")
+        stateUpdate["state"] = "playing"
         val deadline: Instant = Instant.now().plusSeconds(3600)
-        stateUpdate.put("deadline", deadline.toString())
+        stateUpdate["deadline"] = deadline.toString()
         Timber.i("Debug: Sending state playing, deadline $deadline")
         databaseReference.child(gameId.toString()).updateChildren(stateUpdate)
     }
@@ -171,9 +174,9 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
 
         fun showRestartDialog()
 
-        fun setPausedTimer()
+        fun setPausedTimer(id: Int)
 
-        fun getPausedTimer(): String
+        fun getPausedTimer(id: Int): String
 
     }
 }

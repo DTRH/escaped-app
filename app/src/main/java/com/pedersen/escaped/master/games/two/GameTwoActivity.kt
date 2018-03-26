@@ -37,7 +37,7 @@ class GameTwoActivity : ViewModelActivity<GameTwoActivityViewModel, ActivityGame
     }
 
     override fun launchHintControls() {
-        startActivity(HintControlsActivity.newIntent(this, BuildConfig.gameId))
+        startActivity(HintControlsActivity.newIntent(this, 2))
     }
 
     override fun launchVideoControls() {
@@ -45,7 +45,7 @@ class GameTwoActivity : ViewModelActivity<GameTwoActivityViewModel, ActivityGame
     }
 
     override fun launchGameControls() {
-        startActivity(GameControlsActivity.newIntent(this, BuildConfig.gameId))
+        startActivity(GameControlsActivity.newIntent(this, 2))
     }
 
     companion object {
