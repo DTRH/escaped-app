@@ -29,9 +29,9 @@ class GameControlsActivity : ViewModelActivity<GameControlsActivityViewModel, Ac
     override fun showRestartDialog() {
         val restartDialog = AlertDialog.Builder(this@GameControlsActivity).create()
         restartDialog.setTitle("Alert")
-        restartDialog.setMessage("This will delete any current game content!")
+        restartDialog.setMessage("This will delete any current game content, and begin a new game right away!")
 
-        restartDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", { dialogInterface, i ->
+        restartDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", { _, _ ->
             viewModel.startNewGame()
         })
 
