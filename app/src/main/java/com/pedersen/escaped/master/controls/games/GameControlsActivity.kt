@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.widget.SeekBar
 import com.pedersen.escaped.BR
 import com.pedersen.escaped.R
 import com.pedersen.escaped.databinding.ActivityGameControlsBinding
@@ -14,16 +15,34 @@ import org.threeten.bp.Instant
 
 class GameControlsActivity : ViewModelActivity<GameControlsActivityViewModel, ActivityGameControlsBinding>(), GameControlsActivityViewModel.Commands {
 
-    var gameId: Int = 0
+    private var gameId: Int = 0
     private lateinit var sharedPref: SharedPreferences
+    private lateinit var seekbar: SeekBar
 
+    @SuppressLint("MissingSuperCall")
     override fun onCreate(savedInstanceState: Bundle?) {
         gameId = intent.extras.get(GameControlsActivity.GAME_ID) as Int
         initialize(R.layout.activity_game_controls, BR.viewModel,
                    ({ GameControlsActivityViewModel().apply { gameId = this@GameControlsActivity.gameId } }))
         super.onCreate(savedInstanceState)
 
-        sharedPref = getSharedPreferences("gamePrefs", Context.MODE_WORLD_READABLE)
+        sharedPref = getSharedPreferences("gamePrefs", Context.MODE_PRIVATE)
+
+        seekbar = binding.seekBar
+        seekbar.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener {
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                viewModel.updateProgress()
+            }
+
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                viewModel.seekValueTxt = progress.toString()
+            }
+
+        })
     }
 
     override fun showRestartDialog() {
@@ -49,10 +68,14 @@ class GameControlsActivity : ViewModelActivity<GameControlsActivityViewModel, Ac
 
     override fun getPausedTimer(id: Int): String {
         return when (gameId) {
-            1 -> sharedPref.getString(PAUSED_TIME_GAME_ONE, "")
-            2 -> sharedPref.getString(PAUSED_TIME_GAME_TWO, "")
+            1 -> sharedPref.getString("paused_time_one", "")
+            2 -> sharedPref.getString("paused_time_two", "")
             else -> "No paused time found for gameId: $gameId"
         }
+    }
+
+    override fun resetProgress() {
+        seekbar.progress = 0
     }
 
     companion object {

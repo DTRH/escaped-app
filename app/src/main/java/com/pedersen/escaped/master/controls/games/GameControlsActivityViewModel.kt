@@ -1,5 +1,6 @@
 package com.pedersen.escaped.master.controls.games
 
+import android.annotation.SuppressLint
 import android.databinding.Bindable
 import android.os.CountDownTimer
 import com.google.firebase.database.DataSnapshot
@@ -49,6 +50,9 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
         get() = gameId.toString()
 
     @get:Bindable
+    var seekValueTxt by bind("", BR.seekValueTxt)
+
+    @get:Bindable
     var playable: Boolean = false
         get() = gameState == READY || gameState == PAUSED
 
@@ -59,6 +63,7 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
     @get:Bindable
     private var gameState by bind(UNKNOWN, BR.gameState, BR.playable, BR.pausable, BR.stateTxt, BR.idTxt)
 
+    @SuppressLint("MissingSuperCall")
     override fun onActive() {
         super.onActive()
 
@@ -162,6 +167,8 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
         stateUpdate["state"] = "playing"
         val deadline: Instant = Instant.now().plusSeconds(3600)
         stateUpdate["deadline"] = deadline.toString()
+        commandHandler?.resetProgress()
+        stateUpdate["progress"] = 0.toString()
         Timber.i("Debug: Sending state playing, deadline $deadline")
         databaseReference.child(gameId.toString()).updateChildren(stateUpdate)
     }
@@ -178,5 +185,15 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
 
         fun getPausedTimer(id: Int): String
 
+        fun resetProgress()
+
+    }
+
+    fun updateProgress() {
+        Timber.i("Updating Progress in Firebase")
+        val progressUpdate = HashMap<String, Any>()
+        progressUpdate["progress"] = seekValueTxt
+        Timber.i("Sending new Progress: $seekValueTxt")
+        databaseReference.child(gameId.toString()).updateChildren(progressUpdate)
     }
 }

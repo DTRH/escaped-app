@@ -20,7 +20,7 @@ android {
     compileSdkVersion 27
     defaultConfig {
         applicationId "com.pedersen.escaped"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
@@ -79,7 +79,7 @@ dependencies {
     implementation "com.android.support:support-v4:$android_support_version"
     implementation "com.android.support:design:$android_support_version"
     implementation "com.android.support:support-v4:$android_support_version"
-    implementation 'com.google.firebase:firebase-database:11.8.0'
+    implementation 'com.google.firebase:firebase-database:12.0.0'
     kapt "com.android.databinding:compiler:$android_plugin_version"
 
     // Support libraries required for using mvvm-kit
