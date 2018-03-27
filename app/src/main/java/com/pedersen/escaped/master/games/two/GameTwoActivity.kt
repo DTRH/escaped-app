@@ -19,22 +19,16 @@ class GameTwoActivity : ViewModelActivity<GameTwoActivityViewModel, ActivityGame
         initialize(R.layout.activity_game_two, BR.viewModel, ({ GameTwoActivityViewModel() }))
         super.onCreate(savedInstanceState)
     }
-
-    override fun onResume() {
-        super.onResume()
-        // Remove all system UI
-        AppUtils.clearWindow(window)
-    }
-
-    override fun onBackPressed() {
-        val count = fragmentManager.backStackEntryCount
-        if (count == 0) {
-            super.onBackPressed()
-            //additional code
-        } else {
-            fragmentManager.popBackStack()
-        }
-    }
+//
+//    override fun onBackPressed() {
+//        val count = fragmentManager.backStackEntryCount
+//        if (count == 0) {
+//            super.onBackPressed()
+//            //additional code
+//        } else {
+//            fragmentManager.popBackStack()
+//        }
+//    }
 
     override fun launchHintControls() {
         startActivity(HintControlsActivity.newIntent(this, 2))

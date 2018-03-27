@@ -20,13 +20,6 @@ class GameMasterActivity : ViewModelActivity<GameMasterActivityViewModel, Activi
         super.onCreate(savedInstanceState)
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        // Remove all system UI
-        AppUtils.clearWindow(window)
-    }
-
     override fun onBackPressed() {
         // DO NOTHING
     }

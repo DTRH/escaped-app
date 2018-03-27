@@ -1,5 +1,6 @@
 package com.pedersen.escaped.utils
 
+import android.support.design.widget.Snackbar
 import android.view.View
 import android.view.Window
 import com.pedersen.escaped.BuildConfig
@@ -49,6 +50,11 @@ object AppUtils {
         sb.append(" Seconds")
 
         return sb.toString()
+    }
+
+    fun showSnack(s: String, w: View) {
+        val snackbar: Snackbar = Snackbar.make(w, s, Snackbar.LENGTH_LONG)
+        snackbar.show()
     }
 
 }

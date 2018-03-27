@@ -50,7 +50,7 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
 
     @get:Bindable
     var playable: Boolean = false
-        get() = gameState == READY || gameState == PAUSED || gameState == ENDED
+        get() = gameState == READY || gameState == PAUSED
 
     @get:Bindable
     var pausable: Boolean = false

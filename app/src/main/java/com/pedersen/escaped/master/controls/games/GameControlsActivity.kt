@@ -1,5 +1,6 @@
 package com.pedersen.escaped.master.controls.games
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
@@ -22,7 +23,7 @@ class GameControlsActivity : ViewModelActivity<GameControlsActivityViewModel, Ac
                    ({ GameControlsActivityViewModel().apply { gameId = this@GameControlsActivity.gameId } }))
         super.onCreate(savedInstanceState)
 
-        sharedPref = getPreferences(Context.MODE_PRIVATE)
+        sharedPref = getSharedPreferences("gamePrefs", Context.MODE_WORLD_READABLE)
     }
 
     override fun showRestartDialog() {
@@ -37,13 +38,13 @@ class GameControlsActivity : ViewModelActivity<GameControlsActivityViewModel, Ac
         restartDialog.show()
     }
 
+    @SuppressLint("ApplySharedPref")
     override fun setPausedTimer(id: Int) {
         val editor = sharedPref.edit()
         when (id) {
-            1 -> editor.putString(PAUSED_TIME_GAME_ONE, Instant.now().toString())
-            2 -> editor.putString(PAUSED_TIME_GAME_TWO, Instant.now().toString())
+            1 -> editor.putString(PAUSED_TIME_GAME_ONE, Instant.now().toString()).commit()
+            2 -> editor.putString(PAUSED_TIME_GAME_TWO, Instant.now().toString()).commit()
         }
-        editor.apply()
     }
 
     override fun getPausedTimer(id: Int): String {
