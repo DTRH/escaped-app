@@ -22,6 +22,11 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
     // Handles which game we are dealing with
     var gameId: Int = 0
 
+    private var lastPause: Instant = Instant.now()
+
+    @get:Bindable
+    var progress by bind(0, BR.progress)
+
     // Local copy of the deadline
     private var deadline: Instant = Instant.now()
         set(value) {
@@ -70,39 +75,67 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
         super.onActive()
 
         // Setup statelistener. GameState will now update automatically
-        databaseReference.child(gameId.toString()).child(
-                "state").addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                if (dataSnapshot.value != null && dataSnapshot.value != "") {
-                    val data = dataSnapshot.value as String
-                    setState(data.toLowerCase())
-                }
-            }
+        databaseReference.child(gameId.toString()).child("state")
+                .addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        if (dataSnapshot.value != null && dataSnapshot.value != "") {
+                            val data = dataSnapshot.value as String
+                            setState(data.toLowerCase())
+                        }
+                    }
 
-            override fun onCancelled(error: DatabaseError) {
-                // Failed to read value
-                val e = error.toException().toString()
-                Timber.w("Debug: Failed to read value: $e")
-            }
-        })
+                    override fun onCancelled(error: DatabaseError) {
+                        // Failed to read value
+                        val e = error.toException().toString()
+                        Timber.w("Debug: Failed to read value: $e")
+                    }
+                })
 
         // Setup timer listener that updates
-        databaseReference.child(gameId.toString()).child(
-                "deadline").addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                if (dataSnapshot.value != "" && dataSnapshot.value != null)
-                    deadline = Instant.parse(dataSnapshot.value as CharSequence?)
-                Timber.i("Debug: Updated game deadline to: $deadline")
-                if (gameState != PAUSED)
-                    resumeTimer(Duration.between(Instant.now(), deadline))
-            }
+        databaseReference.child(gameId.toString()).child("deadline")
+                .addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        if (dataSnapshot.value != "" && dataSnapshot.value != null)
+                            deadline = Instant.parse(dataSnapshot.value as CharSequence?)
+                        Timber.i("Debug: Updated game deadline to: $deadline")
+                        if (gameState != PAUSED)
+                            resumeTimer(Duration.between(Instant.now(), deadline))
+                    }
+                    override fun onCancelled(error: DatabaseError) {
+                        // Failed to read value
+                        val e = error.toException().toString()
+                        Timber.w("Debug: Failed to read value: $e")
+                    }
+                })
 
-            override fun onCancelled(error: DatabaseError) {
-                // Failed to read value
-                val e = error.toException().toString()
-                Timber.w("Debug: Failed to read value: $e")
-            }
-        })
+        // Setup up pause listener
+        databaseReference.child(gameId.toString()).child("pausedAt")
+                .addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        if (dataSnapshot.value is String && dataSnapshot.value != null)
+                            lastPause = Instant.parse(dataSnapshot.value as CharSequence?)
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        // Failed to read value
+                        val e = error.toException().toString()
+                        Timber.w("Debug: Failed to read value: $e")
+                    }
+                })
+
+        databaseReference.child(gameId.toString()).child("progress")
+                .addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        if (dataSnapshot.value is String && dataSnapshot.value != null)
+                            progress = (dataSnapshot.value as String).toInt()
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        // Failed to read value
+                        val e = error.toException().toString()
+                        Timber.w("Debug: Failed to read value: $e")
+                    }
+                })
     }
 
     private fun setState(data: String) {
@@ -120,19 +153,23 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
                         val updatedDeadline: Instant =
                                 deadline.plusMillis(
                                         Duration.between(
-                                                Instant.parse(commandHandler?.getPausedTimer(gameId)),
+                                                lastPause,
                                                 Instant.now())
                                                 .abs().toMillis())
                         update["deadline"] = updatedDeadline.toString()
+                        databaseReference.child(gameId.toString()).updateChildren(update)
                     } catch (e: Exception) {
                         if (e is NullPointerException) {
                             commandHandler?.showErrorSnack("Loading save time failed. Resuming timer with current endtime.")
                             gameState = PLAYING
                         }
                     }
-                } else
+                }
+                if (gameState == READY) {
                     update["deadline"] = Instant.now().plusSeconds(3600).toString()
-                databaseReference.child(gameId.toString()).updateChildren(update)
+                    databaseReference.child(gameId.toString()).updateChildren(update)
+                }
+
                 gameState = PLAYING
             }
             "paused" -> {
@@ -149,9 +186,11 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
 
     fun pause() {
         Timber.i("Debug: Pause clicked!")
-        commandHandler?.setPausedTimer(gameId)
+        //commandHandler?.setPausedTimer(gameId)
+
         val update = HashMap<String, Any>()
         update["state"] = "paused"
+        update["pausedAt"] = Instant.now().toString()
         Timber.i("Debug: Sending state paused")
         databaseReference.child(gameId.toString()).updateChildren(update)
         counter?.cancel()
@@ -166,7 +205,6 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
 
     private fun resumeTimer(between: Duration) {
         counter?.cancel()
-        //if (gameState == PLAYING) {
         counter = object : CountDownTimer(between.abs().toMillis(), 1000) {
 
             override fun onTick(millisUntilFinished: Long) {
@@ -174,10 +212,9 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
             }
 
             override fun onFinish() {
-                timerTxt = "Debug: done!"
+                timerTxt = "The Game has Ended!"
             }
         }.start()
-        //}
     }
 
     fun initRestartGame() {
@@ -188,14 +225,22 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
     fun startNewGame() {
         counter?.cancel()
         Timber.i("Game restarting")
+        // Clear UI
+        commandHandler?.resetProgress()
+        timerTxt = "---"
+
         val stateUpdate = HashMap<String, Any>()
         stateUpdate["state"] = "ready"
-        val deadline: Instant = Instant.now().plusSeconds(3600)
-        // stateUpdate["deadline"] = deadline.toString()
-        commandHandler?.resetProgress()
         stateUpdate["progress"] = 0.toString()
-        //Timber.i("Debug: Sending state playing, deadline $deadline")
         databaseReference.child(gameId.toString()).updateChildren(stateUpdate)
+    }
+
+    fun updateProgress() {
+        Timber.i("Updating Progress in Firebase")
+        val progressUpdate = HashMap<String, Any>()
+        progressUpdate["progress"] = seekValueTxt
+        Timber.i("Sending new Progress: $seekValueTxt")
+        databaseReference.child(gameId.toString()).updateChildren(progressUpdate)
     }
 
     enum class GameState {
@@ -206,20 +251,16 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
 
         fun showRestartDialog()
 
-        fun setPausedTimer(id: Int)
+      //  fun setPausedTimer(id: Int)
 
-        fun getPausedTimer(id: Int): String
+      //  fun getPausedTimer(id: Int): String
 
         fun resetProgress()
+
+      //  fun setProgressBar(progress: Int)
 
         fun showErrorSnack(s: String)
     }
 
-    fun updateProgress() {
-        Timber.i("Updating Progress in Firebase")
-        val progressUpdate = HashMap<String, Any>()
-        progressUpdate["progress"] = seekValueTxt
-        Timber.i("Sending new Progress: $seekValueTxt")
-        databaseReference.child(gameId.toString()).updateChildren(progressUpdate)
-    }
+
 }
