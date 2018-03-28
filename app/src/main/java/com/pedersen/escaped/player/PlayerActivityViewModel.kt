@@ -1,5 +1,6 @@
 package com.pedersen.escaped.player
 
+import android.annotation.SuppressLint
 import android.databinding.Bindable
 import android.view.View
 
@@ -29,6 +30,7 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
             //notifyPropertyChanged(BR.progress)
         }
 
+    @SuppressLint("MissingSuperCall")
     override fun onActive() {
         super.onActive()
         progress = 50

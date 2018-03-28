@@ -1,6 +1,7 @@
 package com.pedersen.escaped.player
 
 import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -29,6 +30,7 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
     private val firebaseInstance = FirebaseDatabase.getInstance()
     private lateinit var hintsDatabase: DatabaseReference
 
+    @SuppressLint("MissingSuperCall")
     override fun onCreate(savedInstanceState: Bundle?) {
         initialize(R.layout.activity_player, BR.viewModel, ({ PlayerActivityViewModel() }))
         super.onCreate(savedInstanceState)

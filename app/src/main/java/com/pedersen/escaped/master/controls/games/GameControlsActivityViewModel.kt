@@ -97,6 +97,11 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         if (dataSnapshot.value != "" && dataSnapshot.value != null)
                             deadline = Instant.parse(dataSnapshot.value as CharSequence?)
+                        if (deadline.isBefore(Instant.now())) {
+                            endGame()
+                            return
+                        }
+
                         Timber.i("Debug: Updated game deadline to: $deadline")
                         if (gameState != PAUSED)
                             resumeTimer(Duration.between(Instant.now(), deadline))
@@ -127,7 +132,9 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
                 .addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         if (dataSnapshot.value is String && dataSnapshot.value != null)
+                            if (gameState != ENDED)
                             progress = (dataSnapshot.value as String).toInt()
+
                     }
 
                     override fun onCancelled(error: DatabaseError) {
@@ -179,6 +186,7 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
             "ended" -> {
                 counter?.cancel()
                 gameState = ENDED
+                commandHandler?.resetProgress()
             }
         }
         Timber.i("Debug: Updated game state to: $gameState")
@@ -234,6 +242,15 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
         stateUpdate["progress"] = 0.toString()
         databaseReference.child(gameId.toString()).updateChildren(stateUpdate)
     }
+
+    private fun endGame() {
+        val stateUpdate = HashMap<String, Any>()
+        stateUpdate["state"] = ENDED
+        Timber.i("Debug: Sending state paused")
+        databaseReference.child(gameId.toString()).updateChildren(stateUpdate)
+        commandHandler?.resetProgress()
+    }
+
 
     fun updateProgress() {
         Timber.i("Updating Progress in Firebase")
