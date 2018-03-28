@@ -27,7 +27,8 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
         set(value) {
             field = value
             if (counter != null) {
-                resumeTimer(Duration.between(field, Instant.now()))
+                if (gameState == PLAYING)
+                    resumeTimer(Duration.between(field, Instant.now()))
             }
         }
 
@@ -61,7 +62,8 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
         get() = gameState == PLAYING
 
     @get:Bindable
-    private var gameState by bind(UNKNOWN, BR.gameState, BR.playable, BR.pausable, BR.stateTxt, BR.idTxt)
+    private var gameState by bind(UNKNOWN, BR.gameState, BR.playable, BR.pausable, BR.stateTxt,
+                                  BR.idTxt, BR.timerTxt)
 
     @SuppressLint("MissingSuperCall")
     override fun onActive() {
@@ -91,6 +93,7 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
                 if (dataSnapshot.value != "" && dataSnapshot.value != null)
                     deadline = Instant.parse(dataSnapshot.value as CharSequence?)
                 Timber.i("Debug: Updated game deadline to: $deadline")
+                resumeTimer(Duration.between(Instant.now(), deadline))
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -106,15 +109,27 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
             "unknown" -> gameState = UNKNOWN
             "ready" -> gameState = READY
             "playing" -> {
+                val update = HashMap<String, Any>()
+                if (gameState == UNKNOWN)
+                    return
                 if (gameState == PAUSED) {
-                    resumeTimer(Duration.between(Instant.parse(commandHandler?.getPausedTimer(gameId)),
-                            deadline))
+                    val updatedDeadline: Instant =
+                            deadline.plusMillis(
+                                    Duration.between(
+                                            Instant.parse(commandHandler?.getPausedTimer(gameId)),
+                                            Instant.now())
+                                            .abs().toMillis())
+                    update["deadline"] = updatedDeadline.toString()
                 } else
-                    resumeTimer(Duration.between(Instant.now(), deadline))
+                    update["deadline"] = Instant.now().plusSeconds(3600).toString()
+                databaseReference.child(gameId.toString()).updateChildren(update)
                 gameState = PLAYING
             }
             "paused" -> gameState = PAUSED
-            "ended" -> gameState = ENDED
+            "ended" -> {
+                counter?.cancel()
+                gameState = ENDED
+            }
         }
         Timber.i("Debug: Updated game state to: $gameState")
     }
@@ -131,18 +146,14 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
 
     fun play() {
         Timber.i("Debug: Play clicked!")
-        val update = HashMap<String, Any>()
-        update["state"] = "playing"
-        if (gameState == PAUSED) {
-            val newDeadline = deadline.plusMillis(Duration.between(Instant.parse(
-                    commandHandler?.getPausedTimer(gameId)), Instant.now()).abs().toMillis())
-            update["deadline"] = newDeadline.toString()
-        }
-        databaseReference.child(gameId.toString()).updateChildren(update)
+        val stateUpdate = HashMap<String, Any>()
+        stateUpdate["state"] = "playing"
+        databaseReference.child(gameId.toString()).updateChildren(stateUpdate)
     }
 
     private fun resumeTimer(between: Duration) {
         counter?.cancel()
+        //if (gameState == PLAYING) {
         counter = object : CountDownTimer(between.abs().toMillis(), 1000) {
 
             override fun onTick(millisUntilFinished: Long) {
@@ -153,6 +164,7 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
                 timerTxt = "Debug: done!"
             }
         }.start()
+        //}
     }
 
     fun initRestartGame() {
@@ -164,12 +176,12 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
         counter?.cancel()
         Timber.i("Game restarting")
         val stateUpdate = HashMap<String, Any>()
-        stateUpdate["state"] = "playing"
+        stateUpdate["state"] = "ready"
         val deadline: Instant = Instant.now().plusSeconds(3600)
-        stateUpdate["deadline"] = deadline.toString()
+        // stateUpdate["deadline"] = deadline.toString()
         commandHandler?.resetProgress()
         stateUpdate["progress"] = 0.toString()
-        Timber.i("Debug: Sending state playing, deadline $deadline")
+        //Timber.i("Debug: Sending state playing, deadline $deadline")
         databaseReference.child(gameId.toString()).updateChildren(stateUpdate)
     }
 

@@ -17,7 +17,7 @@ class GameControlsActivity : ViewModelActivity<GameControlsActivityViewModel, Ac
 
     private var gameId: Int = 0
     private lateinit var sharedPref: SharedPreferences
-    private lateinit var seekbar: SeekBar
+    private lateinit var seekBar: SeekBar
 
     @SuppressLint("MissingSuperCall")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,10 +26,10 @@ class GameControlsActivity : ViewModelActivity<GameControlsActivityViewModel, Ac
                    ({ GameControlsActivityViewModel().apply { gameId = this@GameControlsActivity.gameId } }))
         super.onCreate(savedInstanceState)
 
-        sharedPref = getSharedPreferences("gamePrefs", Context.MODE_PRIVATE)
+        sharedPref = getSharedPreferences(packageName, Context.MODE_PRIVATE)
 
-        seekbar = binding.seekBar
-        seekbar.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener {
+        seekBar = binding.seekBar
+        seekBar.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener {
             override fun onStartTrackingTouch(seekBar: SeekBar?) {
 
             }
@@ -61,28 +61,32 @@ class GameControlsActivity : ViewModelActivity<GameControlsActivityViewModel, Ac
     override fun setPausedTimer(id: Int) {
         val editor = sharedPref.edit()
         when (id) {
-            1 -> editor.putString(PAUSED_TIME_GAME_ONE, Instant.now().toString()).commit()
+            1 -> {
+                val instant = Instant.now().toString()
+                editor.putString(PAUSED_TIME_GAME_ONE, instant)
+                editor.commit()
+            }
             2 -> editor.putString(PAUSED_TIME_GAME_TWO, Instant.now().toString()).commit()
         }
     }
 
     override fun getPausedTimer(id: Int): String {
         return when (gameId) {
-            1 -> sharedPref.getString("paused_time_one", "")
-            2 -> sharedPref.getString("paused_time_two", "")
+            1 -> sharedPref.getString(PAUSED_TIME_GAME_ONE, "")
+            2 -> sharedPref.getString(PAUSED_TIME_GAME_TWO, "")
             else -> "No paused time found for gameId: $gameId"
         }
     }
 
     override fun resetProgress() {
-        seekbar.progress = 0
+        seekBar.progress = 0
     }
 
     companion object {
 
         private const val GAME_ID = "game_id"
-        private const val PAUSED_TIME_GAME_ONE = "paused_time_one"
-        private const val PAUSED_TIME_GAME_TWO = "paused_time_two"
+        private const val PAUSED_TIME_GAME_ONE : String = "paused_time_one"
+        private const val PAUSED_TIME_GAME_TWO : String = "paused_time_two"
 
         fun newIntent(context: Context, gameId: Int): Intent {
             val intent = Intent(context, GameControlsActivity::class.java)
