@@ -101,12 +101,6 @@ class HintControlsActivity : ViewModelActivity<HintControlsActivityViewModel, Hi
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        // Remove all system UI
-        AppUtils.clearWindow(window)
-    }
-
     override fun createHint() {
         val newHint = Hint(System.currentTimeMillis().toString(), binding.headerInput.text.toString(), binding.bodyInput.text.toString(), false)
         hintsDatabase.push().setValue(newHint)

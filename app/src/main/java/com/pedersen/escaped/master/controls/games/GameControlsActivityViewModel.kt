@@ -63,7 +63,7 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
 
     @get:Bindable
     private var gameState by bind(UNKNOWN, BR.gameState, BR.playable, BR.pausable, BR.stateTxt,
-                                  BR.idTxt, BR.timerTxt)
+            BR.idTxt, BR.timerTxt)
 
     @SuppressLint("MissingSuperCall")
     override fun onActive() {
@@ -93,7 +93,8 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
                 if (dataSnapshot.value != "" && dataSnapshot.value != null)
                     deadline = Instant.parse(dataSnapshot.value as CharSequence?)
                 Timber.i("Debug: Updated game deadline to: $deadline")
-                resumeTimer(Duration.between(Instant.now(), deadline))
+                if (gameState != PAUSED)
+                    resumeTimer(Duration.between(Instant.now(), deadline))
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -110,22 +111,34 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
             "ready" -> gameState = READY
             "playing" -> {
                 val update = HashMap<String, Any>()
-                if (gameState == UNKNOWN)
+                if (gameState == UNKNOWN) {
+                    gameState = PLAYING
                     return
+                }
                 if (gameState == PAUSED) {
-                    val updatedDeadline: Instant =
-                            deadline.plusMillis(
-                                    Duration.between(
-                                            Instant.parse(commandHandler?.getPausedTimer(gameId)),
-                                            Instant.now())
-                                            .abs().toMillis())
-                    update["deadline"] = updatedDeadline.toString()
+                    try {
+                        val updatedDeadline: Instant =
+                                deadline.plusMillis(
+                                        Duration.between(
+                                                Instant.parse(commandHandler?.getPausedTimer(gameId)),
+                                                Instant.now())
+                                                .abs().toMillis())
+                        update["deadline"] = updatedDeadline.toString()
+                    } catch (e: Exception) {
+                        if (e is NullPointerException) {
+                            commandHandler?.showErrorSnack("Loading save time failed. Resuming timer with current endtime.")
+                            gameState = PLAYING
+                        }
+                    }
                 } else
                     update["deadline"] = Instant.now().plusSeconds(3600).toString()
                 databaseReference.child(gameId.toString()).updateChildren(update)
                 gameState = PLAYING
             }
-            "paused" -> gameState = PAUSED
+            "paused" -> {
+                counter?.cancel()
+                gameState = PAUSED
+            }
             "ended" -> {
                 counter?.cancel()
                 gameState = ENDED
@@ -199,6 +212,7 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
 
         fun resetProgress()
 
+        fun showErrorSnack(s: String)
     }
 
     fun updateProgress() {

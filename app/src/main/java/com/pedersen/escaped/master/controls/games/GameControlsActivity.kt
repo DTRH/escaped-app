@@ -10,6 +10,7 @@ import android.widget.SeekBar
 import com.pedersen.escaped.BR
 import com.pedersen.escaped.R
 import com.pedersen.escaped.databinding.ActivityGameControlsBinding
+import com.pedersen.escaped.utils.AppUtils
 import io.greenerpastures.mvvm.ViewModelActivity
 import org.threeten.bp.Instant
 
@@ -80,6 +81,10 @@ class GameControlsActivity : ViewModelActivity<GameControlsActivityViewModel, Ac
 
     override fun resetProgress() {
         seekBar.progress = 0
+    }
+
+    override fun showErrorSnack(s: String) {
+        AppUtils.showSnack(s, window.decorView.rootView)
     }
 
     companion object {
