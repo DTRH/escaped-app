@@ -6,9 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
+import com.pedersen.escaped.BuildConfig
 import com.pedersen.escaped.R
 import com.pedersen.escaped.data.models.Hint
-import org.w3c.dom.Text
 import timber.log.Timber
 
 /**
@@ -33,8 +33,16 @@ class HintsAdapter(private var context: Context, private var list: ArrayList<Hin
             vh = view.tag as ViewHolder
         }
 
-        vh.tvHeader.text = context.getString(R.string.hint_item_header_label, list[position].title)
-        vh.tvBody.text = context.getString(R.string.hint_item_body_label, list[position].body)
+        when (BuildConfig.isMaster) {
+            true -> {
+                vh.tvHeader.text = context.getString(R.string.hint_item_header_label, list[position].title)
+                vh.tvBody.text = context.getString(R.string.hint_item_body_label, list[position].body)
+            }
+            false -> {
+                vh.tvHeader.text = list[position].title
+                vh.tvBody.visibility = View.GONE
+            }
+        }
 
         return view
     }
