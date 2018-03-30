@@ -15,7 +15,8 @@ class HintControlsActivityViewModel : BaseViewModel<HintControlsActivityViewMode
     var hintList = ArrayList<Hint>()
 
     @get:Bindable
-    var isDeletable by bind(false, BR.deletable)
+    var isDeletable: Boolean = false
+        get() = selectedId.isNotEmpty()
 
     @get:Bindable
     var isEditable: Boolean = false

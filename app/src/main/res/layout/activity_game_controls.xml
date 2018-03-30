@@ -25,7 +25,6 @@
             android:text="Game Id:"
             android:paddingTop="50dp"
             android:paddingLeft="50dp"
-
             android:textSize="18sp"
             android:textColor="@color/primaryTextColor" />
 
@@ -38,7 +37,7 @@
             android:text="@{viewModel.idTxt}"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="@id/label_game_id"
-            app:layout_constraintRight_toLeftOf="@id/seek_bar"
+            app:layout_constraintLeft_toRightOf="@id/label_game_id"
             tools:text="2" />
 
         <TextView
@@ -49,7 +48,6 @@
             android:textSize="18sp"
             android:paddingLeft="50dp"
             android:textColor="@color/primaryTextColor"
-
             app:layout_constraintTop_toBottomOf="@id/label_game_id" />
 
         <TextView
@@ -61,7 +59,7 @@
             android:text="@{viewModel.timerTxt}"
             android:textColor="@color/primaryTextColor"
             app:layout_constraintBottom_toBottomOf="@id/label_time_played"
-            app:layout_constraintRight_toLeftOf="@id/seek_bar"
+            app:layout_constraintLeft_toRightOf="@id/label_time_played"
             tools:text="---------" />
 
         <TextView
@@ -81,7 +79,7 @@
             android:textColor="@color/primaryTextColor"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="@id/label_game_state"
-            app:layout_constraintRight_toLeftOf="@id/seek_bar"
+            app:layout_constraintLeft_toRightOf="@id/label_game_state"
             android:text="@{viewModel.stateTxt}"
             tools:text="Playing"/>
 
