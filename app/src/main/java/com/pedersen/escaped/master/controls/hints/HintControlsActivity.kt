@@ -72,9 +72,6 @@ class HintControlsActivity : ViewModelActivity<HintControlsActivityViewModel, Hi
                         imm.hideSoftInputFromWindow(v.windowToken, 0)
                         viewModel.notifyPropertyChanged(BR.creatable)
 
-                        // Remove all system UI
-                        AppUtils.clearWindow(window)
-
                         return@setOnEditorActionListener true
                     }
                     false

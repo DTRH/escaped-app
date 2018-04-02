@@ -26,19 +26,20 @@
             style="@style/room_button"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            app:layout_constraintDimensionRatio="W, !.!"
             android:background="@drawable/ic_camera"
             android:gravity="center"
-            app:layout_constraintBottom_toTopOf="@id/room_control_button"
+            app:layout_constraintBottom_toTopOf="@+id/room_control_button"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@id/web_two"
+            app:layout_constraintRight_toLeftOf="@+id/web_two"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Camera #1"
+            android:textSize="12sp"
             android:textColor="@color/primaryTextColor"
-            android:padding="15dp"
             app:layout_constraintLeft_toLeftOf="@id/web_one"
             app:layout_constraintRight_toRightOf="@id/web_one"
             app:layout_constraintTop_toBottomOf="@id/web_one"/>
@@ -49,10 +50,9 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:background="@drawable/ic_camera"
-            android:gravity="center"
-            app:layout_constraintBottom_toTopOf="@id/hint_button"
+            app:layout_constraintBottom_toTopOf="@+id/hint_button"
             app:layout_constraintLeft_toRightOf="@id/web_one"
-            app:layout_constraintRight_toLeftOf="@id/web_three"
+            app:layout_constraintRight_toLeftOf="@+id/web_three"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
@@ -60,7 +60,6 @@
             android:layout_height="wrap_content"
             android:text="Camera #2"
             android:textColor="@color/primaryTextColor"
-            android:padding="15dp"
             app:layout_constraintLeft_toLeftOf="@id/web_two"
             app:layout_constraintRight_toRightOf="@id/web_two"
             app:layout_constraintTop_toBottomOf="@id/web_two"/>
@@ -71,8 +70,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:background="@drawable/ic_camera"
-            android:gravity="center"
-            app:layout_constraintBottom_toTopOf="@id/video_button"
+            app:layout_constraintBottom_toTopOf="@+id/video_button"
             app:layout_constraintLeft_toRightOf="@id/web_two"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -82,7 +80,6 @@
             android:layout_height="wrap_content"
             android:text="Camera #3"
             android:textColor="@color/primaryTextColor"
-            android:padding="15dp"
             app:layout_constraintLeft_toLeftOf="@id/web_three"
             app:layout_constraintRight_toRightOf="@id/web_three"
             app:layout_constraintTop_toBottomOf="@id/web_three"/>
@@ -104,7 +101,7 @@
             android:layout_height="wrap_content"
             android:text="Game Controls"
             android:textColor="@color/primaryTextColor"
-            android:padding="15dp"
+
             app:layout_constraintLeft_toLeftOf="@id/room_control_button"
             app:layout_constraintRight_toRightOf="@id/room_control_button"
             app:layout_constraintTop_toBottomOf="@id/room_control_button"/>
@@ -126,7 +123,6 @@
             android:layout_height="wrap_content"
             android:text="Hint Controls"
             android:textColor="@color/primaryTextColor"
-            android:padding="15dp"
             app:layout_constraintLeft_toLeftOf="@id/hint_button"
             app:layout_constraintRight_toRightOf="@id/hint_button"
             app:layout_constraintTop_toBottomOf="@id/hint_button"/>
@@ -147,11 +143,9 @@
             android:layout_height="wrap_content"
             android:text="Video Controls"
             android:textColor="@color/primaryTextColor"
-            android:padding="15dp"
             app:layout_constraintLeft_toLeftOf="@id/video_button"
             app:layout_constraintRight_toRightOf="@id/video_button"
             app:layout_constraintTop_toBottomOf="@id/video_button"/>
-
 
     </android.support.constraint.ConstraintLayout>
 
@@ -159,6 +153,5 @@
             android:id="@+id/fragment_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
-
     </FrameLayout>
 </layout>
