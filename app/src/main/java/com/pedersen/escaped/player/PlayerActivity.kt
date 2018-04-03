@@ -27,34 +27,13 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
 
     private lateinit var hintAdapter: BaseAdapter
 
-    private val firebaseInstance = FirebaseDatabase.getInstance()
-    private lateinit var hintsDatabase: DatabaseReference
+
 
     @SuppressLint("MissingSuperCall")
     override fun onCreate(savedInstanceState: Bundle?) {
         initialize(R.layout.activity_player, BR.viewModel, ({ PlayerActivityViewModel() }))
         super.onCreate(savedInstanceState)
 
-        hintsDatabase = firebaseInstance.getReference("games").child(gameId.toString()).child("hints")
-        // Read from the firebaseInstance
-        hintsDatabase.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                viewModel.hintList.clear()
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                for (hintChild in dataSnapshot.children) {
-                    val hint = hintChild.getValue(Hint::class.java)
-                    hint?.let { viewModel.hintList.add(it) }
-                }
-                hintAdapter.notifyDataSetChanged()
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                // Failed to read value
-                val e = error.toException().toString()
-                Timber.w("Failed to read value: $e")
-            }
-        })
 
         // Setup pull/spring animation for the hint puller
         PositionSpringAnimation(binding.hintPull)
@@ -89,6 +68,10 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
         progressBarAnimation = ObjectAnimator.ofInt(binding.progressBar, "progress", from, to)
         progressBarAnimation.duration = 2000
         progressBarAnimation.start()
+    }
+
+    override fun refreshAdapter() {
+        hintAdapter.notifyDataSetChanged()
     }
 
     companion object {
