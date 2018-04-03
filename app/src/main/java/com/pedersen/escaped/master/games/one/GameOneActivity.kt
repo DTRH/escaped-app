@@ -20,16 +20,6 @@ class GameOneActivity : ViewModelActivity<GameOneActivityViewModel, ActivityGame
         super.onCreate(savedInstanceState)
     }
 
-//    override fun onBackPressed() {
-//        val count = fragmentManager.backStackEntryCount
-//        if (count == 0) {
-//            super.onBackPressed()
-//            //additional code
-//        } else {
-//            fragmentManager.popBackStack()
-//        }
-//    }
-
     override fun launchHintControls() {
         startActivity(HintControlsActivity.newIntent(this, 1))
     }
