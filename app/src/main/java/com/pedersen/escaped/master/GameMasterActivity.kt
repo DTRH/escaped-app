@@ -3,6 +3,7 @@ package com.pedersen.escaped.master
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import com.pedersen.escaped.BR
 import com.pedersen.escaped.R
@@ -10,6 +11,7 @@ import com.pedersen.escaped.databinding.ActivityGameMasterBinding
 import com.pedersen.escaped.master.games.dinner.DinnerRoomActivity
 import com.pedersen.escaped.master.games.one.GameOneActivity
 import com.pedersen.escaped.master.games.two.GameTwoActivity
+import com.pedersen.escaped.utils.AppUtils
 import io.greenerpastures.mvvm.ViewModelActivity
 
 class GameMasterActivity : ViewModelActivity<GameMasterActivityViewModel, ActivityGameMasterBinding>(), GameMasterActivityViewModel.Commands {
@@ -17,18 +19,6 @@ class GameMasterActivity : ViewModelActivity<GameMasterActivityViewModel, Activi
     override fun onCreate(savedInstanceState: Bundle?) {
         initialize(R.layout.activity_game_master, BR.viewModel, ({ GameMasterActivityViewModel() }))
         super.onCreate(savedInstanceState)
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        // Remove all system UI
-        window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
-                or View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
-                or View.SYSTEM_UI_FLAG_IMMERSIVE)
     }
 
     override fun onBackPressed() {

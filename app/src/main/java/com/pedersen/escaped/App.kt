@@ -1,11 +1,9 @@
 package com.pedersen.escaped
 
 import android.app.Application
+import com.jakewharton.threetenabp.AndroidThreeTen
 import timber.log.Timber
 
-/**
- * Created by anderspedersen on 19/02/2018.
- */
 class App : Application() {
     override fun onCreate() {
         super.onCreate()
@@ -16,5 +14,7 @@ class App : Application() {
                         super.createStackElementTag(element)
             }
         })
+
+        AndroidThreeTen.init(this)
     }
 }

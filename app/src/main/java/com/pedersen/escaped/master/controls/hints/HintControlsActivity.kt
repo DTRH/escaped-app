@@ -6,8 +6,6 @@ import android.graphics.Color
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
-import android.util.Log
-import android.view.View
 import android.widget.AdapterView
 import android.widget.BaseAdapter
 import android.widget.ListView
@@ -20,6 +18,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import com.google.firebase.database.*
 import com.pedersen.escaped.data.models.Hint
+import com.pedersen.escaped.utils.AppUtils
 import kotlinx.android.synthetic.main.hint_controls_fragment.*
 import timber.log.Timber
 
@@ -73,14 +72,6 @@ class HintControlsActivity : ViewModelActivity<HintControlsActivityViewModel, Hi
                         imm.hideSoftInputFromWindow(v.windowToken, 0)
                         viewModel.notifyPropertyChanged(BR.creatable)
 
-                        // Remove all system UI
-                        window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
-                                or View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
-                                or View.SYSTEM_UI_FLAG_IMMERSIVE)
-
                         return@setOnEditorActionListener true
                     }
                     false
@@ -103,19 +94,8 @@ class HintControlsActivity : ViewModelActivity<HintControlsActivityViewModel, Hi
             viewModel.notifyPropertyChanged(BR.selectedId)
             viewModel.notifyPropertyChanged(BR.deletable)
             viewModel.notifyPropertyChanged(BR.editable)
+
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        // Remove all system UI
-        window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
-                or View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
-                or View.SYSTEM_UI_FLAG_IMMERSIVE)
     }
 
     override fun createHint() {

@@ -8,7 +8,9 @@ import com.pedersen.escaped.BR
 import com.pedersen.escaped.BuildConfig
 import com.pedersen.escaped.R
 import com.pedersen.escaped.databinding.ActivityGameOneBinding
+import com.pedersen.escaped.master.controls.games.GameControlsActivity
 import com.pedersen.escaped.master.controls.hints.HintControlsActivity
+import com.pedersen.escaped.utils.AppUtils
 import io.greenerpastures.mvvm.ViewModelActivity
 
 class GameOneActivity : ViewModelActivity<GameOneActivityViewModel, ActivityGameOneBinding>(), GameOneActivityViewModel.Commands {
@@ -18,27 +20,15 @@ class GameOneActivity : ViewModelActivity<GameOneActivityViewModel, ActivityGame
         super.onCreate(savedInstanceState)
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        // Remove all system UI
-        window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
-                or View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
-                or View.SYSTEM_UI_FLAG_IMMERSIVE)
-    }
-
-    override fun onBackPressed() {
-        val count = fragmentManager.backStackEntryCount
-        if (count == 0) {
-            super.onBackPressed()
-            //additional code
-        } else {
-            fragmentManager.popBackStack()
-        }
-    }
+//    override fun onBackPressed() {
+//        val count = fragmentManager.backStackEntryCount
+//        if (count == 0) {
+//            super.onBackPressed()
+//            //additional code
+//        } else {
+//            fragmentManager.popBackStack()
+//        }
+//    }
 
     override fun launchHintControls() {
         startActivity(HintControlsActivity.newIntent(this, 1))
@@ -48,8 +38,8 @@ class GameOneActivity : ViewModelActivity<GameOneActivityViewModel, ActivityGame
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun launchRoomControls() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun launchGameControls() {
+        startActivity(GameControlsActivity.newIntent(this, 1))
     }
 
     companion object {

@@ -20,7 +20,7 @@ android {
     compileSdkVersion 27
     defaultConfig {
         applicationId "com.pedersen.escaped"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
@@ -44,18 +44,21 @@ android {
         master {
             dimension "permission"
             versionNameSuffix "-gm"
+            applicationId "com.pedersen.escaped.master"
             buildConfigField("Boolean", "isMaster", "true")
             buildConfigField("Integer", "gameId", "0")
         }
         gameOne {
             dimension "permission"
             versionNameSuffix "-game-one"
+            applicationId "com.pedersen.escaped.one"
             buildConfigField("Boolean", "isMaster", "false")
             buildConfigField("Integer", "gameId", "1")
         }
         gameTwo {
             dimension "permission"
             versionNameSuffix "-game-two"
+            applicationId "com.pedersen.escaped.two"
             buildConfigField("Boolean", "isMaster", "false")
             buildConfigField("Integer", "gameId", "2")
         }
@@ -76,7 +79,7 @@ dependencies {
     implementation "com.android.support:support-v4:$android_support_version"
     implementation "com.android.support:design:$android_support_version"
     implementation "com.android.support:support-v4:$android_support_version"
-    implementation 'com.google.firebase:firebase-database:11.8.0'
+    implementation 'com.google.firebase:firebase-database:12.0.0'
     kapt "com.android.databinding:compiler:$android_plugin_version"
 
     // Support libraries required for using mvvm-kit
@@ -89,6 +92,9 @@ dependencies {
     implementation "io.reactivex.rxjava2:rxjava:$rx_java_version"
     implementation "io.reactivex.rxjava2:rxandroid:$rx_android_version"
 
+    // ThreeTen
+    compile 'com.jakewharton.threetenabp:threetenabp:1.0.5'
+
     // Various module dependencies
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     implementation 'com.jakewharton.timber:timber:4.6.0'
@@ -100,6 +106,7 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 }
+
 
 
 apply plugin: 'com.google.gms.google-services'

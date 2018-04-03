@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
+import com.pedersen.escaped.BuildConfig
 import com.pedersen.escaped.R
 import com.pedersen.escaped.data.models.Hint
 import timber.log.Timber
@@ -13,9 +14,7 @@ import timber.log.Timber
 /**
  * Created by anderspedersen on 14/03/2018.
  */
-class HintsAdapter(private var context: Context, list: ArrayList<Hint>) : BaseAdapter() {
-
-    private var list = list
+class HintsAdapter(private var context: Context, private var list: ArrayList<Hint>) : BaseAdapter() {
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View? {
 
@@ -23,7 +22,6 @@ class HintsAdapter(private var context: Context, list: ArrayList<Hint>) : BaseAd
         val vh: ViewHolder
 
         val inflater = LayoutInflater.from(context)
-
 
         if (convertView == null) {
             view = inflater.inflate(R.layout.hint_list_item, parent, false)
@@ -35,7 +33,16 @@ class HintsAdapter(private var context: Context, list: ArrayList<Hint>) : BaseAd
             vh = view.tag as ViewHolder
         }
 
-        vh.tvContent.text = list[position].title
+        when (BuildConfig.isMaster) {
+            true -> {
+                vh.tvHeader.text = context.getString(R.string.hint_item_header_label, list[position].title)
+                vh.tvBody.text = context.getString(R.string.hint_item_body_label, list[position].body)
+            }
+            false -> {
+                vh.tvHeader.text = list[position].title
+                vh.tvBody.visibility = View.GONE
+            }
+        }
 
         return view
     }
@@ -54,5 +61,6 @@ class HintsAdapter(private var context: Context, list: ArrayList<Hint>) : BaseAd
 }
 
 private class ViewHolder(view: View?) {
-    val tvContent: TextView = view?.findViewById(R.id.header) as TextView
+    val tvHeader: TextView = view?.findViewById(R.id.header) as TextView
+    val tvBody: TextView = view?.findViewById(R.id.body) as TextView
 }

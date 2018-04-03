@@ -13,7 +13,7 @@ class GameOneActivityViewModel : BaseViewModel<GameOneActivityViewModel.Commands
 
     fun launchVideoControls() = commandHandler?.launchVideoControls()
 
-    fun launchRoomControls() = commandHandler?.launchRoomControls()
+    fun launchGameControls() = commandHandler?.launchGameControls()
 
     interface Commands {
 
@@ -21,7 +21,7 @@ class GameOneActivityViewModel : BaseViewModel<GameOneActivityViewModel.Commands
 
         fun launchVideoControls()
 
-        fun launchRoomControls()
+        fun launchGameControls()
 
     }
 }
