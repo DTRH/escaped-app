@@ -18,7 +18,6 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import com.google.firebase.database.*
 import com.pedersen.escaped.data.models.Hint
-import com.pedersen.escaped.utils.AppUtils
 import kotlinx.android.synthetic.main.hint_controls_fragment.*
 import timber.log.Timber
 
@@ -48,7 +47,9 @@ class HintControlsActivity : ViewModelActivity<HintControlsActivityViewModel, Hi
                 // whenever data at this location is updated.
                 for (hintChild in dataSnapshot.children) {
                     val hint = hintChild.getValue(Hint::class.java)
-                    hint.let { hint!!.key = hintChild.key }
+                    hint?.key = hintChild.key
+                    // if this does not work, uncomment below and remove above ^^
+                   // hint.let { hint!!.key = hintChild.key }
                     hint?.let { viewModel.hintList.add(it) }
                 }
 
