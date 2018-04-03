@@ -29,8 +29,7 @@
             android:textColor="@color/primaryTextColor"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@id/label_time_played"
-            app:layout_constraintVertical_chainStyle="packed"
-            />
+            app:layout_constraintVertical_chainStyle="packed" />
 
         <TextView
             android:id="@+id/label_data_game_id"
@@ -57,7 +56,6 @@
             android:id="@+id/label_data_time_left"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
             android:textSize="18sp"
             android:text="@{viewModel.timerTxt}"
             android:textColor="@color/primaryTextColor"
@@ -82,7 +80,6 @@
             android:layout_height="wrap_content"
             android:textColor="@color/primaryTextColor"
             android:textSize="18sp"
-
             app:layout_constraintBottom_toBottomOf="@id/label_game_state"
             app:layout_constraintLeft_toRightOf="@id/label_game_state"
             android:text="@{viewModel.stateTxt}"

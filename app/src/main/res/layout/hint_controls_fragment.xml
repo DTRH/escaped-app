@@ -13,7 +13,7 @@
         android:id="@+id/root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/old_paper_background"
+        android:background="@drawable/game_master_activity_background"
         android:padding="50dp">
 
         <ListView
@@ -32,7 +32,7 @@
             android:layout_height="0dp"
             android:focusableInTouchMode="true"
             android:orientation="vertical"
-            android:padding="20dp"
+            android:paddingStart="20dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toRightOf="@id/list_container"
             app:layout_constraintRight_toRightOf="parent"
@@ -44,7 +44,7 @@
                 android:labelFor="@+id/header_input"
                 android:paddingBottom="10dp"
                 android:text="Overskrift"
-                android:textColor="@color/colorPrimaryDark"
+                android:textColor="@color/primaryTextColor"
                 android:textSize="14sp" />
 
             <EditText
@@ -62,7 +62,7 @@
                 android:labelFor="@+id/body_input"
                 android:paddingBottom="10dp"
                 android:text="Tekst"
-                android:textColor="@color/colorPrimaryDark"
+                android:textColor="@color/primaryTextColor"
                 android:textSize="14sp" />
 
             <EditText
@@ -72,8 +72,7 @@
                 android:layout_marginBottom="20dp"
                 android:background="@android:color/white"
                 android:gravity="top"
-                android:imeOptions="actionDone"
-                android:singleLine="true" />
+                android:imeOptions="actionDone" />
 
             <Button
                 android:id="@+id/create_hint_button"
@@ -103,9 +102,6 @@
                 android:enabled="@{viewModel.isDeletable}"
                 android:onClick="@{_ -> viewModel.deleteHint()}"
                 android:text="Delete hint" />
-
-
         </LinearLayout>
-
     </android.support.constraint.ConstraintLayout>
 </layout>

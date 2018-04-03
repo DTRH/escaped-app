@@ -194,8 +194,6 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
 
     fun pause() {
         Timber.i("Debug: Pause clicked!")
-        //commandHandler?.setPausedTimer(gameId)
-
         val update = HashMap<String, Any>()
         update["state"] = "paused"
         update["pausedAt"] = Instant.now().toString()
@@ -268,16 +266,8 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
 
         fun showRestartDialog()
 
-      //  fun setPausedTimer(id: Int)
-
-      //  fun getPausedTimer(id: Int): String
-
         fun resetProgress()
-
-      //  fun setProgressBar(progress: Int)
 
         fun showErrorSnack(s: String)
     }
-
-
 }

@@ -21,6 +21,4 @@
         android:textColor="@color/primaryDarkColor"
         android:textSize="14sp"
         tools:text="Body" />
-
-
 </LinearLayout>
