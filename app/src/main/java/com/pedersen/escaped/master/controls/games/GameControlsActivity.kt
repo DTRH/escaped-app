@@ -4,8 +4,9 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.SeekBar
 
 import com.pedersen.escaped.BR
@@ -13,7 +14,7 @@ import com.pedersen.escaped.R
 import com.pedersen.escaped.databinding.ActivityGameControlsBinding
 import com.pedersen.escaped.utils.AppUtils
 import io.greenerpastures.mvvm.ViewModelActivity
-import org.threeten.bp.Instant
+import kotlinx.android.synthetic.main.activity_game_controls.*
 
 class GameControlsActivity : ViewModelActivity<GameControlsActivityViewModel, ActivityGameControlsBinding>(), GameControlsActivityViewModel.Commands {
 
@@ -39,6 +40,40 @@ class GameControlsActivity : ViewModelActivity<GameControlsActivityViewModel, Ac
                 viewModel.seekValueTxt = progress.toString()
             }
         })
+
+        // Setup keyboard behavior
+        binding.deadlineUpdateInput.setOnEditorActionListener(
+                { v, actionId, event ->
+                    if (actionId == EditorInfo.IME_ACTION_DONE) {
+                        // hide virtual keyboard
+                        val imm = this.getSystemService(
+                                Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                        imm.hideSoftInputFromWindow(v.windowToken, 0)
+
+                        try {
+                            showAddTimeDialog(binding.deadlineUpdateInput.text.toString().toLong())
+                        } catch (e: Exception) {
+                            AppUtils.showSnack("Something went wrong!", root)
+                        }
+
+                        return@setOnEditorActionListener true
+                    }
+                    false
+                })
+
+    }
+
+    private fun showAddTimeDialog(seconds: Long) {
+        val newDeadlineDialog = AlertDialog.Builder(this@GameControlsActivity).create()
+        newDeadlineDialog.setTitle("Alert")
+        newDeadlineDialog.setMessage("This will add $seconds seconds to the current timer!")
+        newDeadlineDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", { _, _ ->
+            viewModel.updateDeadline(seconds)
+            binding.deadlineUpdateInput.setText("")
+            binding.deadlineUpdateInput.clearFocus()
+        })
+
+        newDeadlineDialog.show()
     }
 
     override fun showRestartDialog() {

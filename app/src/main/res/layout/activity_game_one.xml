@@ -18,17 +18,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/game_master_activity_background"
-        tools:context="com.pedersen.escaped.master.games.one.GameOneActivity"
-        android:padding="50dp">
+        tools:context="com.pedersen.escaped.master.games.one.GameOneActivity">
 
         <Button
             android:id="@+id/web_one"
             style="@style/room_button"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintDimensionRatio="W, !.!"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
             android:background="@drawable/ic_camera"
-            android:gravity="center"
             app:layout_constraintBottom_toTopOf="@+id/room_control_button"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@+id/web_two"
@@ -47,8 +44,8 @@
         <Button
             android:id="@+id/web_two"
             style="@style/room_button"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
             android:background="@drawable/ic_camera"
             app:layout_constraintBottom_toTopOf="@+id/hint_button"
             app:layout_constraintLeft_toRightOf="@id/web_one"
@@ -67,8 +64,8 @@
         <Button
             android:id="@+id/web_three"
             style="@style/room_button"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
             android:background="@drawable/ic_camera"
             app:layout_constraintBottom_toTopOf="@+id/video_button"
             app:layout_constraintLeft_toRightOf="@id/web_two"
@@ -87,8 +84,8 @@
         <Button
             android:id="@+id/room_control_button"
             style="@style/room_button"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
             android:background="@drawable/ic_setting"
             android:onClick="@{_ -> viewModel.launchGameControls()}"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -101,7 +98,6 @@
             android:layout_height="wrap_content"
             android:text="Game Controls"
             android:textColor="@color/primaryTextColor"
-
             app:layout_constraintLeft_toLeftOf="@id/room_control_button"
             app:layout_constraintRight_toRightOf="@id/room_control_button"
             app:layout_constraintTop_toBottomOf="@id/room_control_button"/>
@@ -109,8 +105,8 @@
         <Button
             android:id="@+id/hint_button"
             style="@style/room_button"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
             android:background="@drawable/ic_speech_bubble"
             android:onClick="@{_ -> viewModel.launchHintControls()}"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -130,8 +126,8 @@
         <Button
             android:id="@+id/video_button"
             style="@style/room_button"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
             android:background="@drawable/ic_film_strip"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toRightOf="@id/hint_button"
