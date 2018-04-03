@@ -2,18 +2,12 @@ package com.pedersen.escaped.player
 
 import android.annotation.SuppressLint
 import android.databinding.Bindable
-import android.view.View
-import android.widget.BaseAdapter
 import com.google.firebase.database.*
 
-import com.pedersen.escaped.BR
 import com.pedersen.escaped.data.models.Hint
-import com.pedersen.escaped.extensions.bind
 import io.greenerpastures.mvvm.BaseViewModel
 import timber.log.Timber
 import com.pedersen.escaped.BuildConfig
-import com.pedersen.escaped.master.controls.games.GameControlsActivityViewModel
-
 
 class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>() {
 
@@ -58,20 +52,20 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
             }
         })
 
-        databaseReference.child(BuildConfig.gameId.toString()).child("progress")
-                .addValueEventListener(object : ValueEventListener {
-                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        if (dataSnapshot.value is String && dataSnapshot.value != null)
-                                progress = (dataSnapshot.value as String).toInt()
+        progressListener = databaseReference.child(BuildConfig.gameId.toString()).child("progress")
 
-                    }
+        progressListener.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                if (dataSnapshot.value is String && dataSnapshot.value != null)
+                    progress = (dataSnapshot.value as String).toInt()
+            }
 
-                    override fun onCancelled(error: DatabaseError) {
-                        // Failed to read value
-                        val e = error.toException().toString()
-                        Timber.w("Debug: Failed to read value: $e")
-                    }
-                })
+            override fun onCancelled(error: DatabaseError) {
+                // Failed to read value
+                val e = error.toException().toString()
+                Timber.w("Debug: Failed to read value: $e")
+            }
+        })
     }
 
     interface Commands {
