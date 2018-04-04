@@ -1,9 +1,7 @@
 package com.pedersen.escaped.master.controls.hints
 
 import android.databinding.Bindable
-import com.pedersen.escaped.BR
 import com.pedersen.escaped.data.models.Hint
-import com.pedersen.escaped.extensions.bind
 import io.greenerpastures.mvvm.BaseViewModel
 
 class HintControlsActivityViewModel : BaseViewModel<HintControlsActivityViewModel.Commands>() {
