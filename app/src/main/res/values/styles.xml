@@ -35,7 +35,7 @@
     </style>
 
     <style name="room_button">
-        <item name="android:layout_margin">30dp</item>
+
     </style>
 
     <style name="GameMasterSeekBar" parent="Widget.AppCompat.SeekBar">

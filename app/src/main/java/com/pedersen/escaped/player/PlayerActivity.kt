@@ -7,57 +7,33 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.*
-import com.google.firebase.database.*
 import com.pedersen.escaped.BR
-import com.pedersen.escaped.BuildConfig
 import com.pedersen.escaped.R
 import com.pedersen.escaped.animations.PositionSpringAnimation
-import com.pedersen.escaped.data.models.Hint
 import com.pedersen.escaped.databinding.ActivityPlayerBinding
 import io.greenerpastures.mvvm.ViewModelActivity
 import com.pedersen.escaped.data.models.adapters.HintsAdapter
-import timber.log.Timber
-
+import com.pedersen.escaped.animations.PositionSpringAnimation.IMyEventListener
 
 class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayerBinding>(), PlayerActivityViewModel.Commands {
-
-    private val gameId: Int = BuildConfig.gameId
 
     private var progressBarAnimation: ObjectAnimator = ObjectAnimator()
 
     private lateinit var hintAdapter: BaseAdapter
-
-    private val firebaseInstance = FirebaseDatabase.getInstance()
-    private lateinit var hintsDatabase: DatabaseReference
 
     @SuppressLint("MissingSuperCall")
     override fun onCreate(savedInstanceState: Bundle?) {
         initialize(R.layout.activity_player, BR.viewModel, ({ PlayerActivityViewModel() }))
         super.onCreate(savedInstanceState)
 
-        hintsDatabase = firebaseInstance.getReference("games").child(gameId.toString()).child("hints")
-        // Read from the firebaseInstance
-        hintsDatabase.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                viewModel.hintList.clear()
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                for (hintChild in dataSnapshot.children) {
-                    val hint = hintChild.getValue(Hint::class.java)
-                    hint?.let { viewModel.hintList.add(it) }
-                }
-                hintAdapter.notifyDataSetChanged()
-            }
+        // Setup pull/spring animation for the hint puller
+        val positionSpringAnimation = PositionSpringAnimation(binding.hintPull)
+        positionSpringAnimation.setEventListener(object : IMyEventListener {
 
-            override fun onCancelled(error: DatabaseError) {
-                // Failed to read value
-                val e = error.toException().toString()
-                Timber.w("Failed to read value: $e")
+            override fun onEventAccured() {
+                viewModel.requestHint()
             }
         })
-
-        // Setup pull/spring animation for the hint puller
-        PositionSpringAnimation(binding.hintPull)
 
         // Setup the adapter and container that will
         hintAdapter = HintsAdapter(this, viewModel.hintList)
@@ -89,6 +65,10 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
         progressBarAnimation = ObjectAnimator.ofInt(binding.progressBar, "progress", from, to)
         progressBarAnimation.duration = 2000
         progressBarAnimation.start()
+    }
+
+    override fun refreshAdapter() {
+        hintAdapter.notifyDataSetChanged()
     }
 
     companion object {

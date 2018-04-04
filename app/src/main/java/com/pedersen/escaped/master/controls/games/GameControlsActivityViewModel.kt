@@ -16,7 +16,6 @@ import org.threeten.bp.Duration
 import org.threeten.bp.Instant
 import timber.log.Timber
 
-
 class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewModel.Commands>() {
 
     // Handles which game we are dealing with
@@ -128,6 +127,7 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
                     }
                 })
 
+        // Setup progress listener
         databaseReference.child(gameId.toString()).child("progress")
                 .addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -221,6 +221,14 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
                 timerTxt = "The Game has Ended!"
             }
         }.start()
+    }
+
+    fun updateDeadline(seconds: Long) {
+        val deadlineUpdate = HashMap<String, Any>()
+        val updatedDeadline: Instant =
+                deadline.plusSeconds(seconds)
+        deadlineUpdate["deadline"] = updatedDeadline.toString()
+        databaseReference.child(gameId.toString()).updateChildren(deadlineUpdate)
     }
 
     fun initRestartGame() {
