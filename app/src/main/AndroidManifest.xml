@@ -39,6 +39,7 @@
         <activity
             android:name=".master.controls.games.GameControlsActivity"
             android:screenOrientation="landscape" />
+        <activity android:name=".master.controls.videos.VideoControlsActivity"></activity>
     </application>
 
 </manifest>
