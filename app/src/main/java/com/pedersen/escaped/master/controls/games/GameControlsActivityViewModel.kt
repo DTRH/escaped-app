@@ -102,9 +102,10 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
                         }
 
                         Timber.i("Debug: Updated game deadline to: $deadline")
-                        if (gameState != PAUSED)
+                        if (gameState != PAUSED && gameState != READY)
                             resumeTimer(Duration.between(Instant.now(), deadline))
                     }
+
                     override fun onCancelled(error: DatabaseError) {
                         // Failed to read value
                         val e = error.toException().toString()
@@ -133,7 +134,7 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         if (dataSnapshot.value is String && dataSnapshot.value != null)
                             if (gameState != ENDED)
-                            progress = (dataSnapshot.value as String).toInt()
+                                progress = (dataSnapshot.value as String).toInt()
 
                     }
 
@@ -148,7 +149,11 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
     private fun setState(data: String) {
         when (data) {
             "unknown" -> gameState = UNKNOWN
-            "ready" -> gameState = READY
+            "ready" -> {
+                gameState = READY
+                counter?.cancel()
+                timerTxt = "---"
+            }
             "playing" -> {
                 val update = HashMap<String, Any>()
                 if (gameState == UNKNOWN) {
@@ -246,7 +251,9 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
         val stateUpdate = HashMap<String, Any>()
         stateUpdate["state"] = "ready"
         stateUpdate["progress"] = 0.toString()
+        stateUpdate["requestHint"] = false
         databaseReference.child(gameId.toString()).updateChildren(stateUpdate)
+        databaseReference.child(gameId.toString()).child("hints").removeValue()
     }
 
     private fun endGame() {
