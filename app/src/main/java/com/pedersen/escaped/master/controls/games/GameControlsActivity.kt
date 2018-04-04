@@ -24,8 +24,8 @@ class GameControlsActivity : ViewModelActivity<GameControlsActivityViewModel, Ac
     @SuppressLint("MissingSuperCall")
     override fun onCreate(savedInstanceState: Bundle?) {
         gameId = intent.extras.get(GameControlsActivity.GAME_ID) as Int
-        initialize(R.layout.activity_game_controls, BR.viewModel,
-                   ({ GameControlsActivityViewModel().apply { gameId = this@GameControlsActivity.gameId } }))
+        initialize(R.layout.activity_game_controls, BR.viewModel, ({ GameControlsActivityViewModel()
+                .apply { gameId = this@GameControlsActivity.gameId } }))
         super.onCreate(savedInstanceState)
 
         seekBar = binding.seekBar

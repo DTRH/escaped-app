@@ -70,7 +70,8 @@
                 android:layout_height="50dp"
                 android:src="@drawable/ic_hint_request"
                 app:layout_constraintRight_toRightOf="@id/launch_room_two_button"
-                app:layout_constraintTop_toTopOf="@id/launch_room_two_button"/>
+                app:layout_constraintTop_toTopOf="@id/launch_room_two_button"
+                android:visibility="@{viewModel.gameTwoHintRequested}"/>
 
             <TextView
                 android:layout_width="wrap_content"
