@@ -29,7 +29,9 @@ class HintControlsActivity : ViewModelActivity<HintControlsActivityViewModel, Hi
     private lateinit var hintContainer: ListView
 
     private val firebaseInstance = FirebaseDatabase.getInstance()
+    private var databaseReference = firebaseInstance.getReference("games")
     private lateinit var hintsDatabase: DatabaseReference
+    private lateinit var requestListener: DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initialize(R.layout.hint_controls_fragment, BR.viewModel, ({ HintControlsActivityViewModel() }))
@@ -37,23 +39,37 @@ class HintControlsActivity : ViewModelActivity<HintControlsActivityViewModel, Hi
 
         gameId = intent.extras.get(GAME_ID) as Int
 
-        hintsDatabase = firebaseInstance.getReference("games").child(gameId.toString()).child("hints")
+        requestListener = databaseReference.child(gameId.toString()).child("requestHint")
+        requestListener.addValueEventListener(object : ValueEventListener {
+            override fun onCancelled(error: DatabaseError) {
+                // Failed to read value
+                val e = error.toException().toString()
+                Timber.w("Failed to read value: $e")
+            }
 
-        // Read from the firebaseInstance
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+            }
+
+        })
+
+        hintsDatabase = databaseReference.child(gameId.toString()).child("hints")
         hintsDatabase.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                viewModel.hintList.clear()
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                for (hintChild in dataSnapshot.children) {
-                    val hint = hintChild.getValue(Hint::class.java)
-                    hint?.key = hintChild.key
-                    // if this does not work, uncomment below and remove above ^^
-                   // hint.let { hint!!.key = hintChild.key }
-                    hint?.let { viewModel.hintList.add(it) }
-                }
+                if (dataSnapshot.value != null) {
+                    viewModel.hintList.clear()
+                    // This method is called once with the initial value and again
+                    // whenever data at this location is updated.
+                    for (hintChild in dataSnapshot.children) {
+                        val hint = hintChild.getValue(Hint::class.java)
+                        hint?.key = hintChild.key
+                        // if this does not work, uncomment below and remove above ^^
+                        // hint.let { hint!!.key = hintChild.key }
+                        hint?.let { viewModel.hintList.add(it) }
+                    }
 
-                hintAdapter.notifyDataSetChanged()
+                    hintAdapter.notifyDataSetChanged()
+                }
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -104,7 +120,15 @@ class HintControlsActivity : ViewModelActivity<HintControlsActivityViewModel, Hi
         hintsDatabase.push().setValue(newHint)
         binding.headerInput.text.clear()
         binding.bodyInput.text.clear()
+        resetHintRequest()
         viewModel.notifyPropertyChanged(BR.creatable)
+    }
+
+    private fun resetHintRequest() {
+        Timber.i("Debug: Resetting request from player")
+        val requestUpdate = HashMap<String, Any>()
+        requestUpdate["requestHint"] = false
+        databaseReference.child(gameId.toString()).updateChildren(requestUpdate)
     }
 
     override fun deleteHint() {

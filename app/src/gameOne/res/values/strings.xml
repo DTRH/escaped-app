@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Escaped</string>
+    <string name="app_name">Escaped - Game #1</string>
 
     <string name="title_activity_splash">SplashActivity</string>
     <string name="dummy_button">Dummy Button</string>

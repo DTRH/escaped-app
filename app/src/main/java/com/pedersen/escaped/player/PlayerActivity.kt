@@ -7,36 +7,33 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.*
-import com.google.firebase.database.*
 import com.pedersen.escaped.BR
-import com.pedersen.escaped.BuildConfig
 import com.pedersen.escaped.R
 import com.pedersen.escaped.animations.PositionSpringAnimation
-import com.pedersen.escaped.data.models.Hint
 import com.pedersen.escaped.databinding.ActivityPlayerBinding
 import io.greenerpastures.mvvm.ViewModelActivity
 import com.pedersen.escaped.data.models.adapters.HintsAdapter
-import timber.log.Timber
-
+import com.pedersen.escaped.animations.PositionSpringAnimation.IMyEventListener
 
 class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayerBinding>(), PlayerActivityViewModel.Commands {
-
-    private val gameId: Int = BuildConfig.gameId
 
     private var progressBarAnimation: ObjectAnimator = ObjectAnimator()
 
     private lateinit var hintAdapter: BaseAdapter
-
-
 
     @SuppressLint("MissingSuperCall")
     override fun onCreate(savedInstanceState: Bundle?) {
         initialize(R.layout.activity_player, BR.viewModel, ({ PlayerActivityViewModel() }))
         super.onCreate(savedInstanceState)
 
-
         // Setup pull/spring animation for the hint puller
-        PositionSpringAnimation(binding.hintPull)
+        val positionSpringAnimation = PositionSpringAnimation(binding.hintPull)
+        positionSpringAnimation.setEventListener(object : IMyEventListener {
+
+            override fun onEventAccured() {
+                viewModel.requestHint()
+            }
+        })
 
         // Setup the adapter and container that will
         hintAdapter = HintsAdapter(this, viewModel.hintList)

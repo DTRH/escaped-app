@@ -8,6 +8,7 @@ import com.pedersen.escaped.data.models.Hint
 import io.greenerpastures.mvvm.BaseViewModel
 import timber.log.Timber
 import com.pedersen.escaped.BuildConfig
+import org.threeten.bp.Instant
 
 class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>() {
 
@@ -66,6 +67,14 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
                 Timber.w("Debug: Failed to read value: $e")
             }
         })
+    }
+
+    fun requestHint() {
+        Timber.i("Debug: Game ${BuildConfig.gameId} requests a hint!")
+        val update = HashMap<String, Any>()
+        update["requestHint"] = true
+        Timber.i("Debug: Sending hint request")
+        databaseReference.child(BuildConfig.gameId.toString()).updateChildren(update)
     }
 
     interface Commands {
