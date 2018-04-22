@@ -10,6 +10,7 @@ import com.pedersen.escaped.R
 import com.pedersen.escaped.databinding.ActivityGameOneBinding
 import com.pedersen.escaped.master.controls.games.GameControlsActivity
 import com.pedersen.escaped.master.controls.hints.HintControlsActivity
+import com.pedersen.escaped.master.controls.videos.VideoControlsActivity
 import com.pedersen.escaped.utils.AppUtils
 import io.greenerpastures.mvvm.ViewModelActivity
 
@@ -25,7 +26,7 @@ class GameOneActivity : ViewModelActivity<GameOneActivityViewModel, ActivityGame
     }
 
     override fun launchVideoControls() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        startActivity(VideoControlsActivity.newIntent(this, 1))
     }
 
     override fun launchGameControls() {

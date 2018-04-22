@@ -1,11 +1,10 @@
 package com.pedersen.escaped.player
 
 import android.animation.ObjectAnimator
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
-import android.view.View
 import android.widget.*
 import com.pedersen.escaped.BR
 import com.pedersen.escaped.R
@@ -14,6 +13,7 @@ import com.pedersen.escaped.databinding.ActivityPlayerBinding
 import io.greenerpastures.mvvm.ViewModelActivity
 import com.pedersen.escaped.data.models.adapters.HintsAdapter
 import com.pedersen.escaped.animations.PositionSpringAnimation.IMyEventListener
+import com.pedersen.escaped.utils.AppUtils
 
 class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayerBinding>(), PlayerActivityViewModel.Commands {
 
@@ -21,7 +21,6 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
 
     private lateinit var hintAdapter: BaseAdapter
 
-    @SuppressLint("MissingSuperCall")
     override fun onCreate(savedInstanceState: Bundle?) {
         initialize(R.layout.activity_player, BR.viewModel, ({ PlayerActivityViewModel() }))
         super.onCreate(savedInstanceState)
@@ -29,7 +28,6 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
         // Setup pull/spring animation for the hint puller
         val positionSpringAnimation = PositionSpringAnimation(binding.hintPull)
         positionSpringAnimation.setEventListener(object : IMyEventListener {
-
             override fun onEventAccured() {
                 viewModel.requestHint()
             }
@@ -47,14 +45,8 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
 
     override fun onResume() {
         super.onResume()
-
         // Remove all system UI
-        window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
-                or View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
-                or View.SYSTEM_UI_FLAG_IMMERSIVE)
+        AppUtils.clearWindow(window)
     }
 
     override fun onBackPressed() {
@@ -70,6 +62,12 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
     override fun refreshAdapter() {
         hintAdapter.notifyDataSetChanged()
     }
+
+    override fun playVideo(taskSnapshot: Uri) {
+        val videoFragment = VideoFragment.newInstance(taskSnapshot)
+        fragmentManager.beginTransaction().replace(R.id.fragment_container, videoFragment).commit()
+    }
+
 
     companion object {
 
