@@ -11,7 +11,7 @@ import com.pedersen.escaped.R
 import com.pedersen.escaped.animations.PositionSpringAnimation
 import com.pedersen.escaped.databinding.ActivityPlayerBinding
 import io.greenerpastures.mvvm.ViewModelActivity
-import com.pedersen.escaped.data.models.adapters.HintsAdapter
+import com.pedersen.escaped.data.adapters.HintsAdapter
 import com.pedersen.escaped.animations.PositionSpringAnimation.IMyEventListener
 import com.pedersen.escaped.utils.AppUtils
 

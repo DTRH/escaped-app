@@ -11,7 +11,7 @@ import android.widget.BaseAdapter
 import android.widget.ListView
 import com.pedersen.escaped.BR
 import com.pedersen.escaped.R
-import com.pedersen.escaped.data.models.adapters.HintsAdapter
+import com.pedersen.escaped.data.adapters.HintsAdapter
 import com.pedersen.escaped.databinding.HintControlsFragmentBinding
 import io.greenerpastures.mvvm.ViewModelActivity
 import android.view.inputmethod.EditorInfo
