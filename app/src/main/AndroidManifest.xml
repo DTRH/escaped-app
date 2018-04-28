@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.pedersen.escaped">
+          package="com.pedersen.escaped">
 
     <application
         android:name=".App"
@@ -39,7 +39,9 @@
         <activity
             android:name=".master.controls.games.GameControlsActivity"
             android:screenOrientation="landscape" />
-        <activity android:name=".master.controls.videos.VideoControlsActivity"></activity>
+        <activity android:name=".master.controls.videos.VideoControlsActivity" />
+        <activity android:name=".master.RoomActivity">
+        </activity>
     </application>
 
 </manifest>

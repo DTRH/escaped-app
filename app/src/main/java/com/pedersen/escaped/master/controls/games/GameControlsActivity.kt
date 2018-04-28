@@ -1,6 +1,5 @@
 package com.pedersen.escaped.master.controls.games
 
-import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
@@ -21,7 +20,6 @@ class GameControlsActivity : ViewModelActivity<GameControlsActivityViewModel, Ac
     private var gameId: Int = 0
     private lateinit var seekBar: SeekBar
 
-    @SuppressLint("MissingSuperCall")
     override fun onCreate(savedInstanceState: Bundle?) {
         gameId = intent.extras.get(GameControlsActivity.GAME_ID) as Int
         initialize(R.layout.activity_game_controls, BR.viewModel, ({ GameControlsActivityViewModel()

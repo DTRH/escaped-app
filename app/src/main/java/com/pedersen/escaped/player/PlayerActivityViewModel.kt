@@ -1,16 +1,17 @@
 package com.pedersen.escaped.player
 
-import android.annotation.SuppressLint
 import android.databinding.Bindable
 import android.net.Uri
 import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import com.pedersen.escaped.BR
 
 import com.pedersen.escaped.data.models.Hint
 import io.greenerpastures.mvvm.BaseViewModel
 import timber.log.Timber
 import com.pedersen.escaped.BuildConfig
+import com.pedersen.escaped.extensions.bind
 import io.reactivex.Observable
 import java.util.concurrent.TimeUnit
 
@@ -27,7 +28,8 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
     @get:Bindable
     var hintList = ArrayList<Hint>()
 
-
+    @get:Bindable
+    var playerState by bind(PlayerState.UNKNOWN, BR.playerState)
 
     @get:Bindable
     var progress: Int = 0
@@ -37,11 +39,11 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
             field = value
         }
 
-    @SuppressLint("MissingSuperCall")
     override fun onActive() {
         super.onActive()
 
         storageRef = FirebaseStorage.getInstance().reference
+
 
         storageRef.child("video_intro.mp4").downloadUrl
                 .addOnSuccessListener {
@@ -93,6 +95,10 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
         update["requestHint"] = true
         Timber.i("Debug: Sending hint request")
         databaseReference.child(BuildConfig.gameId.toString()).updateChildren(update)
+    }
+
+    enum class PlayerState {
+        UNKNOWN, READY, PLAYING, PAUSED, ENDED
     }
 
     interface Commands {

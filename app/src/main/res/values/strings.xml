@@ -1,4 +1,4 @@
 <resources>
-    <string name="hint_item_header_label">Overskrift: %1$s</string>
-    <string name="hint_item_body_label">Tekst: %1$s</string>
+  <string name="hint_item_header_label">Overskrift: %1$s</string>
+  <string name="hint_item_body_label">Tekst: %1$s</string>
 </resources>
