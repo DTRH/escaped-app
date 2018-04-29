@@ -20,7 +20,7 @@ class GameMasterActivity : ViewModelActivity<GameMasterActivityViewModel, Activi
     }
 
     override fun launchGameActivity(id: Int) {
-        startActivity(RoomActivity.newIntent(this))
+        startActivity(RoomActivity.newIntent(this, id))
     }
 
     companion object {

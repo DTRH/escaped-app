@@ -24,12 +24,13 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
 
     private lateinit var hintsDatabase: DatabaseReference
     private lateinit var progressListener: DatabaseReference
+    private lateinit var stateListener: DatabaseReference
 
     @get:Bindable
     var hintList = ArrayList<Hint>()
 
     @get:Bindable
-    var playerState by bind(PlayerState.UNKNOWN, BR.playerState)
+    var playerState by bind(PlayerState.UNKNOWN, BR.playerState, BR.stateMessage, BR.showStateOverlay)
 
     @get:Bindable
     var progress: Int = 0
@@ -39,12 +40,49 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
             field = value
         }
 
+    @get:Bindable
+    var stateMessage: String = ""
+        get() {
+            when (playerState) {
+                PlayerState.UNKNOWN -> {
+                    return "Gamestate Unknown..."
+                }
+                PlayerState.READY -> {
+                    return "Game is about to start..."
+                }
+                PlayerState.PAUSED -> {
+                    return "Game has been paused..."
+                }
+                PlayerState.ENDED -> {
+                    return "Game has ended..."
+                }
+                else -> {
+                    return "Gamestate Unknown..."
+                }
+            }
+        }
+
+    @get:Bindable
+    var showStateOverlay: Boolean = false
+        get() = (playerState != PlayerState.PLAYING)
+
     override fun onActive() {
         super.onActive()
 
+        stateListener = databaseReference.child(BuildConfig.gameId.toString()).child("state")
+        stateListener.addValueEventListener(object : ValueEventListener {
+            override fun onCancelled(error: DatabaseError) {
+                val e = error.toException().toString()
+                Timber.w("Debug: Failed to read value: $e")
+            }
+
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                if (dataSnapshot.value is String && dataSnapshot.value != null)
+                    setPlayerState(dataSnapshot.value as String)
+            }
+        })
+
         storageRef = FirebaseStorage.getInstance().reference
-
-
         storageRef.child("video_intro.mp4").downloadUrl
                 .addOnSuccessListener {
                     taskSnapshot -> Observable.timer(2000, TimeUnit.MILLISECONDS).subscribe { commandHandler?.playVideo(taskSnapshot) }
@@ -53,12 +91,9 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
                 }
 
         hintsDatabase = databaseReference.child(BuildConfig.gameId.toString()).child("hints")
-        // Read from the firebaseInstance
         hintsDatabase.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 hintList.clear()
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
                 for (hintChild in dataSnapshot.children) {
                     val hint = hintChild.getValue(Hint::class.java)
                     hint?.let { hintList.add(it) }
@@ -67,7 +102,6 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
             }
 
             override fun onCancelled(error: DatabaseError) {
-                // Failed to read value
                 val e = error.toException().toString()
                 Timber.w("Failed to read value: $e")
             }
@@ -82,11 +116,30 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
             }
 
             override fun onCancelled(error: DatabaseError) {
-                // Failed to read value
                 val e = error.toException().toString()
                 Timber.w("Debug: Failed to read value: $e")
             }
         })
+    }
+
+    private fun setPlayerState(state: String) {
+        when (state) {
+            "unknown" -> {
+                playerState = PlayerState.UNKNOWN
+            }
+            "ready" -> {
+                playerState = PlayerState.READY
+            }
+            "playing" -> {
+                playerState = PlayerState.PLAYING
+            }
+            "paused" -> {
+                playerState = PlayerState.PAUSED
+            }
+            "ended" -> {
+                playerState = PlayerState.ENDED
+            }
+        }
     }
 
     fun requestHint() {
