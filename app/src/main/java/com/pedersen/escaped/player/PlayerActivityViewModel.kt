@@ -82,61 +82,72 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
             }
         })
 
-        storageRef = FirebaseStorage.getInstance().reference
-        storageRef.child("video_intro.mp4").downloadUrl
-                .addOnSuccessListener {
-                    taskSnapshot -> Observable.timer(2000, TimeUnit.MILLISECONDS).subscribe { commandHandler?.playVideo(taskSnapshot) }
-                }.addOnFailureListener {
-                    exception -> Timber.i("Logging exception: $exception")
-                }
-
+        // Setup reference to hints
         hintsDatabase = databaseReference.child(BuildConfig.gameId.toString()).child("hints")
-        hintsDatabase.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                hintList.clear()
-                for (hintChild in dataSnapshot.children) {
-                    val hint = hintChild.getValue(Hint::class.java)
-                    hint?.let { hintList.add(it) }
-                }
-                commandHandler?.refreshAdapter()
-            }
 
-            override fun onCancelled(error: DatabaseError) {
-                val e = error.toException().toString()
-                Timber.w("Failed to read value: $e")
-            }
-        })
-
+        // Setup reference to progress
         progressListener = databaseReference.child(BuildConfig.gameId.toString()).child("progress")
-
-        progressListener.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                if (dataSnapshot.value is String && dataSnapshot.value != null)
-                    progress = (dataSnapshot.value as String).toInt()
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                val e = error.toException().toString()
-                Timber.w("Debug: Failed to read value: $e")
-            }
-        })
     }
 
     private fun setPlayerState(state: String) {
-        when (state) {
+        when (state.toLowerCase()) {
             "unknown" -> {
                 playerState = PlayerState.UNKNOWN
             }
             "ready" -> {
+                progress = 0
+                hintList.clear()
                 playerState = PlayerState.READY
             }
             "playing" -> {
+                // Prepare and play intro video
+                // TODO: Here we need a logic to handle if the movie has already been played or not
+                storageRef = FirebaseStorage.getInstance().reference
+                storageRef.child("video_intro.mp4").downloadUrl
+                    .addOnSuccessListener {
+                            taskSnapshot -> Observable.timer(2000, TimeUnit.MILLISECONDS).subscribe { commandHandler?.playVideo(taskSnapshot) }
+                    }.addOnFailureListener {
+                            exception -> Timber.i("Logging exception: $exception")
+                    }
+
+                // When setting game state to PLAYING we start listening for hints
+                hintsDatabase.addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        hintList.clear()
+                        for (hintChild in dataSnapshot.children) {
+                            val hint = hintChild.getValue(Hint::class.java)
+                            hint?.let { hintList.add(it) }
+                        }
+                        commandHandler?.refreshAdapter()
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        val e = error.toException().toString()
+                        Timber.w("Failed to read value: $e")
+                    }
+                })
+
+                // Also listen for progress
+                progressListener.addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        if (dataSnapshot.value is String && dataSnapshot.value != null)
+                            progress = (dataSnapshot.value as String).toInt()
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        val e = error.toException().toString()
+                        Timber.w("Debug: Failed to read value: $e")
+                    }
+                })
+
                 playerState = PlayerState.PLAYING
             }
             "paused" -> {
                 playerState = PlayerState.PAUSED
             }
             "ended" -> {
+                progress = 0
+                hintList.clear()
                 playerState = PlayerState.ENDED
             }
         }
