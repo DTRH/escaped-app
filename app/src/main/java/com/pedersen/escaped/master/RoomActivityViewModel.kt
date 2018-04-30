@@ -1,10 +1,10 @@
-package com.pedersen.escaped.master.games.one
+package com.pedersen.escaped.master
 
 import android.databinding.Bindable
 import com.pedersen.escaped.data.models.Hint
 import io.greenerpastures.mvvm.BaseViewModel
 
-class GameOneActivityViewModel : BaseViewModel<GameOneActivityViewModel.Commands>() {
+class RoomActivityViewModel : BaseViewModel<RoomActivityViewModel.Commands>() {
 
     @get:Bindable
     var hintList = ArrayList<Hint>()

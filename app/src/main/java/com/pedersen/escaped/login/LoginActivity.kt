@@ -8,7 +8,6 @@ import com.pedersen.escaped.databinding.ActivityLoginBinding
 import com.pedersen.escaped.master.GameMasterActivity
 import com.pedersen.escaped.player.PlayerActivity
 import io.greenerpastures.mvvm.ViewModelActivity
-import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginActivity : ViewModelActivity<LoginActivityViewModel, ActivityLoginBinding>() {
 
@@ -20,11 +19,9 @@ class LoginActivity : ViewModelActivity<LoginActivityViewModel, ActivityLoginBin
     override fun onResume() {
         super.onResume()
         if (!BuildConfig.isMaster) {
-            val intent = PlayerActivity.newIntent(this)
-            startActivity(intent)
+            startActivity(PlayerActivity.newIntent(this))
         } else {
-            val intent = GameMasterActivity.newIntent(this)
-            startActivity(intent)
+            startActivity(GameMasterActivity.newIntent(this))
         }
     }
 }

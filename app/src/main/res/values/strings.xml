@@ -1,4 +1,13 @@
 <resources>
-    <string name="hint_item_header_label">Overskrift: %1$s</string>
-    <string name="hint_item_body_label">Tekst: %1$s</string>
+  <!-- HINTS -->
+  <string name="hint_item_header_label">Overskrift: %1$s</string>
+  <string name="hint_item_body_label">Tekst: %1$s</string>
+
+  <!-- PLAYER ACTIVITY -->
+  <string name="player_activity_state_message_unknown">Game state: Unknown</string>
+  <string name="player_activity_state_message_ready">Game is about to start…</string>
+  <string name="player_activity_state_message_paused">Game has been paused</string>
+  <string name="player_activity_state_message_ended">Game has ended</string>
+  <string name="test">Gamestate unknown</string>
+
 </resources>

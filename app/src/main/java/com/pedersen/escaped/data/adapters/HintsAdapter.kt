@@ -1,4 +1,4 @@
-package com.pedersen.escaped.data.models.adapters
+package com.pedersen.escaped.data.adapters
 
 import android.content.Context
 import android.view.LayoutInflater
