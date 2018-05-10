@@ -171,7 +171,7 @@
           android:layout_height="match_parent"
           android:gravity="center"
           android:textColor="@color/colorAccent"
-          android:textSize="20sp"
+          android:textSize="48sp"
           android:text="@{viewModel.stateMessage}"/>
 
     </FrameLayout>
