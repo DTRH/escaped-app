@@ -13,7 +13,7 @@ class PositionSpringAnimation(animatedView: View?) {
     private var yAnimation: SpringAnimation? = null
     private var dY: Float = 0.toFloat()
 
-    private var mEventListener: IMyEventListener? = null
+    private var mEventListener: PullingEventListener? = null
 
     // create X and Y animations for view's initial position once it's known
     private val globalLayoutListener = ViewTreeObserver.OnGlobalLayoutListener {
@@ -41,7 +41,7 @@ class PositionSpringAnimation(animatedView: View?) {
                             .setDuration(0)
                             .start()
 
-                    mEventListener?.onEventAccured()
+                    mEventListener?.pullAccured()
 
                 } else
                     yAnimation!!.start()
@@ -52,12 +52,12 @@ class PositionSpringAnimation(animatedView: View?) {
         true
     }
 
-    fun setEventListener(mEventListener: IMyEventListener) {
+    fun setEventListener(mEventListener: PullingEventListener) {
         this.mEventListener = mEventListener
     }
 
-    interface IMyEventListener {
-        fun onEventAccured()
+    interface PullingEventListener {
+        fun pullAccured()
     }
 
     init {

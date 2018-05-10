@@ -12,7 +12,7 @@ import com.pedersen.escaped.animations.PositionSpringAnimation
 import com.pedersen.escaped.databinding.ActivityPlayerBinding
 import io.greenerpastures.mvvm.ViewModelActivity
 import com.pedersen.escaped.data.adapters.HintsAdapter
-import com.pedersen.escaped.animations.PositionSpringAnimation.IMyEventListener
+import com.pedersen.escaped.animations.PositionSpringAnimation.PullingEventListener
 import com.pedersen.escaped.utils.AppUtils
 
 class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayerBinding>(), PlayerActivityViewModel.Commands {
@@ -27,13 +27,13 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
 
         // Setup pull/spring animation for the hint puller
         val positionSpringAnimation = PositionSpringAnimation(binding.hintPull)
-        positionSpringAnimation.setEventListener(object : IMyEventListener {
-            override fun onEventAccured() {
+        positionSpringAnimation.setEventListener(object : PullingEventListener {
+            override fun pullAccured() {
                 viewModel.requestHint()
             }
         })
 
-        // Setup the adapter and container that will
+        // Setup the adapter and container that will hold the hints
         hintAdapter = HintsAdapter(this, viewModel.hintList)
         val hintContainer = binding.hintContainer
         hintContainer.adapter = hintAdapter
