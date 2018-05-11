@@ -2,6 +2,7 @@ package com.pedersen.escaped.player
 
 import android.databinding.Bindable
 import android.net.Uri
+import android.os.CountDownTimer
 import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
@@ -13,6 +14,8 @@ import timber.log.Timber
 import com.pedersen.escaped.BuildConfig
 import com.pedersen.escaped.extensions.bind
 import io.reactivex.Observable
+import org.threeten.bp.Duration
+import org.threeten.bp.Instant
 import java.util.concurrent.TimeUnit
 
 class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>() {
@@ -25,6 +28,10 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
     private lateinit var hintsDatabase: DatabaseReference
     private lateinit var progressListener: DatabaseReference
     private lateinit var stateListener: DatabaseReference
+    private lateinit var timeListener: DatabaseReference
+
+    private lateinit var countDownTimer: CountDownTimer
+    private var deadline: Instant = Instant.now()
 
     @get:Bindable
     var hintList = ArrayList<Hint>()
@@ -79,6 +86,20 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.value is String && dataSnapshot.value != null)
                     setPlayerState(dataSnapshot.value as String)
+            }
+        })
+
+        // Setup listener for time remaining
+        timeListener = databaseReference.child(BuildConfig.gameId.toString()).child("deadline")
+        timeListener.addValueEventListener(object : ValueEventListener {
+            override fun onCancelled(error: DatabaseError) {
+                val e = error.toException().toString()
+                Timber.w("Debug: Failed to read value: $e")
+            }
+
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                if (dataSnapshot.value is String && dataSnapshot.value != null)
+                    deadline = Instant.parse(dataSnapshot.value as CharSequence?)
             }
         })
 
@@ -140,6 +161,8 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
                     }
                 })
 
+                resumeTimer(Duration.between(Instant.now(), deadline))
+
                 playerState = PlayerState.PLAYING
             }
             "paused" -> {
@@ -151,6 +174,20 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
                 playerState = PlayerState.ENDED
             }
         }
+    }
+
+    private fun resumeTimer(between: Duration) {
+        countDownTimer = object : CountDownTimer(between.abs().toMillis(), 5000) {
+
+            override fun onTick(millisUntilFinished: Long) {
+                commandHandler?.animateClockArm(360 / 60 * (Duration.between(deadline, Instant.now()).toMinutes().toFloat()))
+            }
+
+            override fun onFinish() {
+                setPlayerState("ended")
+                countDownTimer.cancel()
+            }
+        }.start()
     }
 
     fun requestHint() {
@@ -168,6 +205,8 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
     interface Commands {
 
         fun animateProgressBar(from: Int, to: Int)
+
+        fun animateClockArm(to: Float)
 
         fun refreshAdapter()
 

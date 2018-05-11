@@ -5,6 +5,9 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.animation.AnimationSet
+import android.view.animation.DecelerateInterpolator
+import android.view.animation.RotateAnimation
 import android.widget.*
 import com.pedersen.escaped.BR
 import com.pedersen.escaped.R
@@ -19,11 +22,15 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
 
     private var progressBarAnimation: ObjectAnimator = ObjectAnimator()
 
+    private lateinit var clockArm: ImageView
+
     private lateinit var hintAdapter: BaseAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initialize(R.layout.activity_player, BR.viewModel, ({ PlayerActivityViewModel() }))
         super.onCreate(savedInstanceState)
+
+        // Setup the remain
 
         // Setup pull/spring animation for the hint puller
         val positionSpringAnimation = PositionSpringAnimation(binding.hintPull)
@@ -57,6 +64,23 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
         progressBarAnimation = ObjectAnimator.ofInt(binding.progressBar, "progress", from, to)
         progressBarAnimation.duration = 2000
         progressBarAnimation.start()
+    }
+
+    override fun animateClockArm(to: Float) {
+        val animSet = AnimationSet(true)
+        animSet.interpolator = DecelerateInterpolator()
+        animSet.fillAfter = true
+        animSet.isFillEnabled = true
+
+        val animRotate = RotateAnimation(0.0f, to,
+                                         RotateAnimation.RELATIVE_TO_SELF, 0f,
+                                         RotateAnimation.RELATIVE_TO_SELF, 0f)
+
+        animRotate.duration = 500
+        animRotate.fillAfter = true
+        animSet.addAnimation(animRotate)
+
+        clockArm.startAnimation(animSet)
     }
 
     override fun refreshAdapter() {
