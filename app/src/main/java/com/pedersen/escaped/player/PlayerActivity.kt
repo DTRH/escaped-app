@@ -23,6 +23,7 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
     private var progressBarAnimation: ObjectAnimator = ObjectAnimator()
 
     private lateinit var clockArm: ImageView
+    private var clockArmAngle: Float = 0.0f
 
     private lateinit var hintAdapter: BaseAdapter
 
@@ -30,7 +31,7 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
         initialize(R.layout.activity_player, BR.viewModel, ({ PlayerActivityViewModel() }))
         super.onCreate(savedInstanceState)
 
-        // Setup the remain
+        clockArm = binding.playerClockArm
 
         // Setup pull/spring animation for the hint puller
         val positionSpringAnimation = PositionSpringAnimation(binding.hintPull)
@@ -66,21 +67,23 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
         progressBarAnimation.start()
     }
 
-    override fun animateClockArm(to: Float) {
+    override fun animateClockArm(targetAngle: Float) {
         val animSet = AnimationSet(true)
         animSet.interpolator = DecelerateInterpolator()
         animSet.fillAfter = true
         animSet.isFillEnabled = true
 
-        val animRotate = RotateAnimation(0.0f, to,
-                                         RotateAnimation.RELATIVE_TO_SELF, 0f,
-                                         RotateAnimation.RELATIVE_TO_SELF, 0f)
+        val animRotate = RotateAnimation(clockArmAngle, targetAngle,
+                                         RotateAnimation.RELATIVE_TO_SELF, 0.5f,
+                                         RotateAnimation.RELATIVE_TO_SELF, .95f)
 
         animRotate.duration = 500
         animRotate.fillAfter = true
         animSet.addAnimation(animRotate)
 
         clockArm.startAnimation(animSet)
+
+        clockArmAngle = targetAngle
     }
 
     override fun refreshAdapter() {
@@ -89,7 +92,11 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
 
     override fun playVideo(taskSnapshot: Uri) {
         val videoFragment = VideoFragment.newInstance(taskSnapshot)
-        fragmentManager.beginTransaction().replace(R.id.fragment_container, videoFragment).commit()
+        try {
+            fragmentManager.beginTransaction().replace(R.id.fragment_container, videoFragment).commit()
+        } catch (e: Exception) {
+            // TODO Implement some error handling
+        }
     }
 
 

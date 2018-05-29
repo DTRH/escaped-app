@@ -31,7 +31,12 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
     private lateinit var timeListener: DatabaseReference
 
     private lateinit var countDownTimer: CountDownTimer
-    private var deadline: Instant = Instant.now()
+
+    private var deadline: Instant? = null
+        set(value) {
+            field = value
+            resumeTimer(Duration.between(Instant.now(), value))
+        }
 
     @get:Bindable
     var hintList = ArrayList<Hint>()
@@ -161,8 +166,6 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
                     }
                 })
 
-                resumeTimer(Duration.between(Instant.now(), deadline))
-
                 playerState = PlayerState.PLAYING
             }
             "paused" -> {
@@ -176,15 +179,16 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
         }
     }
 
-    private fun resumeTimer(between: Duration) {
-        countDownTimer = object : CountDownTimer(between.abs().toMillis(), 5000) {
+    private fun resumeTimer(timeLeft: Duration) {
+        countDownTimer = object : CountDownTimer(timeLeft.abs().toMillis(), 5000) {
 
             override fun onTick(millisUntilFinished: Long) {
-                commandHandler?.animateClockArm(360 / 60 * (Duration.between(deadline, Instant.now()).toMinutes().toFloat()))
+                if (playerState == PlayerState.PLAYING)
+                    commandHandler?.animateClockArm(360 / 60 * (Duration.between(deadline, Instant.now()).toMinutes().toFloat()))
             }
 
             override fun onFinish() {
-                setPlayerState("ended")
+           //     setPlayerState("ended")
                 countDownTimer.cancel()
             }
         }.start()
@@ -206,7 +210,7 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
 
         fun animateProgressBar(from: Int, to: Int)
 
-        fun animateClockArm(to: Float)
+        fun animateClockArm(targetAngle: Float)
 
         fun refreshAdapter()
 

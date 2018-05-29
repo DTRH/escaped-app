@@ -86,7 +86,7 @@
             android:id="@+id/player_clock"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/main_activity_clock"
+            android:background="@drawable/clock"
             android:scaleType="fitXY"
             android:layout_gravity="center"
             />
@@ -96,8 +96,9 @@
             android:id="@+id/player_clock_arm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/arm_cropped"
+            android:background="@drawable/clock_arm"
             android:layout_gravity="center"
+            android:layout_marginTop="10dp"
 
             />
 
