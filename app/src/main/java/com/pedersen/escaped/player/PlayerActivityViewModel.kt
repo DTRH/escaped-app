@@ -6,13 +6,12 @@ import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.pedersen.escaped.BR
-
-import com.pedersen.escaped.data.models.Hint
-import io.greenerpastures.mvvm.BaseViewModel
-import timber.log.Timber
 import com.pedersen.escaped.BuildConfig
+import com.pedersen.escaped.data.models.Hint
 import com.pedersen.escaped.extensions.bind
+import io.greenerpastures.mvvm.BaseViewModel
 import io.reactivex.Observable
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>() {
@@ -105,7 +104,7 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
                 storageRef = FirebaseStorage.getInstance().reference
                 storageRef.child("video_intro.mp4").downloadUrl
                     .addOnSuccessListener {
-                            taskSnapshot -> Observable.timer(2000, TimeUnit.MILLISECONDS).subscribe { commandHandler?.playVideo(taskSnapshot) }
+                            taskSnapshot -> Observable.timer(2000, TimeUnit.MILLISECONDS).subscribe { commandHandler?.playVideo(taskSnapshot) }.disposeOnInactive()
                     }.addOnFailureListener {
                             exception -> Timber.i("Logging exception: $exception")
                     }
