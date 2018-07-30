@@ -9,7 +9,9 @@ import com.pedersen.escaped.databinding.ActivityRoomBinding
 import com.pedersen.escaped.master.controls.games.GameControlsActivity
 import com.pedersen.escaped.master.controls.hints.HintControlsActivity
 import com.pedersen.escaped.master.controls.videos.VideoControlsActivity
+import com.pedersen.escaped.utils.AppUtils
 import io.greenerpastures.mvvm.ViewModelActivity
+import kotlinx.android.synthetic.main.activity_room.*
 
 class RoomActivity : ViewModelActivity<RoomActivityViewModel, ActivityRoomBinding>(), RoomActivityViewModel.Commands {
 
@@ -31,6 +33,10 @@ class RoomActivity : ViewModelActivity<RoomActivityViewModel, ActivityRoomBindin
 
     override fun launchGameControls() {
         startActivity(GameControlsActivity.newIntent(this, id.toInt()))
+    }
+
+    override fun promptFeatureUnavailable() {
+        AppUtils.showSnack("Feature unavailable", root)
     }
 
     companion object {

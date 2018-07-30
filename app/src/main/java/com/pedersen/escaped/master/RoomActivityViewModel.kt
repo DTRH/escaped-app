@@ -15,6 +15,8 @@ class RoomActivityViewModel : BaseViewModel<RoomActivityViewModel.Commands>() {
 
     fun launchGameControls() = commandHandler?.launchGameControls()
 
+    fun promptFeatureUnavailable() = commandHandler?.promptFeatureUnavailable()
+
     interface Commands {
 
         fun launchHintControls()
@@ -22,6 +24,8 @@ class RoomActivityViewModel : BaseViewModel<RoomActivityViewModel.Commands>() {
         fun launchVideoControls()
 
         fun launchGameControls()
+
+        fun promptFeatureUnavailable()
 
     }
 }
