@@ -9,6 +9,7 @@ import com.pedersen.escaped.databinding.ActivityRoomBinding
 import com.pedersen.escaped.master.controls.games.GameControlsActivity
 import com.pedersen.escaped.master.controls.hints.HintControlsActivity
 import com.pedersen.escaped.master.controls.videos.VideoControlsActivity
+import com.pedersen.escaped.master.controls.webcams.WebcamActivity
 import com.pedersen.escaped.utils.AppUtils
 import io.greenerpastures.mvvm.ViewModelActivity
 import kotlinx.android.synthetic.main.activity_room.*
@@ -37,6 +38,15 @@ class RoomActivity : ViewModelActivity<RoomActivityViewModel, ActivityRoomBindin
 
     override fun promptFeatureUnavailable() {
         AppUtils.showSnack("Feature unavailable", root)
+    }
+
+    override fun viewWebCam(camera: Int) {
+
+        when (camera) {
+            1 -> startActivity(WebcamActivity.newIntent(this, "192.168.1.120"))
+            2 -> startActivity(WebcamActivity.newIntent(this, "192.168.1.121"))
+            3 -> startActivity(WebcamActivity.newIntent(this, "192.168.1.122"))
+        }
     }
 
     companion object {

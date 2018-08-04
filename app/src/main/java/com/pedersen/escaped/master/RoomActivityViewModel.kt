@@ -17,6 +17,8 @@ class RoomActivityViewModel : BaseViewModel<RoomActivityViewModel.Commands>() {
 
     fun promptFeatureUnavailable() = commandHandler?.promptFeatureUnavailable()
 
+    fun viewWebcam(camera: Int) = commandHandler?.viewWebCam(camera)
+
     interface Commands {
 
         fun launchHintControls()
@@ -26,6 +28,8 @@ class RoomActivityViewModel : BaseViewModel<RoomActivityViewModel.Commands>() {
         fun launchGameControls()
 
         fun promptFeatureUnavailable()
+
+        fun viewWebCam(camera: Int)
 
     }
 }

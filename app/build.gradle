@@ -25,6 +25,9 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        ndk {
+            abiFilters "armeabi-v7a", "x86", "armeabi", "mips"
+        }
     }
     buildTypes {
         release {
@@ -97,6 +100,9 @@ dependencies {
 
     // ThreeTen
     implementation 'com.jakewharton.threetenabp:threetenabp:1.0.5'
+
+    // RTSP Library
+    implementation 'com.github.potterhsu:RtspLibrary:v1.0'
 
     // Various module dependencies
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'

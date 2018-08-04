@@ -6,18 +6,18 @@ import android.graphics.Color
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.BaseAdapter
 import android.widget.ListView
+import com.google.firebase.database.*
 import com.pedersen.escaped.BR
 import com.pedersen.escaped.R
 import com.pedersen.escaped.data.adapters.HintsAdapter
+import com.pedersen.escaped.data.models.Hint
 import com.pedersen.escaped.databinding.HintControlsFragmentBinding
 import io.greenerpastures.mvvm.ViewModelActivity
-import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
-import com.google.firebase.database.*
-import com.pedersen.escaped.data.models.Hint
 import kotlinx.android.synthetic.main.hint_controls_fragment.*
 import timber.log.Timber
 
@@ -47,9 +47,7 @@ class HintControlsActivity : ViewModelActivity<HintControlsActivityViewModel, Hi
                 Timber.w("Failed to read value: $e")
             }
 
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-
-            }
+            override fun onDataChange(dataSnapshot: DataSnapshot) {}
 
         })
 
