@@ -34,7 +34,7 @@ class PositionSpringAnimation(animatedView: View?) {
                 yAnimation!!.cancel()
             }
             MotionEvent.ACTION_MOVE ->
-                if ((event.rawY - initY) < 200 && (event.rawY > initY)) {
+                if ((event.rawY - initY) < 125 && (event.rawY > initY)) {
                     //  a different approach would be to change the view's LayoutParams.
                     animatedView!!.animate()
                             .y(event.rawY + dY)

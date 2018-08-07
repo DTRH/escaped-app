@@ -1,5 +1,6 @@
 package com.pedersen.escaped.master
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -9,7 +10,7 @@ import com.pedersen.escaped.databinding.ActivityRoomBinding
 import com.pedersen.escaped.master.controls.games.GameControlsActivity
 import com.pedersen.escaped.master.controls.hints.HintControlsActivity
 import com.pedersen.escaped.master.controls.videos.VideoControlsActivity
-import com.pedersen.escaped.master.controls.webcams.WebcamActivity
+import com.pedersen.escaped.master.controls.webcams.CameraActivity
 import com.pedersen.escaped.utils.AppUtils
 import io.greenerpastures.mvvm.ViewModelActivity
 import kotlinx.android.synthetic.main.activity_room.*
@@ -40,12 +41,13 @@ class RoomActivity : ViewModelActivity<RoomActivityViewModel, ActivityRoomBindin
         AppUtils.showSnack("Feature unavailable", root)
     }
 
+    @SuppressLint("AuthLeak")
     override fun viewWebCam(camera: Int) {
 
         when (camera) {
-            1 -> startActivity(WebcamActivity.newIntent(this, "192.168.1.120"))
-            2 -> startActivity(WebcamActivity.newIntent(this, "192.168.1.121"))
-            3 -> startActivity(WebcamActivity.newIntent(this, "192.168.1.122"))
+            1 -> startActivity(CameraActivity.newIntent(this, "rtsp://admin:down124B@192.168.1.120"))
+            2 -> startActivity(CameraActivity.newIntent(this, "rtsp://admin:down124B@192.168.1.121"))
+            3 -> startActivity(CameraActivity.newIntent(this, "rtsp://admin:down124B@192.168.1.122"))
         }
     }
 

@@ -18,11 +18,13 @@ class WebcamActivity : AppCompatActivity() {
 
     private lateinit var ip: String
     private var rtspClient: RtspClient? = null
-    private var ivPreview: ImageView = findViewById(R.id.camera_feed)
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_webcam)
+
+        val ivPreview: ImageView = findViewById(R.id.camera_feed)
 
         val rtspClient = RtspClient(NativeCallback { frame, nChannel, width, height ->
             ivPreview.post {

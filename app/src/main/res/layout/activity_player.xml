@@ -66,7 +66,7 @@
           android:id="@+id/hint_pull"
           android:layout_width="wrap_content"
           android:layout_height="match_parent"
-          android:layout_marginTop="-100dp"
+          android:layout_marginTop="-150dp"
           android:background="@drawable/main_activity_hint_pull"
           app:layout_constraintTop_toTopOf="parent"
           />
