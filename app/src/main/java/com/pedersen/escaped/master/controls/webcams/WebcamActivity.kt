@@ -39,7 +39,7 @@ class WebcamActivity : AppCompatActivity() {
                     if (b < 0) b += 255
                     pixels[i] = Color.rgb(r, g, b)
                 }
-                val bmp = Bitmap.createBitmap(pixels, width, height, Bitmap.Config.ARGB_8888)
+                val bmp = Bitmap.createBitmap(pixels, width, height, Bitmap.Config.RGB_565)
                 ivPreview.setImageBitmap(bmp)
             }
         })

@@ -8,7 +8,6 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.pedersen.escaped.R;
@@ -23,10 +22,8 @@ public class CameraActivity extends AppCompatActivity implements VlcListener, Vi
 
     private VlcVideoLibrary vlcVideoLibrary;
     private Button bStartStop;
-    private EditText etEndpoint;
 
     private String ip;
-
     private String[] options = new String[]{":fullscreen"};
 
     @Override
@@ -69,7 +66,7 @@ public class CameraActivity extends AppCompatActivity implements VlcListener, Vi
             bStartStop.setText("stop player");
         } else {
             vlcVideoLibrary.stop();
-            finish();
+            onBackPressed();
         }
     }
 }
