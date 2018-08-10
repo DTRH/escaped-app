@@ -210,7 +210,7 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
     fun play() {
         Timber.i("Debug: Play clicked!")
         val stateUpdate = HashMap<String, Any>()
-        stateUpdate["state"] = PLAYING
+        stateUpdate["state"] = "playing"
         databaseReference.child(gameId.toString()).updateChildren(stateUpdate)
     }
 

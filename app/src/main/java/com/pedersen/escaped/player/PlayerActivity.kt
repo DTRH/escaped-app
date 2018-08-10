@@ -5,6 +5,9 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.animation.AnimationSet
+import android.view.animation.DecelerateInterpolator
+import android.view.animation.RotateAnimation
 import android.widget.*
 import com.pedersen.escaped.BR
 import com.pedersen.escaped.R
@@ -12,12 +15,15 @@ import com.pedersen.escaped.animations.PositionSpringAnimation
 import com.pedersen.escaped.databinding.ActivityPlayerBinding
 import io.greenerpastures.mvvm.ViewModelActivity
 import com.pedersen.escaped.data.adapters.HintsAdapter
-import com.pedersen.escaped.animations.PositionSpringAnimation.IMyEventListener
+import com.pedersen.escaped.animations.PositionSpringAnimation.PullingEventListener
 import com.pedersen.escaped.utils.AppUtils
 
 class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayerBinding>(), PlayerActivityViewModel.Commands {
 
     private var progressBarAnimation: ObjectAnimator = ObjectAnimator()
+
+    private lateinit var clockArm: ImageView
+    private var clockArmAngle: Float = 0.0f
 
     private lateinit var hintAdapter: BaseAdapter
 
@@ -25,15 +31,17 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
         initialize(R.layout.activity_player, BR.viewModel, ({ PlayerActivityViewModel() }))
         super.onCreate(savedInstanceState)
 
+        clockArm = binding.playerClockArm
+
         // Setup pull/spring animation for the hint puller
         val positionSpringAnimation = PositionSpringAnimation(binding.hintPull)
-        positionSpringAnimation.setEventListener(object : IMyEventListener {
-            override fun onEventAccured() {
+        positionSpringAnimation.setEventListener(object : PullingEventListener {
+            override fun pullAccured() {
                 viewModel.requestHint()
             }
         })
 
-        // Setup the adapter and container that will
+        // Setup the adapter and container that will hold the hints
         hintAdapter = HintsAdapter(this, viewModel.hintList)
         val hintContainer = binding.hintContainer
         hintContainer.adapter = hintAdapter
@@ -59,13 +67,36 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
         progressBarAnimation.start()
     }
 
+    override fun animateClockArm(targetAngle: Float) {
+        val animSet = AnimationSet(true)
+        animSet.interpolator = DecelerateInterpolator()
+        animSet.fillAfter = true
+        animSet.isFillEnabled = true
+
+        val animRotate = RotateAnimation(clockArmAngle, targetAngle,
+                                         RotateAnimation.RELATIVE_TO_SELF, 0.5f,
+                                         RotateAnimation.RELATIVE_TO_SELF, .95f)
+
+        animRotate.duration = 500
+        animRotate.fillAfter = true
+        animSet.addAnimation(animRotate)
+
+        clockArm.startAnimation(animSet)
+
+        clockArmAngle = targetAngle
+    }
+
     override fun refreshAdapter() {
         hintAdapter.notifyDataSetChanged()
     }
 
     override fun playVideo(taskSnapshot: Uri) {
         val videoFragment = VideoFragment.newInstance(taskSnapshot)
-        fragmentManager.beginTransaction().replace(R.id.fragment_container, videoFragment).commit()
+        try {
+            fragmentManager.beginTransaction().replace(R.id.fragment_container, videoFragment).commit()
+        } catch (e: Exception) {
+            // TODO Implement some error handling
+        }
     }
 
 
