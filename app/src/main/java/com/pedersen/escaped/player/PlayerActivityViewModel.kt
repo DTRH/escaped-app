@@ -24,14 +24,13 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
 
     private lateinit var storageRef: StorageReference
 
-    private lateinit var hintsDatabase: DatabaseReference
-    private lateinit var progressListener: DatabaseReference
-    private lateinit var stateListener: DatabaseReference
-    private lateinit var timeListener: DatabaseReference
+    private var hintListener: DatabaseReference
+    private var progressListener: DatabaseReference
+    private var stateListener: DatabaseReference
+    private var timeListener: DatabaseReference
     private lateinit var introListener: DatabaseReference
 
     private lateinit var countDownTimer: CountDownTimer
-
     private var introCompleted: Boolean = false
 
     private var deadline: Instant? = null
@@ -84,19 +83,6 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
         get() = (playerState != PlayerState.PLAYING)
 
     init {
-        // Setup listener for intro video
-        introListener = databaseReference.child(BuildConfig.gameId.toString()).child("introCompleted")
-        introListener.addValueEventListener(object : ValueEventListener {
-            override fun onCancelled(dbError: DatabaseError?) {
-                Timber.i("Updating introListener threw a DatabaseError: $dbError")
-            }
-
-            override fun onDataChange(dataSnapshot: DataSnapshot?) {
-                if (dataSnapshot?.value is String && dataSnapshot.value != null)
-                    introCompleted = (dataSnapshot.value as String).toBoolean()
-            }
-        })
-
         stateListener = databaseReference.child(BuildConfig.gameId.toString()).child("state")
         stateListener.addValueEventListener(object : ValueEventListener {
             override fun onCancelled(error: DatabaseError) {
@@ -125,10 +111,14 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
         })
 
         // Setup reference to hints
-        hintsDatabase = databaseReference.child(BuildConfig.gameId.toString()).child("hints")
+        hintListener = databaseReference.child(BuildConfig.gameId.toString()).child("hints")
 
         // Setup reference to progress
         progressListener = databaseReference.child(BuildConfig.gameId.toString()).child("progress")
+    }
+
+    override fun onActive() {
+        super.onActive()
     }
 
     private fun setPlayerState(state: String) {
@@ -142,26 +132,8 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
                 playerState = PlayerState.READY
             }
             "playing" -> {
-                // Prepare and play intro video
-                // TODO: Here we need a logic to handle if the movie has already been played or not
-
-                if (!introCompleted) {
-                    storageRef = FirebaseStorage.getInstance().reference
-                    storageRef.child("video_intro.mp4").downloadUrl
-                        .addOnSuccessListener { taskSnapshot ->
-                            Observable.timer(2000, TimeUnit.MILLISECONDS).subscribe {
-                                commandHandler?.playVideo(taskSnapshot)
-                            }.disposeOnInactive()
-                        }.addOnFailureListener { exception ->
-                            Timber.i("Logging exception: $exception")
-                        }
-                    val introUpdate = HashMap<String, Any>()
-                    introUpdate["introCompleted"] = "true"
-                    databaseReference.child(BuildConfig.gameId.toString()).updateChildren(introUpdate)
-                }
-
                 // When setting game state to PLAYING we start listening for hints
-                hintsDatabase.addValueEventListener(object : ValueEventListener {
+                hintListener.addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         hintList.clear()
                         for (hintChild in dataSnapshot.children) {
@@ -190,6 +162,32 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
                     }
                 })
 
+                // Setup listener for intro video
+                introListener = databaseReference.child(BuildConfig.gameId.toString()).child("introCompleted")
+                introListener.addValueEventListener(object : ValueEventListener {
+
+                    override fun onCancelled(dbError: DatabaseError?) = Timber.i("Updating introListener threw a DatabaseError: $dbError")
+
+                    override fun onDataChange(dataSnapshot: DataSnapshot?) {
+                        if (dataSnapshot?.value != null)
+                            introCompleted = dataSnapshot.value as Boolean
+
+                        if (!introCompleted) {
+                            storageRef = FirebaseStorage.getInstance().reference
+                            storageRef.child("video_intro.mp4").downloadUrl
+                                .addOnSuccessListener { taskSnapshot ->
+                                    Observable.timer(2000, TimeUnit.MILLISECONDS).subscribe {
+                                        commandHandler?.playVideo(taskSnapshot)
+                                    }.disposeOnInactive()
+                                }.addOnFailureListener { exception ->
+                                    Timber.i("Logging exception: $exception")
+                                }
+                            val introUpdate = HashMap<String, Any>()
+                            introUpdate["introCompleted"] = true
+                            databaseReference.child(BuildConfig.gameId.toString()).updateChildren(introUpdate)
+                        }
+                    }
+                })
                 playerState = PlayerState.PLAYING
             }
             "paused" -> {

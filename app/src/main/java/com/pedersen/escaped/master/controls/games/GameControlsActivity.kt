@@ -40,24 +40,23 @@ class GameControlsActivity : ViewModelActivity<GameControlsActivityViewModel, Ac
         })
 
         // Setup keyboard behavior
-        binding.deadlineUpdateInput.setOnEditorActionListener(
-                { v, actionId, event ->
-                    if (actionId == EditorInfo.IME_ACTION_DONE) {
-                        // hide virtual keyboard
-                        val imm = this.getSystemService(
-                                Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                        imm.hideSoftInputFromWindow(v.windowToken, 0)
+        binding.deadlineUpdateInput.setOnEditorActionListener { v, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                // hide virtual keyboard
+                val imm = this.getSystemService(
+                    Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(v.windowToken, 0)
 
-                        try {
-                            showAddTimeDialog(binding.deadlineUpdateInput.text.toString().toLong())
-                        } catch (e: Exception) {
-                            AppUtils.showSnack("Something went wrong!", root)
-                        }
+                try {
+                    showAddTimeDialog(binding.deadlineUpdateInput.text.toString().toLong())
+                } catch (e: Exception) {
+                    AppUtils.showSnack("Something went wrong!", root)
+                }
 
-                        return@setOnEditorActionListener true
-                    }
-                    false
-                })
+                return@setOnEditorActionListener true
+            }
+            false
+        }
 
     }
 
@@ -65,11 +64,11 @@ class GameControlsActivity : ViewModelActivity<GameControlsActivityViewModel, Ac
         val newDeadlineDialog = AlertDialog.Builder(this@GameControlsActivity).create()
         newDeadlineDialog.setTitle("Alert")
         newDeadlineDialog.setMessage("This will add $seconds seconds to the current timer!")
-        newDeadlineDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", { _, _ ->
+        newDeadlineDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK") { _, _ ->
             viewModel.updateDeadline(seconds)
             binding.deadlineUpdateInput.setText("")
             binding.deadlineUpdateInput.clearFocus()
-        })
+        }
 
         newDeadlineDialog.show()
     }
@@ -77,11 +76,11 @@ class GameControlsActivity : ViewModelActivity<GameControlsActivityViewModel, Ac
     override fun showRestartDialog() {
         val restartDialog = AlertDialog.Builder(this@GameControlsActivity).create()
         restartDialog.setTitle("Alert")
-        restartDialog.setMessage("This will delete any current game content, and begin a new game right away!")
+        restartDialog.setMessage("This will delete any current game content, and put the game in READY state!")
 
-        restartDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", { _, _ ->
+        restartDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK") { _, _ ->
             viewModel.startNewGame()
-        })
+        }
 
         restartDialog.show()
     }
