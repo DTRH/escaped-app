@@ -21,12 +21,12 @@ class HintFragment : ViewModelFragment<HintFragmentViewModel, HintFragmentBindin
     private lateinit var hintBodyView: TypeWriter
 
     override fun onAttachContext(context: Context) {
-        initialize(R.layout.hint_fragment, BR.viewModel, {
+        initialize(R.layout.hint_fragment, BR.viewModel) {
             HintFragmentViewModel().apply {
                 hintHeader = arguments[HINT_HEADER] as String
                 hintBody = arguments[HINT_BODY] as String
             }
-        })
+        }
         super.onAttachContext(context)
     }
 

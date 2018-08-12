@@ -7,10 +7,6 @@ import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.pedersen.escaped.BR
-
-import com.pedersen.escaped.data.models.Hint
-import io.greenerpastures.mvvm.BaseViewModel
-import timber.log.Timber
 import com.pedersen.escaped.BuildConfig
 import com.pedersen.escaped.data.models.Hint
 import com.pedersen.escaped.extensions.bind
