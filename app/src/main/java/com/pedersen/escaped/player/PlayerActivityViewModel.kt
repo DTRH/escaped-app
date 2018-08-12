@@ -28,8 +28,11 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
     private lateinit var progressListener: DatabaseReference
     private lateinit var stateListener: DatabaseReference
     private lateinit var timeListener: DatabaseReference
+    private lateinit var introListener: DatabaseReference
 
     private lateinit var countDownTimer: CountDownTimer
+
+    private var introCompleted: Boolean = false
 
     private var deadline: Instant? = null
         set(value) {
@@ -41,7 +44,10 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
     var hintList = ArrayList<Hint>()
 
     @get:Bindable
-    var playerState by bind(PlayerState.UNKNOWN, BR.playerState, BR.stateMessage, BR.showStateOverlay)
+    var playerState by bind(PlayerState.UNKNOWN,
+                            BR.playerState,
+                            BR.stateMessage,
+                            BR.showStateOverlay)
 
     @get:Bindable
     var progress: Int = 0
@@ -77,8 +83,19 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
     var showStateOverlay: Boolean = false
         get() = (playerState != PlayerState.PLAYING)
 
-    override fun onActive() {
-        super.onActive()
+    init {
+        // Setup listener for intro video
+        introListener = databaseReference.child(BuildConfig.gameId.toString()).child("introCompleted")
+        introListener.addValueEventListener(object : ValueEventListener {
+            override fun onCancelled(dbError: DatabaseError?) {
+                Timber.i("Updating introListener threw a DatabaseError: $dbError")
+            }
+
+            override fun onDataChange(dataSnapshot: DataSnapshot?) {
+                if (dataSnapshot?.value is String && dataSnapshot.value != null)
+                    introCompleted = (dataSnapshot.value as String).toBoolean()
+            }
+        })
 
         stateListener = databaseReference.child(BuildConfig.gameId.toString()).child("state")
         stateListener.addValueEventListener(object : ValueEventListener {
@@ -127,13 +144,21 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
             "playing" -> {
                 // Prepare and play intro video
                 // TODO: Here we need a logic to handle if the movie has already been played or not
-                storageRef = FirebaseStorage.getInstance().reference
-                storageRef.child("video_intro.mp4").downloadUrl
-                    .addOnSuccessListener {
-                            taskSnapshot -> Observable.timer(2000, TimeUnit.MILLISECONDS).subscribe { commandHandler?.playVideo(taskSnapshot) }.disposeOnInactive()
-                    }.addOnFailureListener {
-                            exception -> Timber.i("Logging exception: $exception")
-                    }
+
+                if (!introCompleted) {
+                    storageRef = FirebaseStorage.getInstance().reference
+                    storageRef.child("video_intro.mp4").downloadUrl
+                        .addOnSuccessListener { taskSnapshot ->
+                            Observable.timer(2000, TimeUnit.MILLISECONDS).subscribe {
+                                commandHandler?.playVideo(taskSnapshot)
+                            }.disposeOnInactive()
+                        }.addOnFailureListener { exception ->
+                            Timber.i("Logging exception: $exception")
+                        }
+                    val introUpdate = HashMap<String, Any>()
+                    introUpdate["introCompleted"] = "true"
+                    databaseReference.child(BuildConfig.gameId.toString()).updateChildren(introUpdate)
+                }
 
                 // When setting game state to PLAYING we start listening for hints
                 hintsDatabase.addValueEventListener(object : ValueEventListener {
@@ -183,11 +208,12 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
 
             override fun onTick(millisUntilFinished: Long) {
                 if (playerState == PlayerState.PLAYING)
-                    commandHandler?.animateClockArm(360 / 60 * (Duration.between(deadline, Instant.now()).toMinutes().toFloat()))
+                    commandHandler?.animateClockArm(360 / 60 * (Duration.between(deadline,
+                                                                                 Instant.now()).toMinutes().toFloat()))
             }
 
             override fun onFinish() {
-           //     setPlayerState("ended")
+                //     setPlayerState("ended")
                 countDownTimer.cancel()
             }
         }.start()
