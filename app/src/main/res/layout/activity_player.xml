@@ -24,7 +24,7 @@
       <android.support.constraint.ConstraintLayout
           android:layout_width="0dp"
           android:layout_height="0dp"
-          android:background="@drawable/main_activity_progressbar"
+          android:background="@drawable/player_activity_progress_bar"
           app:layout_constraintBottom_toTopOf="@id/hori_guide_2"
           app:layout_constraintLeft_toRightOf="@id/guideline"
           app:layout_constraintRight_toLeftOf="@id/guideline2"
