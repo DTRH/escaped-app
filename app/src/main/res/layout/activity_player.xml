@@ -110,7 +110,6 @@
           android:layout_width="0dp"
           android:layout_height="0dp"
           android:layout_marginStart="30dp"
-
           android:orientation="vertical"
           android:rotation="10"
           app:layout_constraintBottom_toBottomOf="parent"

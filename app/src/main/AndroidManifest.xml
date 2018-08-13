@@ -28,25 +28,23 @@
         android:name=".master.GameMasterActivity"
         android:screenOrientation="landscape" />
     <activity
-        android:name=".master.games.one.GameOneActivity"
-        android:screenOrientation="landscape" />
-    <activity
-        android:name=".master.games.two.GameTwoActivity"
-        android:screenOrientation="landscape" />
-    <activity android:name=".master.games.dinner.DinnerRoomActivity" />
-    <activity
         android:name=".master.controls.hints.HintControlsActivity"
         android:screenOrientation="landscape" />
     <activity
         android:name=".master.controls.games.GameControlsActivity"
         android:screenOrientation="landscape" />
-    <activity android:name=".master.controls.videos.VideoControlsActivity" />
-    <activity android:name=".master.RoomActivity">
-    </activity>
-    <activity android:name=".master.controls.webcams.WebcamActivity">
-    </activity>
-    <activity android:name=".master.controls.webcams.CameraActivity">
-    </activity>
+    <activity
+        android:name=".master.controls.videos.VideoControlsActivity"
+        android:screenOrientation="landscape" />
+    <activity
+        android:name=".master.RoomActivity"
+        android:screenOrientation="landscape" />
+    <activity
+        android:name=".master.controls.webcams.WebcamActivity"
+        android:screenOrientation="landscape" />
+    <activity
+        android:name=".master.controls.webcams.CameraActivity"
+        android:screenOrientation="landscape" />
   </application>
 
 </manifest>

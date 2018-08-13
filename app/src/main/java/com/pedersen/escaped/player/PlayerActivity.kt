@@ -95,8 +95,11 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
 
     override fun refreshAdapter() {
         hintAdapter.notifyDataSetChanged()
-        if(!hintAdapter.isEmpty)
+        if(!hintAdapter.isEmpty) {
             mp.start()
+            val hintFragment = HintFragment.newInstance(viewModel.hintList.last())
+            fragmentManager.beginTransaction().replace(R.id.fragment_container, hintFragment).commit()
+        }
     }
 
     override fun playVideo(taskSnapshot: Uri) {
