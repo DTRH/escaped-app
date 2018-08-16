@@ -105,8 +105,12 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
             }
 
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                if (dataSnapshot.value is String && dataSnapshot.value != null)
+                if (dataSnapshot.value is String && dataSnapshot.value != null) {
                     deadline = Instant.parse(dataSnapshot.value as CharSequence?)
+                    if (deadline!!.isBefore(Instant.now()))
+                        // TODO CONSIDER BUILDING ANOTHER "ENDED" STATE THAT DOES NOT INTERACT WITH THE SERVER
+                        setPlayerState("ENDED")
+                }
             }
         })
 
@@ -117,9 +121,6 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
         progressListener = databaseReference.child(BuildConfig.gameId.toString()).child("progress")
     }
 
-    override fun onActive() {
-        super.onActive()
-    }
 
     private fun setPlayerState(state: String) {
         when (state.toLowerCase()) {
@@ -163,10 +164,12 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
                 })
 
                 // Setup listener for intro video
-                introListener = databaseReference.child(BuildConfig.gameId.toString()).child("introCompleted")
+                introListener = databaseReference.child(BuildConfig.gameId.toString())
+                    .child("introCompleted")
                 introListener.addValueEventListener(object : ValueEventListener {
 
-                    override fun onCancelled(dbError: DatabaseError?) = Timber.i("Updating introListener threw a DatabaseError: $dbError")
+                    override fun onCancelled(dbError: DatabaseError?) =
+                        Timber.i("Updating introListener threw a DatabaseError: $dbError")
 
                     override fun onDataChange(dataSnapshot: DataSnapshot?) {
                         if (dataSnapshot?.value != null)
@@ -184,7 +187,8 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
                                 }
                             val introUpdate = HashMap<String, Any>()
                             introUpdate["introCompleted"] = true
-                            databaseReference.child(BuildConfig.gameId.toString()).updateChildren(introUpdate)
+                            databaseReference.child(BuildConfig.gameId.toString())
+                                .updateChildren(introUpdate)
                         }
                     }
                 })
@@ -211,7 +215,8 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
             }
 
             override fun onFinish() {
-                //     setPlayerState("ended")
+                // TODO CONSIDER BUILDING ANOTHER "ENDED" STATE THAT DOES NOT INTERACT WITH THE SERVER
+                setPlayerState("ENDED")
                 countDownTimer.cancel()
             }
         }.start()
