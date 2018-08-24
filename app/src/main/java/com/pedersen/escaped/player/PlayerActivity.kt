@@ -95,7 +95,7 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
 
     override fun refreshAdapter() {
         hintAdapter.notifyDataSetChanged()
-        if(!hintAdapter.isEmpty) {
+        if(!hintAdapter.isEmpty && (viewModel.playerState == PlayerActivityViewModel.PlayerState.PLAYING || viewModel.playerState == PlayerActivityViewModel.PlayerState.PAUSED)) {
             mp.start()
             val hintFragment = HintFragment.newInstance(viewModel.hintList.last())
             fragmentManager.beginTransaction().replace(R.id.fragment_container, hintFragment).commit()

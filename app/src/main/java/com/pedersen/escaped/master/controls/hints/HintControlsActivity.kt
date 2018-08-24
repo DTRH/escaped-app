@@ -21,12 +21,15 @@ import io.greenerpastures.mvvm.ViewModelActivity
 import kotlinx.android.synthetic.main.hint_controls_fragment.*
 import timber.log.Timber
 
-class HintControlsActivity : ViewModelActivity<HintControlsActivityViewModel, HintControlsFragmentBinding>(), HintControlsActivityViewModel.Commands {
+class HintControlsActivity :
+    ViewModelActivity<HintControlsActivityViewModel, HintControlsFragmentBinding>(),
+    HintControlsActivityViewModel.Commands {
 
     private var gameId: Int = 0
 
     private lateinit var hintAdapter: BaseAdapter
     private lateinit var hintContainer: ListView
+    private var hintlist: ArrayList<Hint> = ArrayList()
 
     private val firebaseInstance = FirebaseDatabase.getInstance()
     private var databaseReference = firebaseInstance.getReference("games")
@@ -34,7 +37,9 @@ class HintControlsActivity : ViewModelActivity<HintControlsActivityViewModel, Hi
     private lateinit var requestListener: DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        initialize(R.layout.hint_controls_fragment, BR.viewModel, ({ HintControlsActivityViewModel() }))
+        initialize(R.layout.hint_controls_fragment,
+                   BR.viewModel,
+                   ({ HintControlsActivityViewModel() }))
         super.onCreate(savedInstanceState)
 
         gameId = intent.extras.get(GAME_ID) as Int
@@ -55,18 +60,17 @@ class HintControlsActivity : ViewModelActivity<HintControlsActivityViewModel, Hi
         hintsDatabase.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.value != null) {
-                    viewModel.hintList.clear()
+                    hintlist.clear()
                     // This method is called once with the initial value and again
                     // whenever data at this location is updated.
                     for (hintChild in dataSnapshot.children) {
                         val hint = hintChild.getValue(Hint::class.java)
                         hint?.key = hintChild.key
-                        // if this does not work, uncomment below and remove above ^^
-                        // hint.let { hint!!.key = hintChild.key }
-                        hint?.let { viewModel.hintList.add(it) }
+                        hint?.let { hintlist.add(it) }
                     }
 
                     hintAdapter.notifyDataSetChanged()
+
                 }
             }
 
@@ -78,43 +82,47 @@ class HintControlsActivity : ViewModelActivity<HintControlsActivityViewModel, Hi
         })
 
         // Setup keyboard behavior
-        binding.bodyInput.setOnEditorActionListener(
-                { v, actionId, event ->
-                    if (actionId == EditorInfo.IME_ACTION_DONE) {
-                        // hide virtual keyboard
-                        val imm = this.getSystemService(
-                                Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                        imm.hideSoftInputFromWindow(v.windowToken, 0)
-                        viewModel.notifyPropertyChanged(BR.creatable)
+        binding.bodyInput.setOnEditorActionListener { v, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                // hide virtual keyboard
+                val imm = this.getSystemService(
+                    Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(v.windowToken, 0)
+                viewModel.notifyPropertyChanged(BR.creatable)
 
-                        return@setOnEditorActionListener true
-                    }
-                    false
-                })
+                return@setOnEditorActionListener true
+            }
+            false
+        }
 
         // Setup the adapter and container that will
-        hintAdapter = HintsAdapter(this, viewModel.hintList)
+        hintAdapter = HintsAdapter(this, hintlist)
         hintContainer = binding.listContainer
         hintContainer.adapter = hintAdapter
-        hintContainer.onItemClickListener = AdapterView.OnItemClickListener { _, view, position, _ ->
+        hintContainer.onItemClickListener =
+                AdapterView.OnItemClickListener { _, view, position, _ ->
 
-            if (viewModel.selectedId.contains(viewModel.hintList[position].id)) {
-                viewModel.selectedId.remove(viewModel.hintList[position].id)
-                view.setBackgroundColor(ContextCompat.getColor(this, android.R.color.transparent))
-            } else {
-                viewModel.selectedId.add(viewModel.hintList[position].id)
-                view.setBackgroundColor(ContextCompat.getColor(this, R.color.colorAccent))
-            }
+                    if (viewModel.selectedId.contains(hintlist[position].id)) {
+                        viewModel.selectedId.remove(hintlist[position].id)
+                        view.setBackgroundColor(ContextCompat.getColor(this,
+                                                                       android.R.color.transparent))
+                    } else {
+                        viewModel.selectedId.add(hintlist[position].id)
+                        view.setBackgroundColor(ContextCompat.getColor(this, R.color.colorAccent))
+                    }
 
-            viewModel.notifyPropertyChanged(BR.selectedId)
-            viewModel.notifyPropertyChanged(BR.deletable)
-            viewModel.notifyPropertyChanged(BR.editable)
+                    viewModel.notifyPropertyChanged(BR.selectedId)
+                    viewModel.notifyPropertyChanged(BR.deletable)
+                    viewModel.notifyPropertyChanged(BR.editable)
 
-        }
+                }
     }
 
     override fun createHint() {
-        val newHint = Hint(System.currentTimeMillis().toString(), binding.headerInput.text.toString(), binding.bodyInput.text.toString(), false)
+        val newHint = Hint(System.currentTimeMillis().toString(),
+                           binding.headerInput.text.toString(),
+                           binding.bodyInput.text.toString(),
+                           false)
         hintsDatabase.push().setValue(newHint)
         binding.headerInput.text.clear()
         binding.bodyInput.text.clear()
@@ -131,7 +139,7 @@ class HintControlsActivity : ViewModelActivity<HintControlsActivityViewModel, Hi
 
     override fun deleteHint() {
         for (selection in viewModel.selectedId) {
-            for (hint in viewModel.hintList) {
+            for (hint in hintlist) {
                 if (hint.id.contentEquals(selection)) {
                     hintsDatabase.child(hint.key).removeValue()
                 }
@@ -154,7 +162,8 @@ class HintControlsActivity : ViewModelActivity<HintControlsActivityViewModel, Hi
         snackbar.show()
     }
 
-    override fun checkCreatable(): Boolean = (binding.headerInput.length() != 0 && binding.bodyInput.length() != 0)
+    override fun checkCreatable(): Boolean =
+        (binding.headerInput.length() != 0 && binding.bodyInput.length() != 0)
 
     companion object {
 

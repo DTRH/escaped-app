@@ -36,7 +36,12 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
     private var deadline: Instant? = null
         set(value) {
             field = value
-            resumeTimer(Duration.between(Instant.now(), value))
+            countDownTimer.cancel()
+            if (field != null)
+                if (field!!.isBefore(Instant.now()))
+                    setPlayerState("ENDED")
+                else
+                    resumeTimer(Duration.between(Instant.now(), value))
         }
 
     @get:Bindable
@@ -107,9 +112,6 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.value is String && dataSnapshot.value != null) {
                     deadline = Instant.parse(dataSnapshot.value as CharSequence?)
-                    if (deadline!!.isBefore(Instant.now()))
-                        // TODO CONSIDER BUILDING ANOTHER "ENDED" STATE THAT DOES NOT INTERACT WITH THE SERVER
-                        setPlayerState("ENDED")
                 }
             }
         })
@@ -180,7 +182,8 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
                             storageRef.child("video_intro.mp4").downloadUrl
                                 .addOnSuccessListener { taskSnapshot ->
                                     Observable.timer(2000, TimeUnit.MILLISECONDS).subscribe {
-                                        commandHandler?.playVideo(taskSnapshot)
+                                        if (playerState == PlayerState.PLAYING)
+                                            commandHandler?.playVideo(taskSnapshot)
                                     }.disposeOnInactive()
                                 }.addOnFailureListener { exception ->
                                     Timber.i("Logging exception: $exception")
@@ -215,8 +218,6 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
             }
 
             override fun onFinish() {
-                // TODO CONSIDER BUILDING ANOTHER "ENDED" STATE THAT DOES NOT INTERACT WITH THE SERVER
-                setPlayerState("ENDED")
                 countDownTimer.cancel()
             }
         }.start()
