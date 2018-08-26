@@ -63,7 +63,7 @@ class GameControlsActivity : ViewModelActivity<GameControlsActivityViewModel, Ac
     private fun showAddTimeDialog(seconds: Long) {
         val newDeadlineDialog = AlertDialog.Builder(this@GameControlsActivity).create()
         newDeadlineDialog.setTitle("Alert")
-        newDeadlineDialog.setMessage("This will add $seconds seconds to the current timer!")
+        newDeadlineDialog.setMessage("This will add $seconds minutes to the current timer!")
         newDeadlineDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK") { _, _ ->
             viewModel.updateDeadline(seconds)
             binding.deadlineUpdateInput.setText("")

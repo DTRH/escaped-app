@@ -228,10 +228,10 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
         }.start()
     }
 
-    fun updateDeadline(seconds: Long) {
+    fun updateDeadline(minutes: Long) {
         val deadlineUpdate = HashMap<String, Any>()
         val updatedDeadline: Instant =
-            deadline.plusSeconds(seconds)
+            deadline.plusSeconds(minutes * 60)
         deadlineUpdate["deadline"] = updatedDeadline.toString()
         databaseReference.child(gameId.toString()).updateChildren(deadlineUpdate)
     }
