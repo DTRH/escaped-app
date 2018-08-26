@@ -36,7 +36,6 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
     private var deadline: Instant? = null
         set(value) {
             field = value
-            countDownTimer.cancel()
             if (field != null)
                 if (field!!.isBefore(Instant.now()))
                     setPlayerState("ENDED")
@@ -209,6 +208,10 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
     }
 
     private fun resumeTimer(timeLeft: Duration) {
+        if (this::countDownTimer.isInitialized) {
+            countDownTimer.cancel()
+        }
+
         countDownTimer = object : CountDownTimer(timeLeft.abs().toMillis(), 5000) {
 
             override fun onTick(millisUntilFinished: Long) {
