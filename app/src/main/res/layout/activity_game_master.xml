@@ -12,47 +12,97 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@drawable/game_master_activity_background">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/game_master_activity_background"
             tools:context="com.pedersen.escaped.master.GameMasterActivity">
 
             <Button
                 android:id="@+id/launch_room_one_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
                 android:background="@drawable/game_master_activity_room_one_button"
-                android:onClick="@{(v) -> viewModel.launchRoom(1)}"
+                android:onClick="@{_ -> viewModel.launchRoom(1)}"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintHorizontal_chainStyle="spread"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toLeftOf="@id/launch_room_two_button"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <Button
-                android:id="@+id/launch_room_two_button"
+            <ImageView
+                android:id="@+id/room_one_hint_notification"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/ic_hint_request"
+                app:layout_constraintRight_toRightOf="@id/launch_room_one_button"
+                app:layout_constraintTop_toTopOf="@id/launch_room_one_button"
+                android:visibility="@{viewModel.gameOneHintRequested}"/>
+
+
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@color/primaryTextColor"
+                android:textSize="14sp"
+                app:layout_constraintLeft_toLeftOf="@id/launch_room_one_button"
+                app:layout_constraintRight_toRightOf="@id/launch_room_one_button"
+                app:layout_constraintTop_toBottomOf="@id/launch_room_one_button"
+                android:text="Game #1"/>
+
+            <Button
+                android:id="@+id/launch_room_two_button"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
                 android:background="@drawable/game_master_activity_room_two_button"
-                android:onClick="@{(v) -> viewModel.launchRoom(2)}"
+                android:onClick="@{_ -> viewModel.launchRoom(2)}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toRightOf="@id/launch_room_one_button"
                 app:layout_constraintRight_toLeftOf="@id/launch_dinner_room_button"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <Button
-                android:id="@+id/launch_dinner_room_button"
+
+
+            <ImageView
+                android:id="@+id/room_two_hint_notification"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/ic_hint_request"
+                app:layout_constraintRight_toRightOf="@id/launch_room_two_button"
+                app:layout_constraintTop_toTopOf="@id/launch_room_two_button"
+                android:visibility="@{viewModel.gameTwoHintRequested}"/>
+
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="Game #2"
+                android:textColor="@color/primaryTextColor"
+                android:textSize="14sp"
+                app:layout_constraintLeft_toLeftOf="@id/launch_room_two_button"
+                app:layout_constraintRight_toRightOf="@id/launch_room_two_button"
+                app:layout_constraintTop_toBottomOf="@id/launch_room_two_button"/>
+
+            <Button
+                android:id="@+id/launch_dinner_room_button"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
                 android:background="@drawable/game_master_activity_room_three_button"
-                android:onClick="@{(v) -> viewModel.launchRoom(3)}"
+                android:onClick="@{_ -> viewModel.launchRoom(3)}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toRightOf="@id/launch_room_two_button"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Dining Room"
+                android:textColor="@color/primaryTextColor"
+                android:textSize="14sp"
+                app:layout_constraintLeft_toLeftOf="@id/launch_dinner_room_button"
+                app:layout_constraintRight_toRightOf="@id/launch_dinner_room_button"
+                app:layout_constraintTop_toBottomOf="@id/launch_dinner_room_button"/>
 
         </android.support.constraint.ConstraintLayout>
 
@@ -60,8 +110,5 @@
             android:id="@+id/fragment_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-
     </FrameLayout>
-
-
 </layout>

@@ -1,12 +1,12 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    ext.mvvm_version = '0.7.0-SNAPSHOT1'
-    ext.kotlin_version = '1.2.21'
-    ext.android_support_version = '27.0.2'
-    ext.android_plugin_version = '3.1.0-beta1'
+    ext.mvvm_version = '0.7.1'
+    ext.kotlin_version = '1.2.51'
+    ext.android_support_version = '27.1.1'
+    ext.android_plugin_version = '3.1.1'
     ext.rx_java_version = '2.1.8'
-    ext.rx_android_version = '2.0.1'
+    ext.rx_android_version = '2.0.2'
     ext.junit_version = '4.12'
     ext.espresso_version = '3.0.1'
     repositories {
@@ -14,11 +14,12 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.1'
+        classpath "com.android.tools.build:gradle:$android_plugin_version"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
+        classpath "com.google.gms:google-services:$android_plugin_version"
     }
 }
 
@@ -26,6 +27,7 @@ allprojects {
     repositories {
         google()
         jcenter()
+        maven { url 'https://jitpack.io' }
     }
 }
 

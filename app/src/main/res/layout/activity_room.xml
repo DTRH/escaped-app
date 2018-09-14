@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+
+    <variable
+        name="viewModel"
+        type="com.pedersen.escaped.master.RoomActivityViewModel" />
+  </data>
+  <FrameLayout
+      android:id="@+id/root"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/game_master_activity_background">
+
+      <Button
+          android:id="@+id/web_one"
+          style="@style/room_button"
+          android:layout_width="120dp"
+          android:layout_height="120dp"
+          android:background="@drawable/ic_camera"
+          android:onClick="@{_ -> viewModel.viewWebcam(1)}"
+          app:layout_constraintBottom_toTopOf="@+id/room_control_button"
+          app:layout_constraintLeft_toLeftOf="parent"
+          app:layout_constraintRight_toLeftOf="@+id/web_two"
+          app:layout_constraintTop_toTopOf="parent" />
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="Camera #1"
+          android:textSize="12sp"
+          android:textColor="@color/primaryTextColor"
+          app:layout_constraintLeft_toLeftOf="@id/web_one"
+          app:layout_constraintRight_toRightOf="@id/web_one"
+          app:layout_constraintTop_toBottomOf="@id/web_one"/>
+
+      <Button
+          android:id="@+id/web_two"
+          style="@style/room_button"
+          android:layout_width="120dp"
+          android:layout_height="120dp"
+          android:background="@drawable/ic_camera"
+          android:onClick="@{_ -> viewModel.viewWebcam(2)}"
+          app:layout_constraintBottom_toTopOf="@+id/hint_button"
+          app:layout_constraintLeft_toRightOf="@id/web_one"
+          app:layout_constraintRight_toLeftOf="@+id/web_three"
+          app:layout_constraintTop_toTopOf="parent" />
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="Camera #2"
+          android:textColor="@color/primaryTextColor"
+          app:layout_constraintLeft_toLeftOf="@id/web_two"
+          app:layout_constraintRight_toRightOf="@id/web_two"
+          app:layout_constraintTop_toBottomOf="@id/web_two"/>
+
+      <Button
+          android:id="@+id/web_three"
+          style="@style/room_button"
+          android:layout_width="120dp"
+          android:layout_height="120dp"
+          android:background="@drawable/ic_camera"
+          android:onClick="@{_ -> viewModel.viewWebcam(3)}"
+          app:layout_constraintBottom_toTopOf="@+id/video_button"
+          app:layout_constraintLeft_toRightOf="@id/web_two"
+          app:layout_constraintRight_toRightOf="parent"
+          app:layout_constraintTop_toTopOf="parent" />
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="Camera #3"
+          android:textColor="@color/primaryTextColor"
+          app:layout_constraintLeft_toLeftOf="@id/web_three"
+          app:layout_constraintRight_toRightOf="@id/web_three"
+          app:layout_constraintTop_toBottomOf="@id/web_three"/>
+
+      <Button
+          android:id="@+id/room_control_button"
+          style="@style/room_button"
+          android:layout_width="120dp"
+          android:layout_height="120dp"
+          android:background="@drawable/ic_setting"
+          android:onClick="@{_ -> viewModel.launchGameControls()}"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintLeft_toLeftOf="parent"
+          app:layout_constraintRight_toLeftOf="@id/hint_button"
+          app:layout_constraintTop_toBottomOf="@id/web_one" />
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="Game Controls"
+          android:textColor="@color/primaryTextColor"
+          app:layout_constraintLeft_toLeftOf="@id/room_control_button"
+          app:layout_constraintRight_toRightOf="@id/room_control_button"
+          app:layout_constraintTop_toBottomOf="@id/room_control_button"/>
+
+      <Button
+          android:id="@+id/hint_button"
+          style="@style/room_button"
+          android:layout_width="120dp"
+          android:layout_height="120dp"
+          android:background="@drawable/ic_speech_bubble"
+          android:onClick="@{_ -> viewModel.launchHintControls()}"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintLeft_toRightOf="@id/room_control_button"
+          app:layout_constraintRight_toLeftOf="@id/video_button"
+          app:layout_constraintTop_toBottomOf="@id/web_two" />
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="Hint Controls"
+          android:textColor="@color/primaryTextColor"
+          app:layout_constraintLeft_toLeftOf="@id/hint_button"
+          app:layout_constraintRight_toRightOf="@id/hint_button"
+          app:layout_constraintTop_toBottomOf="@id/hint_button"/>
+
+      <Button
+          android:id="@+id/video_button"
+          style="@style/room_button"
+          android:layout_width="120dp"
+          android:layout_height="120dp"
+          android:background="@drawable/ic_film_strip"
+          android:onClick="@{_ -> viewModel.promptFeatureUnavailable()}"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintLeft_toRightOf="@id/hint_button"
+          app:layout_constraintRight_toRightOf="parent"
+          app:layout_constraintTop_toBottomOf="@id/web_three" />
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="Video Controls"
+          android:textColor="@color/primaryTextColor"
+          app:layout_constraintLeft_toLeftOf="@id/video_button"
+          app:layout_constraintRight_toRightOf="@id/video_button"
+          app:layout_constraintTop_toBottomOf="@id/video_button"/>
+
+    </android.support.constraint.ConstraintLayout>
+
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+  </FrameLayout>
+</layout>
