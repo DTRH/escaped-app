@@ -56,7 +56,11 @@ class VideoFragment : ViewModelFragment<VideoFragmentViewModel, FragmentVideoBin
             hang_up.alpha = 1f
             hang_up.isEnabled = true
         }
+    }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        videoMediaPlayer.release()
     }
 
     companion object {
@@ -72,9 +76,5 @@ class VideoFragment : ViewModelFragment<VideoFragmentViewModel, FragmentVideoBin
         }
     }
 
-    interface Commands {
-
-        fun pickupPhone()
-
-    }
+    interface Commands
 }

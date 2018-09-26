@@ -53,6 +53,13 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
             if (value == field) return
             commandHandler?.animateProgressBar(field, value)
             field = value
+            if (field == 100) {
+                commandHandler?.playVideo(PlayerActivity.VideoElement.END_GOOD)
+                if (this::countDownTimer.isInitialized) {
+                    countDownTimer.cancel()
+                }
+
+            }
         }
 
     @get:Bindable
@@ -175,12 +182,11 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
                             Observable.timer(2000, TimeUnit.MILLISECONDS).subscribe {
                                 if (playerState == PlayerState.PLAYING)
                                     commandHandler?.playVideo(PlayerActivity.VideoElement.INTRO)
+                                val introUpdate = HashMap<String, Any>()
+                                introUpdate["introCompleted"] = true
+                                databaseReference.child(BuildConfig.gameId.toString())
+                                    .updateChildren(introUpdate)
                             }.disposeOnInactive()
-
-                            val introUpdate = HashMap<String, Any>()
-                            introUpdate["introCompleted"] = true
-                            databaseReference.child(BuildConfig.gameId.toString())
-                                .updateChildren(introUpdate)
                         }
                     }
                 })

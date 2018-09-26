@@ -18,10 +18,13 @@ import com.pedersen.escaped.animations.PositionSpringAnimation
 import com.pedersen.escaped.animations.PositionSpringAnimation.PullingEventListener
 import com.pedersen.escaped.data.adapters.HintsAdapter
 import com.pedersen.escaped.databinding.ActivityPlayerBinding
+import com.pedersen.escaped.player.PlayerActivity.VideoElement.END_GOOD
+import com.pedersen.escaped.player.PlayerActivity.VideoElement.INTRO
 import com.pedersen.escaped.utils.AppUtils
 import io.greenerpastures.mvvm.ViewModelActivity
 
-class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayerBinding>(), PlayerActivityViewModel.Commands, VideoFragment.Commands {
+class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayerBinding>(),
+    PlayerActivityViewModel.Commands, VideoFragment.Commands {
 
     // Progress bar
     private var progressBarAnimation: ObjectAnimator = ObjectAnimator()
@@ -59,7 +62,8 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
         hintContainer.adapter = hintAdapter
         hintContainer.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
             val hintFragment = HintFragment.newInstance(viewModel.hintList[position])
-            fragmentManager.beginTransaction().replace(R.id.fragment_container, hintFragment).commit()
+            fragmentManager.beginTransaction().replace(R.id.fragment_container, hintFragment)
+                .commit()
         }
     }
 
@@ -100,37 +104,35 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
 
     override fun refreshAdapter() {
         hintAdapter.notifyDataSetChanged()
-        if(!hintAdapter.isEmpty && (viewModel.playerState == PlayerActivityViewModel.PlayerState.PLAYING || viewModel.playerState == PlayerActivityViewModel.PlayerState.PAUSED)) {
+        if (!hintAdapter.isEmpty && (viewModel.playerState == PlayerActivityViewModel.PlayerState.PLAYING || viewModel.playerState == PlayerActivityViewModel.PlayerState.PAUSED)) {
             mp.start()
             val hintFragment = HintFragment.newInstance(viewModel.hintList.last())
-            fragmentManager.beginTransaction().replace(R.id.fragment_container, hintFragment).commit()
+            fragmentManager.beginTransaction().replace(R.id.fragment_container, hintFragment)
+                .commit()
         }
     }
 
     override fun playVideo(videoElement: VideoElement) {
         var path = "android.resource://$packageName/"
 
-        when (videoElement) {
-            VideoElement.INTRO -> {
-                path += R.raw.intro_film
-            }
+        path += when (videoElement) {
+            INTRO -> R.raw.intro_film
+            END_GOOD -> R.raw.exit_good
         }
 
         val videoFragment = VideoFragment.newInstance(Uri.parse(path))
 
         try {
-            fragmentManager.beginTransaction().replace(R.id.fragment_container, videoFragment).commit()
+            fragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, videoFragment)
+                .commit()
         } catch (e: Exception) {
             // TODO Implement some error handling
         }
     }
 
-    override fun pickupPhone() {
-
-    }
-
     enum class VideoElement {
-        INTRO
+        INTRO, END_GOOD
     }
 
 
