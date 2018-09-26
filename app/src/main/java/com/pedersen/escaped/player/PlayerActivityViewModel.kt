@@ -1,11 +1,8 @@
 package com.pedersen.escaped.player
 
 import android.databinding.Bindable
-import android.net.Uri
 import android.os.CountDownTimer
 import com.google.firebase.database.*
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
 import com.pedersen.escaped.BR
 import com.pedersen.escaped.BuildConfig
 import com.pedersen.escaped.data.models.Hint
@@ -21,8 +18,6 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
 
     private val firebaseInstance = FirebaseDatabase.getInstance()
     private var databaseReference = firebaseInstance.getReference("games")
-
-    private lateinit var storageRef: StorageReference
 
     private var hintListener: DatabaseReference
     private var progressListener: DatabaseReference
@@ -177,16 +172,11 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
                             introCompleted = dataSnapshot.value as Boolean
 
                         if (!introCompleted) {
-                            storageRef = FirebaseStorage.getInstance().reference
-                            storageRef.child("video_intro.mp4").downloadUrl
-                                .addOnSuccessListener { taskSnapshot ->
-                                    Observable.timer(2000, TimeUnit.MILLISECONDS).subscribe {
-                                        if (playerState == PlayerState.PLAYING)
-                                            commandHandler?.playVideo(taskSnapshot)
-                                    }.disposeOnInactive()
-                                }.addOnFailureListener { exception ->
-                                    Timber.i("Logging exception: $exception")
-                                }
+                            Observable.timer(2000, TimeUnit.MILLISECONDS).subscribe {
+                                if (playerState == PlayerState.PLAYING)
+                                    commandHandler?.playVideo(PlayerActivity.VideoElement.INTRO)
+                            }.disposeOnInactive()
+
                             val introUpdate = HashMap<String, Any>()
                             introUpdate["introCompleted"] = true
                             databaseReference.child(BuildConfig.gameId.toString())
@@ -246,7 +236,7 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
 
         fun refreshAdapter()
 
-        fun playVideo(taskSnapshot: Uri)
+        fun playVideo(videoElement: PlayerActivity.VideoElement)
 
     }
 }

@@ -1,49 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
 
-    <data>
+  <data>
 
-        <variable
-            name="viewModel"
-            type="com.pedersen.escaped.player.VideoFragmentViewModel" />
-    </data>
+    <variable
+        name="viewModel"
+        type="com.pedersen.escaped.player.VideoFragmentViewModel" />
+  </data>
 
-    <FrameLayout
+  <FrameLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent">
+
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@drawable/phone_call_ui___google_search"
+        >
 
-        <android.support.constraint.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/old_paper_background"
-            android:padding="50dp">
+      <VideoView
+          android:id="@+id/video_view"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:paddingEnd="80dp"
+          android:paddingStart="80dp"
+          android:paddingTop="80dp"
+          app:layout_constraintLeft_toLeftOf="parent"
+          app:layout_constraintTop_toTopOf="parent"
+          android:visibility="invisible"
+          />
 
-            <VideoView
-                android:id="@+id/video_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingTop="80dp"
-                android:paddingStart="80dp"
-                android:paddingEnd="80dp"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageView
-                android:id="@+id/back_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_close"
-                android:tint="@android:color/white"
-                android:paddingEnd="80dp"
-                android:paddingTop="40dp"
-                android:onClick="@{_ -> viewModel.closeVideo()}"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+      <Button
+          android:id="@+id/pick_up"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:background="@drawable/phone_1"
+          android:onClick="@{_ -> viewModel.playVideo()}"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintLeft_toRightOf="@+id/hang_up"
+          app:layout_constraintRight_toRightOf="parent"
+          android:layout_marginBottom="50dp"/>
 
-        </android.support.constraint.ConstraintLayout>
+      <Button
+          android:id="@+id/hang_up"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:background="@drawable/phone_2"
+          android:onClick="@{_ -> viewModel.closeVideo()}"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintLeft_toLeftOf="parent"
+          app:layout_constraintRight_toLeftOf="@+id/pick_up"
+          android:layout_marginBottom="50dp"/>
 
-    </FrameLayout>
+    </android.support.constraint.ConstraintLayout>
+
+  </FrameLayout>
 
 </layout>

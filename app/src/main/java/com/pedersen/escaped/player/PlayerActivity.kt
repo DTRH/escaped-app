@@ -21,15 +21,20 @@ import com.pedersen.escaped.databinding.ActivityPlayerBinding
 import com.pedersen.escaped.utils.AppUtils
 import io.greenerpastures.mvvm.ViewModelActivity
 
-class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayerBinding>(), PlayerActivityViewModel.Commands {
+class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayerBinding>(), PlayerActivityViewModel.Commands, VideoFragment.Commands {
 
+    // Progress bar
     private var progressBarAnimation: ObjectAnimator = ObjectAnimator()
 
+    // Clock Arm and Angle
     private lateinit var clockArm: ImageView
     private var clockArmAngle: Float = 0.0f
 
+    // Mediaplayer - Notification
     private lateinit var mp: MediaPlayer
 
+
+    // Adapter for the hint list
     private lateinit var hintAdapter: BaseAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -102,13 +107,30 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
         }
     }
 
-    override fun playVideo(taskSnapshot: Uri) {
-        val videoFragment = VideoFragment.newInstance(taskSnapshot)
+    override fun playVideo(videoElement: VideoElement) {
+        var path = "android.resource://$packageName/"
+
+        when (videoElement) {
+            VideoElement.INTRO -> {
+                path += R.raw.intro_film
+            }
+        }
+
+        val videoFragment = VideoFragment.newInstance(Uri.parse(path))
+
         try {
             fragmentManager.beginTransaction().replace(R.id.fragment_container, videoFragment).commit()
         } catch (e: Exception) {
             // TODO Implement some error handling
         }
+    }
+
+    override fun pickupPhone() {
+
+    }
+
+    enum class VideoElement {
+        INTRO
     }
 
 
