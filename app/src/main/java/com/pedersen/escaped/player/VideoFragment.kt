@@ -48,7 +48,6 @@ class VideoFragment : ViewModelFragment<VideoFragmentViewModel, FragmentVideoBin
         videoMediaPlayer.stop()
         videoView.visibility = View.VISIBLE
         videoView.start()
-        hang_up.isEnabled = false
         hang_up.alpha = 0.5f
         pick_up.isEnabled = false
         pick_up.alpha = 0.5f

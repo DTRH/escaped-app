@@ -136,6 +136,7 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
                 playerState = PlayerState.READY
             }
             "playing" -> {
+                playerState = PlayerState.PLAYING
                 // When setting game state to PLAYING we start listening for hints
                 hintListener.addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -180,17 +181,18 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
 
                         if (!introCompleted) {
                             Observable.timer(2000, TimeUnit.MILLISECONDS).subscribe {
-                                if (playerState == PlayerState.PLAYING)
+                                if (playerState == PlayerState.PLAYING) {
                                     commandHandler?.playVideo(PlayerActivity.VideoElement.INTRO)
-                                val introUpdate = HashMap<String, Any>()
-                                introUpdate["introCompleted"] = true
-                                databaseReference.child(BuildConfig.gameId.toString())
-                                    .updateChildren(introUpdate)
+                                    val introUpdate = HashMap<String, Any>()
+                                    introUpdate["introCompleted"] = true
+                                    databaseReference.child(BuildConfig.gameId.toString())
+                                        .updateChildren(introUpdate)
+                                }
+
                             }.disposeOnInactive()
                         }
                     }
                 })
-                playerState = PlayerState.PLAYING
             }
             "paused" -> {
                 playerState = PlayerState.PAUSED
