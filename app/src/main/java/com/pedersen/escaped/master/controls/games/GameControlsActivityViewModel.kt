@@ -241,7 +241,7 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
         commandHandler?.showRestartDialog()
     }
 
-    fun startNewGame() {
+    fun startNewGame(lang: SupportedLanguages) {
         counter?.cancel()
         Timber.i("Game restarting")
         // Clear UI
@@ -252,6 +252,7 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
         stateUpdate["state"] = READY
         stateUpdate["progress"] = 0.toString()
         stateUpdate["requestHint"] = false
+        stateUpdate["language"] = lang
         databaseReference.child(gameId.toString()).updateChildren(stateUpdate)
         databaseReference.child(gameId.toString()).child("hints").removeValue()
     }
@@ -275,6 +276,10 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
 
     enum class GameState {
         UNKNOWN, READY, PLAYING, PAUSED, ENDED
+    }
+
+    enum class SupportedLanguages {
+        DANISH, ENGLISH
     }
 
     interface Commands {
