@@ -1,15 +1,14 @@
 package com.pedersen.escaped.player
 
 import android.databinding.Bindable
-import android.net.Uri
 import android.os.CountDownTimer
 import com.google.firebase.database.*
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
 import com.pedersen.escaped.BR
 import com.pedersen.escaped.BuildConfig
 import com.pedersen.escaped.data.models.Hint
 import com.pedersen.escaped.extensions.bind
+import com.pedersen.escaped.player.PlayerActivity.VideoElement.*
+import com.pedersen.escaped.player.PlayerActivityViewModel.PlayerState.*
 import io.greenerpastures.mvvm.BaseViewModel
 import io.reactivex.Observable
 import org.threeten.bp.Duration
@@ -21,8 +20,6 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
 
     private val firebaseInstance = FirebaseDatabase.getInstance()
     private var databaseReference = firebaseInstance.getReference("games")
-
-    private lateinit var storageRef: StorageReference
 
     private var hintListener: DatabaseReference
     private var progressListener: DatabaseReference
@@ -47,7 +44,7 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
     var hintList = ArrayList<Hint>()
 
     @get:Bindable
-    var playerState by bind(PlayerState.UNKNOWN,
+    var playerState by bind(UNKNOWN,
                             BR.playerState,
                             BR.stateMessage,
                             BR.showStateOverlay)
@@ -58,22 +55,29 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
             if (value == field) return
             commandHandler?.animateProgressBar(field, value)
             field = value
+            if (field == 100) {
+                commandHandler?.playVideo(END_GOOD)
+                if (this::countDownTimer.isInitialized) {
+                    countDownTimer.cancel()
+                }
+
+            }
         }
 
     @get:Bindable
     var stateMessage: String = ""
         get() {
             when (playerState) {
-                PlayerState.UNKNOWN -> {
+                UNKNOWN -> {
                     return "Gamestate Unknown..."
                 }
-                PlayerState.READY -> {
+                READY -> {
                     return "Game is about to start..."
                 }
-                PlayerState.PAUSED -> {
+                PAUSED -> {
                     return "Game has been paused..."
                 }
-                PlayerState.ENDED -> {
+                ENDED -> {
                     return "Game has ended..."
                 }
                 else -> {
@@ -84,7 +88,7 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
 
     @get:Bindable
     var showStateOverlay: Boolean = false
-        get() = (playerState != PlayerState.PLAYING)
+        get() = (playerState != PLAYING)
 
     init {
         stateListener = databaseReference.child(BuildConfig.gameId.toString()).child("state")
@@ -126,14 +130,15 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
     private fun setPlayerState(state: String) {
         when (state.toLowerCase()) {
             "unknown" -> {
-                playerState = PlayerState.UNKNOWN
+                playerState = UNKNOWN
             }
             "ready" -> {
                 progress = 0
                 hintList.clear()
-                playerState = PlayerState.READY
+                playerState = READY
             }
             "playing" -> {
+                playerState = PLAYING
                 // When setting game state to PLAYING we start listening for hints
                 hintListener.addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -177,32 +182,26 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
                             introCompleted = dataSnapshot.value as Boolean
 
                         if (!introCompleted) {
-                            storageRef = FirebaseStorage.getInstance().reference
-                            storageRef.child("video_intro.mp4").downloadUrl
-                                .addOnSuccessListener { taskSnapshot ->
-                                    Observable.timer(2000, TimeUnit.MILLISECONDS).subscribe {
-                                        if (playerState == PlayerState.PLAYING)
-                                            commandHandler?.playVideo(taskSnapshot)
-                                    }.disposeOnInactive()
-                                }.addOnFailureListener { exception ->
-                                    Timber.i("Logging exception: $exception")
+                            Observable.timer(2000, TimeUnit.MILLISECONDS).subscribe {
+                                if (playerState == PLAYING) {
+                                    commandHandler?.playVideo(INTRO)
+                                    val introUpdate = HashMap<String, Any>()
+                                    introUpdate["introCompleted"] = true
+                                    databaseReference.child(BuildConfig.gameId.toString())
+                                        .updateChildren(introUpdate)
                                 }
-                            val introUpdate = HashMap<String, Any>()
-                            introUpdate["introCompleted"] = true
-                            databaseReference.child(BuildConfig.gameId.toString())
-                                .updateChildren(introUpdate)
+                            }.disposeOnInactive()
                         }
                     }
                 })
-                playerState = PlayerState.PLAYING
             }
             "paused" -> {
-                playerState = PlayerState.PAUSED
+                playerState = PAUSED
             }
             "ended" -> {
                 progress = 0
                 hintList.clear()
-                playerState = PlayerState.ENDED
+                playerState = ENDED
             }
         }
     }
@@ -215,13 +214,14 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
         countDownTimer = object : CountDownTimer(timeLeft.abs().toMillis(), 5000) {
 
             override fun onTick(millisUntilFinished: Long) {
-                if (playerState == PlayerState.PLAYING)
+                if (playerState == PLAYING)
                     commandHandler?.animateClockArm(360 / 60 * (Duration.between(deadline,
                                                                                  Instant.now()).toMinutes().toFloat()))
             }
 
             override fun onFinish() {
                 countDownTimer.cancel()
+                commandHandler?.playVideo(END_BAD)
             }
         }.start()
     }
@@ -246,7 +246,7 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
 
         fun refreshAdapter()
 
-        fun playVideo(taskSnapshot: Uri)
+        fun playVideo(videoElement: PlayerActivity.VideoElement)
 
     }
 }

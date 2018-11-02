@@ -18,18 +18,26 @@ import com.pedersen.escaped.animations.PositionSpringAnimation
 import com.pedersen.escaped.animations.PositionSpringAnimation.PullingEventListener
 import com.pedersen.escaped.data.adapters.HintsAdapter
 import com.pedersen.escaped.databinding.ActivityPlayerBinding
+import com.pedersen.escaped.player.PlayerActivity.VideoElement.*
 import com.pedersen.escaped.utils.AppUtils
 import io.greenerpastures.mvvm.ViewModelActivity
+import timber.log.Timber
 
-class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayerBinding>(), PlayerActivityViewModel.Commands {
+class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayerBinding>(),
+    PlayerActivityViewModel.Commands, VideoFragment.Commands {
 
+    // Progress bar
     private var progressBarAnimation: ObjectAnimator = ObjectAnimator()
 
+    // Clock Arm and Angle
     private lateinit var clockArm: ImageView
     private var clockArmAngle: Float = 0.0f
 
+    // Mediaplayer - Notification
     private lateinit var mp: MediaPlayer
 
+
+    // Adapter for the hint list
     private lateinit var hintAdapter: BaseAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,7 +62,8 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
         hintContainer.adapter = hintAdapter
         hintContainer.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
             val hintFragment = HintFragment.newInstance(viewModel.hintList[position])
-            fragmentManager.beginTransaction().replace(R.id.fragment_container, hintFragment).commit()
+            fragmentManager.beginTransaction().replace(R.id.fragment_container, hintFragment)
+                .commit()
         }
     }
 
@@ -95,22 +104,37 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
 
     override fun refreshAdapter() {
         hintAdapter.notifyDataSetChanged()
-        if(!hintAdapter.isEmpty && (viewModel.playerState == PlayerActivityViewModel.PlayerState.PLAYING || viewModel.playerState == PlayerActivityViewModel.PlayerState.PAUSED)) {
+        if (!hintAdapter.isEmpty && (viewModel.playerState == PlayerActivityViewModel.PlayerState.PLAYING || viewModel.playerState == PlayerActivityViewModel.PlayerState.PAUSED)) {
             mp.start()
             val hintFragment = HintFragment.newInstance(viewModel.hintList.last())
-            fragmentManager.beginTransaction().replace(R.id.fragment_container, hintFragment).commit()
+            fragmentManager.beginTransaction().replace(R.id.fragment_container, hintFragment)
+                .commit()
         }
     }
 
-    override fun playVideo(taskSnapshot: Uri) {
-        val videoFragment = VideoFragment.newInstance(taskSnapshot)
+    override fun playVideo(videoElement: VideoElement) {
+        var path = "android.resource://$packageName/"
+
+        path += when (videoElement) {
+            INTRO -> R.raw.intro_film
+            END_GOOD -> R.raw.exit_good
+            END_BAD -> R.raw.exit_dead
+        }
+
+        val videoFragment = VideoFragment.newInstance(Uri.parse(path))
+
         try {
-            fragmentManager.beginTransaction().replace(R.id.fragment_container, videoFragment).commit()
+            fragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, videoFragment)
+                .commit()
         } catch (e: Exception) {
-            // TODO Implement some error handling
+            Timber.d("Adding the video fragment threw and exception: $e")
         }
     }
 
+    enum class VideoElement {
+        INTRO, END_GOOD, END_BAD
+    }
 
     companion object {
 
