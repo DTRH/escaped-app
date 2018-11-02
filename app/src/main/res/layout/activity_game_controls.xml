@@ -35,7 +35,7 @@
         android:text="Game Id:"
         android:textColor="@color/primaryTextColor"
         android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/label_time_played"
+        app:layout_constraintBottom_toTopOf="@+id/label_time_left"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed" />
 
@@ -51,7 +51,7 @@
         tools:text="2" />
 
     <TextView
-        android:id="@+id/label_time_played"
+        android:id="@+id/label_time_left"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Time left:"
@@ -67,7 +67,7 @@
         android:text="@{viewModel.timerTxt}"
         android:textColor="@color/primaryTextColor"
         android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="@id/label_time_played"
+        app:layout_constraintBottom_toBottomOf="@id/label_time_left"
         app:layout_constraintLeft_toLeftOf="@id/label_data_game_master"
         tools:text="---------" />
 
@@ -79,27 +79,53 @@
         android:text="Game state:"
         android:textColor="@color/primaryTextColor"
         android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@id/seek_bar"
-        app:layout_constraintTop_toBottomOf="@id/label_time_played" />
+        app:layout_constraintBottom_toTopOf="@id/label_game_language"
+        app:layout_constraintTop_toBottomOf="@id/label_time_left" />
 
     <TextView
-        android:id="@+id/label_add_time"
+        android:id="@+id/label_data_game_master"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingEnd="15dp"
-        android:text="Add time:"
+        android:text="@{viewModel.stateTxt}"
+        android:textColor="@color/primaryTextColor"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@id/label_game_state"
+        app:layout_constraintTop_toTopOf="@id/label_game_state"
+        app:layout_constraintStart_toStartOf="@id/label_data_language"
+        app:layout_constraintLeft_toRightOf="@id/label_game_state"
+        tools:text="Playing" />
+
+    <TextView
+        android:id="@+id/label_game_language"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingEnd="16dp"
+        android:text="Game language:"
         android:textColor="@color/primaryTextColor"
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@id/seek_bar"
         app:layout_constraintTop_toBottomOf="@id/label_game_state" />
 
+    <TextView
+        android:id="@+id/label_data_language"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@{viewModel.language}"
+        android:textColor="@color/primaryTextColor"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@id/label_game_language"
+        app:layout_constraintLeft_toRightOf="@id/label_game_language"
+        tools:text="Danish" />
+
+
+
     <android.support.design.widget.TextInputLayout
+        android:id="@+id/time_input"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:textColorHint="@color/colorAccent"
-        app:layout_constraintBottom_toBottomOf="@id/label_add_time"
-        app:layout_constraintLeft_toLeftOf="@id/label_data_game_master"
-        app:layout_constraintTop_toTopOf="@id/label_add_time">
+        app:layout_constraintTop_toBottomOf="@id/label_data_language"
+        app:layout_constraintStart_toStartOf="@id/label_data_language">
 
       <android.support.design.widget.TextInputEditText
           android:id="@+id/deadline_update_input"
@@ -113,15 +139,16 @@
     </android.support.design.widget.TextInputLayout>
 
     <TextView
-        android:id="@+id/label_data_game_master"
+        android:id="@+id/label_add_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@{viewModel.stateTxt}"
+        android:paddingEnd="15dp"
+        android:text="Add time:"
         android:textColor="@color/primaryTextColor"
         android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="@id/label_game_state"
-        app:layout_constraintLeft_toRightOf="@id/label_game_state"
-        tools:text="Playing" />
+        app:layout_constraintTop_toTopOf="@id/time_input"
+        app:layout_constraintBottom_toBottomOf="@id/time_input"
+        app:layout_constraintStart_toStartOf="@id/label_game_language"/>
 
     <Button
         android:id="@+id/wipe_button"
