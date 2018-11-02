@@ -88,17 +88,13 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
         animSet.interpolator = DecelerateInterpolator()
         animSet.fillAfter = true
         animSet.isFillEnabled = true
-
         val animRotate = RotateAnimation(clockArmAngle, targetAngle,
                                          RotateAnimation.RELATIVE_TO_SELF, 0.5f,
                                          RotateAnimation.RELATIVE_TO_SELF, .95f)
-
         animRotate.duration = 500
         animRotate.fillAfter = true
         animSet.addAnimation(animRotate)
-
         clockArm.startAnimation(animSet)
-
         clockArmAngle = targetAngle
     }
 
