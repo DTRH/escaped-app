@@ -20,6 +20,7 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
 
     // Handles which game we are dealing with
     var gameId: Int = 0
+    var language: String = "test"
 
     private var lastPause: Instant = Instant.now()
 
