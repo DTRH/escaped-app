@@ -20,12 +20,14 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
 
     // Handles which game we are dealing with
     var gameId: Int = 0
-    var language: String = "test"
 
     private var lastPause: Instant = Instant.now()
 
     @get:Bindable
     var progress by bind(0, BR.progress)
+
+    @get:Bindable
+    var language by bind("", BR.language)
 
     // Local copy of the deadline
     private var deadline: Instant = Instant.now()
@@ -145,6 +147,21 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
                     Timber.w("Debug: Failed to read value: $e")
                 }
             })
+
+        // Setup language listener
+        databaseReference.child(gameId.toString()).child("language")
+                .addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        if (dataSnapshot.value is String && dataSnapshot.value != null)
+                                language = dataSnapshot.value as String
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        // Failed to read value
+                        val e = error.toException().toString()
+                        Timber.w("Debug: Failed to read value: $e")
+                    }
+                })
     }
 
     private fun setState(data: String) {
