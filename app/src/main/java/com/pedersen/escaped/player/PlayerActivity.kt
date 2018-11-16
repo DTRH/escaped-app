@@ -18,6 +18,8 @@ import com.pedersen.escaped.animations.PositionSpringAnimation
 import com.pedersen.escaped.animations.PositionSpringAnimation.PullingEventListener
 import com.pedersen.escaped.data.adapters.HintsAdapter
 import com.pedersen.escaped.databinding.ActivityPlayerBinding
+import com.pedersen.escaped.master.controls.games.GameControlsActivityViewModel.SupportedLanguages
+import com.pedersen.escaped.master.controls.games.GameControlsActivityViewModel.SupportedLanguages.*
 import com.pedersen.escaped.player.PlayerActivity.VideoElement.*
 import com.pedersen.escaped.utils.AppUtils
 import io.greenerpastures.mvvm.ViewModelActivity
@@ -35,7 +37,6 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
 
     // Mediaplayer - Notification
     private lateinit var mp: MediaPlayer
-
 
     // Adapter for the hint list
     private lateinit var hintAdapter: BaseAdapter
@@ -108,13 +109,24 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
         }
     }
 
-    override fun playVideo(videoElement: VideoElement) {
+    override fun playVideo(videoElement: VideoElement, language: SupportedLanguages) {
         var path = "android.resource://$packageName/"
 
-        path += when (videoElement) {
-            INTRO -> R.raw.intro_film
-            END_GOOD -> R.raw.exit_good
-            END_BAD -> R.raw.exit_dead
+        when (language) {
+            DANISH -> {
+                path += when (videoElement) {
+                    INTRO -> R.raw.danish_intro_film
+                    END_GOOD -> R.raw.danish_exit_good
+                    END_BAD -> R.raw.danish_exit_dead
+                }
+            }
+            ENGLISH -> {
+                path += when (videoElement) {
+                    INTRO -> R.raw.english_intro_film
+                    END_GOOD -> R.raw.english_exit_good
+                    END_BAD -> R.raw.english_exit_dead
+                }
+            }
         }
 
         val videoFragment = VideoFragment.newInstance(Uri.parse(path))

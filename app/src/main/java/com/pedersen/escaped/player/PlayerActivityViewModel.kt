@@ -7,6 +7,7 @@ import com.pedersen.escaped.BR
 import com.pedersen.escaped.BuildConfig
 import com.pedersen.escaped.data.models.Hint
 import com.pedersen.escaped.extensions.bind
+import com.pedersen.escaped.master.controls.games.GameControlsActivityViewModel
 import com.pedersen.escaped.player.PlayerActivity.VideoElement.*
 import com.pedersen.escaped.player.PlayerActivityViewModel.PlayerState.*
 import io.greenerpastures.mvvm.BaseViewModel
@@ -29,6 +30,9 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
 
     private lateinit var countDownTimer: CountDownTimer
     private var introCompleted: Boolean = false
+
+    // DEFAULT LANGUAGE IS DANISH
+    private var language: GameControlsActivityViewModel.SupportedLanguages = GameControlsActivityViewModel.SupportedLanguages.DANISH
 
     private var deadline: Instant? = null
         set(value) {
@@ -56,7 +60,7 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
             commandHandler?.animateProgressBar(field, value)
             field = value
             if (field == 100) {
-                commandHandler?.playVideo(END_GOOD)
+                commandHandler?.playVideo(END_GOOD, language)
                 if (this::countDownTimer.isInitialized) {
                     countDownTimer.cancel()
                 }
@@ -124,6 +128,24 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
 
         // Setup reference to progress
         progressListener = databaseReference.child(BuildConfig.gameId.toString()).child("progress")
+
+        // Setup language listener
+        databaseReference.child(BuildConfig.gameId.toString()).child("language")
+            .addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    if (dataSnapshot.value is String && dataSnapshot.value != null)
+                        when (dataSnapshot.value) {
+                            "DANISH" -> language = GameControlsActivityViewModel.SupportedLanguages.DANISH
+                            "ENGLISH" -> language = GameControlsActivityViewModel.SupportedLanguages.ENGLISH
+                        }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    // Failed to read value
+                    val e = error.toException().toString()
+                    Timber.w("Debug: Failed to read value: $e")
+                }
+            })
     }
 
 
@@ -184,7 +206,7 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
                         if (!introCompleted) {
                             Observable.timer(2000, TimeUnit.MILLISECONDS).subscribe {
                                 if (playerState == PLAYING) {
-                                    commandHandler?.playVideo(INTRO)
+                                    commandHandler?.playVideo(INTRO, language)
                                     val introUpdate = HashMap<String, Any>()
                                     introUpdate["introCompleted"] = true
                                     databaseReference.child(BuildConfig.gameId.toString())
@@ -221,7 +243,7 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
 
             override fun onFinish() {
                 countDownTimer.cancel()
-                commandHandler?.playVideo(END_BAD)
+                commandHandler?.playVideo(END_BAD, language)
             }
         }.start()
     }
@@ -246,7 +268,7 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
 
         fun refreshAdapter()
 
-        fun playVideo(videoElement: PlayerActivity.VideoElement)
+        fun playVideo(videoElement: PlayerActivity.VideoElement, language: GameControlsActivityViewModel.SupportedLanguages)
 
     }
 }
