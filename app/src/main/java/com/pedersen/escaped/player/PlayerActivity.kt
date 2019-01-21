@@ -19,7 +19,8 @@ import com.pedersen.escaped.animations.PositionSpringAnimation.PullingEventListe
 import com.pedersen.escaped.data.adapters.HintsAdapter
 import com.pedersen.escaped.databinding.ActivityPlayerBinding
 import com.pedersen.escaped.master.controls.games.GameControlsActivityViewModel.SupportedLanguages
-import com.pedersen.escaped.master.controls.games.GameControlsActivityViewModel.SupportedLanguages.*
+import com.pedersen.escaped.master.controls.games.GameControlsActivityViewModel.SupportedLanguages.DANISH
+import com.pedersen.escaped.master.controls.games.GameControlsActivityViewModel.SupportedLanguages.ENGLISH
 import com.pedersen.escaped.player.PlayerActivity.VideoElement.*
 import com.pedersen.escaped.utils.AppUtils
 import io.greenerpastures.mvvm.ViewModelActivity
@@ -136,7 +137,7 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
                 .replace(R.id.fragment_container, videoFragment)
                 .commit()
         } catch (e: Exception) {
-            Timber.d("Adding the video fragment threw and exception: $e")
+            Timber.d("Adding the video fragment threw an exception: $e")
         }
     }
 

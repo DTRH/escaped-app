@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
 
@@ -65,7 +66,7 @@
             android:layout_height="wrap_content"
             android:labelFor="@+id/header_input"
             android:paddingBottom="10dp"
-            android:text="Overskrift"
+            android:text="Header"
             android:textColor="@color/primaryTextColor"
             android:textSize="14sp" />
 
@@ -83,7 +84,7 @@
             android:layout_height="wrap_content"
             android:labelFor="@+id/body_input"
             android:paddingBottom="10dp"
-            android:text="Tekst"
+            android:text="Body"
             android:textColor="@color/primaryTextColor"
             android:textSize="14sp" />
 
@@ -102,17 +103,21 @@
             style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
+
             android:enabled="@{viewModel.creatable}"
             android:onClick="@{_ -> viewModel.createHint()}"
             android:text="Create hint" />
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
         <Button
             android:id="@+id/edit_hint_button"
             style="@style/Widget.AppCompat.Button.Colored"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
             android:enabled="@{viewModel.isEditable}"
             android:onClick="@{_ -> viewModel.editHint()}"
             android:text="Edit hint" />
@@ -120,11 +125,32 @@
         <Button
             android:id="@+id/delete_hint_button"
             style="@style/Widget.AppCompat.Button.Colored"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:enabled="@{viewModel.isDeletable}"
             android:onClick="@{_ -> viewModel.deleteHint()}"
-            android:text="Delete hint" />
+            android:text="Delete selected hint(s)" />
+
+          <Button
+              android:id="@+id/add_to_bank_button"
+              style="@style/Widget.AppCompat.Button.Colored"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:enabled="@{viewModel.isEditable}"
+              android:onClick="@{_ -> viewModel.addHintToBank()}"
+              android:text="Add to Bank" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/load_from_bank_button"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:onClick="@{_ -> viewModel.openHintBank()}"
+            android:text="Open Hint Bank" />
+
       </LinearLayout>
     </ScrollView>
   </android.support.constraint.ConstraintLayout>

@@ -26,6 +26,10 @@ class HintControlsActivityViewModel : BaseViewModel<HintControlsActivityViewMode
 
     fun editHint() = commandHandler?.editHint()
 
+    fun addHintToBank() = commandHandler?.addHintToBank()
+
+    fun openHintBank() = commandHandler?.openHintBank()
+
     interface Commands {
 
         fun checkCreatable(): Boolean
@@ -35,6 +39,10 @@ class HintControlsActivityViewModel : BaseViewModel<HintControlsActivityViewMode
         fun deleteHint()
 
         fun editHint()
+
+        fun addHintToBank()
+
+        fun openHintBank()
 
     }
 }

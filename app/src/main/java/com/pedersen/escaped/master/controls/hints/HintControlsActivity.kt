@@ -165,6 +165,22 @@ class HintControlsActivity :
     override fun checkCreatable(): Boolean =
         (binding.headerInput.length() != 0 && binding.bodyInput.length() != 0)
 
+    override fun addHintToBank() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun openHintBank() {
+        val hintBankFragment = HintBankFragment.newInstance()
+
+        try {
+            fragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, hintBankFragment)
+                .commit()
+         } catch (e: Exception) {
+            Timber.d("Adding the hintbank fragment threw an exception: $e")
+        }
+    }
+
     companion object {
 
         private const val GAME_ID = "game_id"
