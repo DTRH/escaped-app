@@ -69,7 +69,8 @@
           android:layout_height="match_parent"
           android:layout_marginTop="-150dp"
           android:background="@drawable/main_activity_hint_pull"
-          app:layout_constraintTop_toTopOf="parent" />
+          app:layout_constraintTop_toTopOf="parent"
+          app:layout_constraintStart_toStartOf="parent"/>
 
 
       <FrameLayout

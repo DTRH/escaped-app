@@ -27,7 +27,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         android:paddingBottom="10dp"
         android:textColor="@color/primaryTextColor"
-        android:textSize="14sp"/>
+        android:textSize="14sp" />
 
     <ListView
         android:id="@+id/list_container"
@@ -106,7 +106,7 @@
 
             android:enabled="@{viewModel.creatable}"
             android:onClick="@{_ -> viewModel.createHint()}"
-            android:text="Create hint" />
+            android:text="Send hint" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -153,5 +153,16 @@
 
       </LinearLayout>
     </ScrollView>
+
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
   </android.support.constraint.ConstraintLayout>
 </layout>

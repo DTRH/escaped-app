@@ -35,6 +35,7 @@ class HintControlsActivity :
     private var databaseReference = firebaseInstance.getReference("games")
     private lateinit var hintsDatabase: DatabaseReference
     private lateinit var requestListener: DatabaseReference
+    private lateinit var bankDatabase: DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initialize(R.layout.hint_controls_fragment,
@@ -81,6 +82,8 @@ class HintControlsActivity :
             }
         })
 
+        bankDatabase = databaseReference.child("bankhints")
+
         // Setup keyboard behavior
         binding.bodyInput.setOnEditorActionListener { v, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -102,12 +105,12 @@ class HintControlsActivity :
         hintContainer.onItemClickListener =
                 AdapterView.OnItemClickListener { _, view, position, _ ->
 
-                    if (viewModel.selectedId.contains(hintlist[position].id)) {
-                        viewModel.selectedId.remove(hintlist[position].id)
+                    if (viewModel.selectedId.contains(hintlist[position])) {
+                        viewModel.selectedId.remove(hintlist[position])
                         view.setBackgroundColor(ContextCompat.getColor(this,
                                                                        android.R.color.transparent))
                     } else {
-                        viewModel.selectedId.add(hintlist[position].id)
+                        viewModel.selectedId.add(hintlist[position])
                         view.setBackgroundColor(ContextCompat.getColor(this, R.color.colorAccent))
                     }
 
@@ -140,7 +143,7 @@ class HintControlsActivity :
     override fun deleteHint() {
         for (selection in viewModel.selectedId) {
             for (hint in hintlist) {
-                if (hint.id.contentEquals(selection)) {
+                if (hint.id.contentEquals(selection.id)) {
                     hintsDatabase.child(hint.key).removeValue()
                 }
             }
@@ -166,7 +169,23 @@ class HintControlsActivity :
         (binding.headerInput.length() != 0 && binding.bodyInput.length() != 0)
 
     override fun addHintToBank() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        for (selection in viewModel.selectedId) {
+            for (hint in hintlist) {
+                if (hint.id.contentEquals(selection.id)) {
+                    bankDatabase.push().setValue(hint)
+                }
+            }
+            Timber.i("SelectedIds: ${viewModel.selectedId}")
+        }
+
+        for (i in 0 until hintContainer.childCount) {
+            val listItem = hintContainer.getChildAt(i)
+            listItem.setBackgroundColor(Color.WHITE)
+        }
+        viewModel.selectedId.clear()
+        viewModel.notifyPropertyChanged(BR.creatable)
+        viewModel.notifyPropertyChanged(BR.editable)
+        viewModel.notifyPropertyChanged(BR.deletable)
     }
 
     override fun openHintBank() {
@@ -176,7 +195,7 @@ class HintControlsActivity :
             fragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, hintBankFragment)
                 .commit()
-         } catch (e: Exception) {
+        } catch (e: Exception) {
             Timber.d("Adding the hintbank fragment threw an exception: $e")
         }
     }

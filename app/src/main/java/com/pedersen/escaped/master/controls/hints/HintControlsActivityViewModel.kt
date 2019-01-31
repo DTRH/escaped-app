@@ -1,12 +1,13 @@
 package com.pedersen.escaped.master.controls.hints
 
 import android.databinding.Bindable
+import com.pedersen.escaped.data.models.Hint
 import io.greenerpastures.mvvm.BaseViewModel
 
 class HintControlsActivityViewModel : BaseViewModel<HintControlsActivityViewModel.Commands>() {
 
     @get:Bindable
-    var selectedId: ArrayList<String> = ArrayList()
+    var selectedId: ArrayList<Hint> = ArrayList()
 
     @get:Bindable
     var isDeletable: Boolean = false
