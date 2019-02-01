@@ -173,7 +173,16 @@ class HintControlsActivity :
         for (selection in viewModel.selectedId) {
             for (hint in hintlist) {
                 if (hint.id.contentEquals(selection.id)) {
-                    bankDatabase.push().setValue(hint)
+
+                    val addHintChallenge = AddHintChallengeFragment.newInstance(hint)
+
+                    try {
+                        fragmentManager.beginTransaction()
+                            .replace(R.id.fragment_container, addHintChallenge)
+                            .commit()
+                    } catch (e: Exception) {
+                        Timber.d("Adding the hintbank fragment threw an exception: $e")
+                    }
                 }
             }
             Timber.i("SelectedIds: ${viewModel.selectedId}")

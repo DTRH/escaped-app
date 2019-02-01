@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -31,13 +32,16 @@ class HintBankFragment : ViewModelFragment<HintBankFragmentViewModel, FragmentHi
     private lateinit var hintDatabase: DatabaseReference
     private lateinit var challengeDatabase: DatabaseReference
 
-    private lateinit var hintAdapter: HintsAdapter
     private lateinit var challengeAdapter: ArrayAdapter<Challenge>
-    private lateinit var hintContainer: ListView
-    private lateinit var spinner: Spinner
-    private var hintlist: ArrayList<Hint> = ArrayList()
-    private var completeBankList: ArrayList<Hint> = ArrayList()
     private var challengeList: MutableList<Challenge> = mutableListOf()
+
+    private lateinit var hintAdapter: HintsAdapter
+    private lateinit var hintContainer: ListView
+    private var hintlist: ArrayList<Hint> = ArrayList()
+
+    private lateinit var spinner: Spinner
+    private var completeBankList: ArrayList<Hint> = ArrayList()
+
 
 
     override fun onAttachContext(context: Context) {
@@ -151,7 +155,7 @@ class HintBankFragment : ViewModelFragment<HintBankFragmentViewModel, FragmentHi
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         hintlist.clear()
         for (hint in completeBankList) {
-            if (hint.title == spinner.selectedItem.toString()) {
+            if (hint.challenge == spinner.selectedItem.toString()) {
                 hintlist.add(hint)
             }
         }
@@ -159,7 +163,7 @@ class HintBankFragment : ViewModelFragment<HintBankFragmentViewModel, FragmentHi
     }
 
     override fun onNothingSelected(parent: AdapterView<*>?) {
-        // TODO when nothing is selected
+        Log.i("TEST", "Something")
     }
 
     override fun createNewChallenge() {

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+  <data>
+    <variable
+        name="viewModel"
+        type="com.pedersen.escaped.master.controls.hints.AddHintChallengeFragmentViewModel" />
+  </data>
+
+  <android.support.constraint.ConstraintLayout
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      android:layout_width="400dp"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center"
+      android:background="@color/colorAccent">
+
+    <ImageView
+        android:id="@+id/back_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_close"
+        android:onClick="@{_ -> viewModel.closeChallengeSelector()}"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SAVE"
+        android:onClick="@{_ -> viewModel.sendHint()}"
+        app:layout_constraintStart_toEndOf="@id/spinner"
+        app:layout_constraintTop_toTopOf="@id/spinner"
+        app:layout_constraintBottom_toBottomOf="@id/spinner"/>
+
+  </android.support.constraint.ConstraintLayout>
+</layout>
