@@ -22,9 +22,8 @@ import io.greenerpastures.mvvm.ViewModelFragment
 import timber.log.Timber
 
 
-
 class HintBankFragment : ViewModelFragment<HintBankFragmentViewModel, FragmentHintBankBinding>(),
-    HintBankFragmentViewModel.Commands {
+    HintBankFragmentViewModel.Commands, AdapterView.OnItemSelectedListener {
 
     private val firebaseInstance = FirebaseDatabase.getInstance()
     private var databaseReference = firebaseInstance.getReference("games")
@@ -35,7 +34,9 @@ class HintBankFragment : ViewModelFragment<HintBankFragmentViewModel, FragmentHi
     private lateinit var hintAdapter: HintsAdapter
     private lateinit var challengeAdapter: ArrayAdapter<Challenge>
     private lateinit var hintContainer: ListView
+    private lateinit var spinner: Spinner
     private var hintlist: ArrayList<Hint> = ArrayList()
+    private var completeBankList: ArrayList<Hint> = ArrayList()
     private var challengeList: MutableList<Challenge> = mutableListOf()
 
 
@@ -74,13 +75,19 @@ class HintBankFragment : ViewModelFragment<HintBankFragmentViewModel, FragmentHi
         bankDatabase.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.value != null) {
+                    completeBankList.clear()
                     hintlist.clear()
                     // This method is called once with the initial value and again
                     // whenever data at this location is updated.
                     for (hintChild in dataSnapshot.children) {
-                        val hint = hintChild.getValue(Hint::class.java)
-                        hint?.key = hintChild.key
-                        hint?.let { hintlist.add(it) }
+                        val bankhint = hintChild.getValue(Hint::class.java)
+                        bankhint?.key = hintChild.key
+                        bankhint?.let {
+                            completeBankList.add(it)
+                            if (spinner.selectedItem != null)
+                                if (bankhint.challenge == spinner.selectedItem.toString())
+                                    hintlist.add(it)
+                        }
                     }
                     hintAdapter.notifyDataSetChanged()
                 }
@@ -110,13 +117,14 @@ class HintBankFragment : ViewModelFragment<HintBankFragmentViewModel, FragmentHi
             false
         }
 
-        val spinner: Spinner = binding.challengeSpinner
+        spinner = binding.challengeSpinner
         // Create an ArrayAdapter using the string array and a default spinner layout
         challengeAdapter = ArrayAdapter(activity,
                                         R.layout.challenge_spinner_item,
                                         challengeList)
         challengeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner.adapter = challengeAdapter
+        spinner.onItemSelectedListener = this
 
         // Setup the adapter and container that will
         hintAdapter = HintsAdapter(activity, hintlist)
@@ -138,6 +146,20 @@ class HintBankFragment : ViewModelFragment<HintBankFragmentViewModel, FragmentHi
                     viewModel.notifyPropertyChanged(BR.creatable)
                     viewModel.notifyPropertyChanged(BR.deletable)
                 }
+    }
+
+    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        hintlist.clear()
+        for (hint in completeBankList) {
+            if (hint.title == spinner.selectedItem.toString()) {
+                hintlist.add(hint)
+            }
+        }
+        hintAdapter.notifyDataSetChanged()
+    }
+
+    override fun onNothingSelected(parent: AdapterView<*>?) {
+        // TODO when nothing is selected
     }
 
     override fun createNewChallenge() {
