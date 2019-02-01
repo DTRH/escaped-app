@@ -18,11 +18,12 @@ import io.greenerpastures.mvvm.ViewModelFragment
 import timber.log.Timber
 
 class HintBankFragment : ViewModelFragment<HintBankFragmentViewModel, FragmentHintBankBinding>(),
-        HintBankFragmentViewModel.Commands {
+    HintBankFragmentViewModel.Commands {
 
     private val firebaseInstance = FirebaseDatabase.getInstance()
     private var databaseReference = firebaseInstance.getReference("games")
-    private lateinit var hintsDatabase: DatabaseReference
+    private lateinit var bankDatabase: DatabaseReference
+    private lateinit var hintDatabase: DatabaseReference
 
     private lateinit var hintAdapter: HintsAdapter
     private lateinit var hintContainer: ListView
@@ -34,8 +35,12 @@ class HintBankFragment : ViewModelFragment<HintBankFragmentViewModel, FragmentHi
         }
         super.onAttachContext(context)
 
-        hintsDatabase = databaseReference.child("bankhints")
-        hintsDatabase.addValueEventListener(object : ValueEventListener {
+        val gameId = arguments.getString(GAME_ID)
+
+        hintDatabase = databaseReference.child(gameId).child("hints")
+
+        bankDatabase = databaseReference.child("bankhints")
+        bankDatabase.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.value != null) {
                     hintlist.clear()
@@ -46,9 +51,7 @@ class HintBankFragment : ViewModelFragment<HintBankFragmentViewModel, FragmentHi
                         hint?.key = hintChild.key
                         hint?.let { hintlist.add(it) }
                     }
-
                     hintAdapter.notifyDataSetChanged()
-
                 }
             }
 
@@ -91,14 +94,22 @@ class HintBankFragment : ViewModelFragment<HintBankFragmentViewModel, FragmentHi
                                                                        android.R.color.transparent))
                     } else {
                         viewModel.selectedId = position
-                        view.setBackgroundColor(ContextCompat.getColor(view.context, R.color.colorAccent))
+                        view.setBackgroundColor(ContextCompat.getColor(view.context,
+                                                                       R.color.colorAccent))
                     }
                     viewModel.notifyPropertyChanged(BR.selectedId)
+                    viewModel.notifyPropertyChanged(BR.creatable)
                     viewModel.notifyPropertyChanged(BR.deletable)
                 }
     }
+
     override fun sendSelected() {
-        // TODO
+        val newHint = Hint(System.currentTimeMillis().toString(),
+                           hintlist[viewModel.selectedId].title,
+                           hintlist[viewModel.selectedId].body,
+                           false)
+        hintDatabase.push().setValue(newHint)
+        // TODO consider that we are clearing a potential hint request when we send the hint from the bank
     }
 
     override fun closeBank() {
@@ -112,10 +123,15 @@ class HintBankFragment : ViewModelFragment<HintBankFragmentViewModel, FragmentHi
 
     companion object {
 
-        fun newInstance(): HintBankFragment {
-            return HintBankFragment()
+        const val GAME_ID = "game_id_bank_fragment"
+
+        fun newInstance(gameId: String): HintBankFragment {
+            val args = Bundle(1)
+            args.putString(HintBankFragment.GAME_ID, gameId)
+            val fragment = HintBankFragment()
+            fragment.arguments = args
+            return fragment
+
         }
     }
-
-    interface Commands
 }

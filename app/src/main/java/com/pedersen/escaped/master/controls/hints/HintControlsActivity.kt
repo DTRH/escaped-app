@@ -133,6 +133,8 @@ class HintControlsActivity :
         viewModel.notifyPropertyChanged(BR.creatable)
     }
 
+
+
     private fun resetHintRequest() {
         Timber.i("Debug: Resetting request from player")
         val requestUpdate = HashMap<String, Any>()
@@ -189,7 +191,7 @@ class HintControlsActivity :
     }
 
     override fun openHintBank() {
-        val hintBankFragment = HintBankFragment.newInstance()
+        val hintBankFragment = HintBankFragment.newInstance(gameId.toString())
 
         try {
             fragmentManager.beginTransaction()
