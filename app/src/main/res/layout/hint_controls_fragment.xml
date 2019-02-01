@@ -17,6 +17,12 @@
       android:background="@drawable/game_master_activity_background"
       android:padding="50dp">
 
+    <LinearLayout
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:layout_width="0px"
+        android:layout_height="0px"/>
+
     <!-- Hint list -->
     <TextView
         android:id="@+id/list_header"
