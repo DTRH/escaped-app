@@ -1,21 +1,27 @@
 package com.pedersen.escaped.master.controls.hints
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.ListView
+import android.widget.Spinner
 import com.google.firebase.database.*
 import com.pedersen.escaped.BR
 import com.pedersen.escaped.R
 import com.pedersen.escaped.data.adapters.HintsAdapter
+import com.pedersen.escaped.data.models.Challenge
 import com.pedersen.escaped.data.models.Hint
 import com.pedersen.escaped.databinding.FragmentHintBankBinding
 import io.greenerpastures.mvvm.ViewModelFragment
 import timber.log.Timber
+
+
 
 class HintBankFragment : ViewModelFragment<HintBankFragmentViewModel, FragmentHintBankBinding>(),
     HintBankFragmentViewModel.Commands {
@@ -24,10 +30,14 @@ class HintBankFragment : ViewModelFragment<HintBankFragmentViewModel, FragmentHi
     private var databaseReference = firebaseInstance.getReference("games")
     private lateinit var bankDatabase: DatabaseReference
     private lateinit var hintDatabase: DatabaseReference
+    private lateinit var challengeDatabase: DatabaseReference
 
     private lateinit var hintAdapter: HintsAdapter
+    private lateinit var challengeAdapter: ArrayAdapter<Challenge>
     private lateinit var hintContainer: ListView
     private var hintlist: ArrayList<Hint> = ArrayList()
+    private var challengeList: MutableList<Challenge> = mutableListOf()
+
 
     override fun onAttachContext(context: Context) {
         initialize(R.layout.fragment_hint_bank, BR.viewModel) {
@@ -38,6 +48,27 @@ class HintBankFragment : ViewModelFragment<HintBankFragmentViewModel, FragmentHi
         val gameId = arguments.getString(GAME_ID)
 
         hintDatabase = databaseReference.child(gameId).child("hints")
+
+        challengeDatabase = databaseReference.child("challenges")
+        challengeDatabase.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+                challengeList.clear()
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                for (hintChild in dataSnapshot.children) {
+                    val challenge = hintChild.getValue(Challenge::class.java)
+                    challenge?.let { challengeList.add(it) }
+                }
+                challengeAdapter.notifyDataSetChanged()
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                // Failed to read value
+                val e = error.toException().toString()
+                Timber.w("Failed to read value: $e")
+            }
+        })
 
         bankDatabase = databaseReference.child("bankhints")
         bankDatabase.addValueEventListener(object : ValueEventListener {
@@ -59,8 +90,6 @@ class HintBankFragment : ViewModelFragment<HintBankFragmentViewModel, FragmentHi
                 // Failed to read value
                 val e = error.toException().toString()
                 Timber.w("Failed to read value: $e")
-
-
             }
         })
     }
@@ -80,6 +109,14 @@ class HintBankFragment : ViewModelFragment<HintBankFragmentViewModel, FragmentHi
             }
             false
         }
+
+        val spinner: Spinner = binding.challengeSpinner
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        challengeAdapter = ArrayAdapter(activity,
+                                        R.layout.challenge_spinner_item,
+                                        challengeList)
+        challengeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinner.adapter = challengeAdapter
 
         // Setup the adapter and container that will
         hintAdapter = HintsAdapter(activity, hintlist)
@@ -103,12 +140,24 @@ class HintBankFragment : ViewModelFragment<HintBankFragmentViewModel, FragmentHi
                 }
     }
 
+    override fun createNewChallenge() {
+        val newChallenge = Challenge(System.currentTimeMillis().toString(),
+                                     binding.headerInput.text.toString())
+        challengeDatabase.push().setValue(newChallenge)
+        binding.headerInput.text.clear()
+    }
+
     override fun sendSelected() {
         val newHint = Hint(System.currentTimeMillis().toString(),
                            hintlist[viewModel.selectedId].title,
                            hintlist[viewModel.selectedId].body,
                            false)
         hintDatabase.push().setValue(newHint)
+
+        for (i in 0 until hintContainer.childCount) {
+            val listItem = hintContainer.getChildAt(i)
+            listItem.setBackgroundColor(Color.WHITE)
+        }
         // TODO consider that we are clearing a potential hint request when we send the hint from the bank
     }
 

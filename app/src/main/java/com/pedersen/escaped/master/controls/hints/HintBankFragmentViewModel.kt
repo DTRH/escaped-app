@@ -21,10 +21,15 @@ class HintBankFragmentViewModel : BaseViewModel<HintBankFragmentViewModel.Comman
         commandHandler?.sendSelected()
     }
 
+    fun createNewChallenge() {
+        commandHandler?.createNewChallenge()
+    }
+
     interface Commands {
         fun closeBank()
         fun refreshUpdater()
         fun sendSelected()
+        fun createNewChallenge()
     }
 
 }

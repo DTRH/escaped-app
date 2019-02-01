@@ -18,7 +18,7 @@
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorAccent">
+        android:background="@color/colorPrimary">
 
       <ImageView
           android:id="@+id/back_button"
@@ -35,6 +35,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:text="Select Challenge"
+          android:textColor="@color/primaryTextColor"
           app:layout_constraintBottom_toTopOf="@id/challenge_spinner"
           app:layout_constraintStart_toStartOf="@id/challenge_spinner" />
 
@@ -43,6 +44,7 @@
           android:layout_width="200dp"
           android:layout_height="wrap_content"
           android:layout_margin="50dp"
+          android:textColor="@color/primaryTextColor"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toTopOf="parent" />
 
@@ -63,6 +65,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:text="Add Challenge"
+          android:textColor="@color/primaryTextColor"
           app:layout_constraintTop_toBottomOf="@id/back_button"
           app:layout_constraintStart_toEndOf="@id/guide"
           android:layout_marginStart="20dp"/>
@@ -81,6 +84,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:text="SAVE"
+          android:onClick="@{_ -> viewModel.createNewChallenge()}"
           app:layout_constraintEnd_toEndOf="@id/header_input"
           app:layout_constraintTop_toBottomOf="@id/header_input"/>
 
