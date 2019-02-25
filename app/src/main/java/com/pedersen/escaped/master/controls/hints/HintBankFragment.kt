@@ -142,6 +142,10 @@ class HintBankFragment : ViewModelFragment<HintBankFragmentViewModel, FragmentHi
                         view.setBackgroundColor(ContextCompat.getColor(view.context,
                                                                        android.R.color.transparent))
                     } else {
+                        for (i in 0 until hintContainer.childCount) {
+                            val listItem = hintContainer.getChildAt(i)
+                            listItem.setBackgroundColor(Color.WHITE)
+                        }
                         viewModel.selectedId = position
                         view.setBackgroundColor(ContextCompat.getColor(view.context,
                                                                        R.color.colorAccent))
@@ -151,8 +155,6 @@ class HintBankFragment : ViewModelFragment<HintBankFragmentViewModel, FragmentHi
                     viewModel.notifyPropertyChanged(BR.deletable)
                 }
     }
-
-
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         hintlist.clear()

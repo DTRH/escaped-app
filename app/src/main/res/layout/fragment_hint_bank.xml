@@ -98,7 +98,7 @@
           app:layout_constraintStart_toStartOf="@id/guide"
           app:layout_constraintBottom_toBottomOf="@id/list_container"
           android:enabled="@{viewModel.creatable}"
-          android:onClick="@{_ -> viewModel.saveToBank()}"
+          android:onClick="@{_ -> viewModel.sendSelected()}"
           />
 
       <android.support.constraint.Guideline

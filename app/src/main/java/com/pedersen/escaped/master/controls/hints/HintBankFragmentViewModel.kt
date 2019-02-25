@@ -17,7 +17,7 @@ class HintBankFragmentViewModel : BaseViewModel<HintBankFragmentViewModel.Comman
         commandHandler?.closeBank()
     }
 
-    fun saveToBank() {
+    fun sendSelected() {
         commandHandler?.sendSelected()
     }
 
