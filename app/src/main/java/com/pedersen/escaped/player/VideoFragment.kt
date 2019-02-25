@@ -48,19 +48,17 @@ class VideoFragment : ViewModelFragment<VideoFragmentViewModel, FragmentVideoBin
     }
 
     override fun playVideo() {
+        root.setBackgroundResource(R.drawable.video_ramme)
+        pick_up.visibility = View.GONE
         videoMediaPlayer.stop()
         videoView.visibility = View.VISIBLE
         videoView.start()
-        hang_up.alpha = 0.5f
-        pick_up.isEnabled = false
-        pick_up.alpha = 0.5f
         videoView.setOnCompletionListener {
             hang_up.alpha = 1f
             hang_up.isEnabled = true
             Observable.timer(2000, TimeUnit.MILLISECONDS, Schedulers.io()).subscribe {
                 closeVideo()
             }
-
         }
     }
 

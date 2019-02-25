@@ -15,9 +15,10 @@
       android:layout_height="match_parent">
 
     <android.support.constraint.ConstraintLayout
+        android:id="@+id/root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/video_ramme"
+        android:background="@drawable/video_overlay"
         >
 
       <VideoView
@@ -33,10 +34,10 @@
 
       <Button
           android:id="@+id/pick_up"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginBottom="100dp"
-          android:background="@drawable/phone_1"
+          android:layout_width="100dp"
+          android:layout_height="100dp"
+          android:layout_marginBottom="72dp"
+          android:background="@drawable/take_phone"
           android:onClick="@{_ -> viewModel.playVideo()}"
           app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintLeft_toRightOf="@+id/hang_up"
@@ -49,6 +50,7 @@
           android:layout_marginBottom="100dp"
           android:background="@drawable/phone_2"
           android:enabled="false"
+          android:visibility="gone"
           android:onClick="@{_ -> viewModel.closeVideo()}"
           app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintLeft_toLeftOf="parent"
