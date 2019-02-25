@@ -10,7 +10,10 @@ import com.pedersen.escaped.BR
 import com.pedersen.escaped.R
 import com.pedersen.escaped.databinding.FragmentVideoBinding
 import io.greenerpastures.mvvm.ViewModelFragment
+import io.reactivex.Observable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_video.*
+import java.util.concurrent.TimeUnit
 
 class VideoFragment : ViewModelFragment<VideoFragmentViewModel, FragmentVideoBinding>(),
     VideoFragmentViewModel.Commands {
@@ -54,6 +57,10 @@ class VideoFragment : ViewModelFragment<VideoFragmentViewModel, FragmentVideoBin
         videoView.setOnCompletionListener {
             hang_up.alpha = 1f
             hang_up.isEnabled = true
+            Observable.timer(2000, TimeUnit.MILLISECONDS, Schedulers.io()).subscribe {
+                closeVideo()
+            }
+
         }
     }
 
