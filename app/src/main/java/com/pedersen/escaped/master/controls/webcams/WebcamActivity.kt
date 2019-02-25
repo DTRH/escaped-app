@@ -26,7 +26,7 @@ class WebcamActivity : AppCompatActivity() {
 
         val ivPreview: ImageView = findViewById(R.id.camera_feed)
 
-        val rtspClient = RtspClient(NativeCallback { frame, nChannel, width, height ->
+        val rtspClient = RtspClient(NativeCallback { frame, _, width, height ->
             ivPreview.post {
                 val area = width * height
                 val pixels = IntArray(area)

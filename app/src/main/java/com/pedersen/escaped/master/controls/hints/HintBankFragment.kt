@@ -152,6 +152,8 @@ class HintBankFragment : ViewModelFragment<HintBankFragmentViewModel, FragmentHi
                 }
     }
 
+
+
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         hintlist.clear()
         for (hint in completeBankList) {

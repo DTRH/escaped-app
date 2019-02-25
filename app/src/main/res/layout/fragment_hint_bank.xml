@@ -27,6 +27,7 @@
           android:onClick="@{_ -> viewModel.closeBank()}"
           android:paddingTop="40dp"
           android:paddingEnd="80dp"
+          android:tint="@android:color/white"
           android:src="@drawable/ic_close"
           app:layout_constraintRight_toRightOf="parent"
           app:layout_constraintTop_toTopOf="parent" />

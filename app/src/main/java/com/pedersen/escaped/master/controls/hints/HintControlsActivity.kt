@@ -71,8 +71,6 @@ class HintControlsActivity :
                 }
 
                 hintAdapter.notifyDataSetChanged()
-
-
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -103,22 +101,22 @@ class HintControlsActivity :
         hintContainer = binding.listContainer
         hintContainer.adapter = hintAdapter
         hintContainer.onItemClickListener =
-                AdapterView.OnItemClickListener { _, view, position, _ ->
+            AdapterView.OnItemClickListener { _, view, position, _ ->
 
-                    if (viewModel.selectedId.contains(hintlist[position])) {
-                        viewModel.selectedId.remove(hintlist[position])
-                        view.setBackgroundColor(ContextCompat.getColor(this,
-                                                                       android.R.color.transparent))
-                    } else {
-                        viewModel.selectedId.add(hintlist[position])
-                        view.setBackgroundColor(ContextCompat.getColor(this, R.color.colorAccent))
-                    }
-
-                    viewModel.notifyPropertyChanged(BR.selectedId)
-                    viewModel.notifyPropertyChanged(BR.deletable)
-                    viewModel.notifyPropertyChanged(BR.editable)
-
+                if (viewModel.selectedId.contains(hintlist[position])) {
+                    viewModel.selectedId.remove(hintlist[position])
+                    view.setBackgroundColor(ContextCompat.getColor(this,
+                                                                   android.R.color.transparent))
+                } else {
+                    viewModel.selectedId.add(hintlist[position])
+                    view.setBackgroundColor(ContextCompat.getColor(this, R.color.colorAccent))
                 }
+
+                viewModel.notifyPropertyChanged(BR.selectedId)
+                viewModel.notifyPropertyChanged(BR.deletable)
+                viewModel.notifyPropertyChanged(BR.editable)
+
+            }
     }
 
     override fun createHint() {
@@ -131,6 +129,19 @@ class HintControlsActivity :
         binding.bodyInput.text.clear()
         resetHintRequest()
         viewModel.notifyPropertyChanged(BR.creatable)
+    }
+
+    override fun onBackPressed() {
+
+        val count = fragmentManager.backStackEntryCount
+
+        if (count == 0) {
+            super.onBackPressed()
+            //additional code
+        } else {
+            fragmentManager.popBackStack()
+        }
+
     }
 
 
@@ -204,6 +215,7 @@ class HintControlsActivity :
         try {
             fragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, hintBankFragment)
+                .addToBackStack("bank")
                 .commit()
         } catch (e: Exception) {
             Timber.d("Adding the hintbank fragment threw an exception: $e")

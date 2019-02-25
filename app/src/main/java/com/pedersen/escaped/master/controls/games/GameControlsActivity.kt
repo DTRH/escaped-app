@@ -40,7 +40,7 @@ class GameControlsActivity : ViewModelActivity<GameControlsActivityViewModel, Ac
         })
 
         // Setup keyboard behavior
-        binding.deadlineUpdateInput.setOnEditorActionListener { v, actionId, event ->
+        binding.deadlineUpdateInput.setOnEditorActionListener { v, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 // hide virtual keyboard
                 val imm = this.getSystemService(
@@ -79,8 +79,8 @@ class GameControlsActivity : ViewModelActivity<GameControlsActivityViewModel, Ac
             val builder = AlertDialog.Builder(this)
             builder.setMessage("OBS: Select language for the players!")
                     .setCancelable(false)
-                    .setPositiveButton("English") { dialog, id -> viewModel.startNewGame(GameControlsActivityViewModel.SupportedLanguages.ENGLISH) }
-                    .setNegativeButton("Danish") { dialog, id -> viewModel.startNewGame(GameControlsActivityViewModel.SupportedLanguages.DANISH) }
+                    .setPositiveButton("English") { _, _ -> viewModel.startNewGame(GameControlsActivityViewModel.SupportedLanguages.ENGLISH) }
+                    .setNegativeButton("Danish") { _, _ -> viewModel.startNewGame(GameControlsActivityViewModel.SupportedLanguages.DANISH) }
             val alert = builder.create()
             alert.show()
         }
