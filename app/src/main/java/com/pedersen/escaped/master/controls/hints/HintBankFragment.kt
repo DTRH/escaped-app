@@ -42,13 +42,19 @@ class HintBankFragment : ViewModelFragment<HintBankFragmentViewModel, FragmentHi
     private lateinit var spinner: Spinner
     private var completeBankList: ArrayList<Hint> = ArrayList()
 
-
+    private lateinit var onSendSelectedHintListener: OnSendSelectedHintListener
 
     override fun onAttachContext(context: Context) {
-        initialize(R.layout.fragment_hint_bank, BR.viewModel) {
+        initialize(com.pedersen.escaped.R.layout.fragment_hint_bank, BR.viewModel) {
             HintBankFragmentViewModel()
         }
         super.onAttachContext(context)
+
+        try {
+            onSendSelectedHintListener = activity as OnSendSelectedHintListener
+        } catch (e: ClassCastException) {
+            throw ClassCastException("$activity must implement onSomeEventListener")
+        }
 
         val gameId = arguments.getString(GAME_ID)
 
@@ -135,25 +141,25 @@ class HintBankFragment : ViewModelFragment<HintBankFragmentViewModel, FragmentHi
         hintContainer = binding.listContainer
         hintContainer.adapter = hintAdapter
         hintContainer.onItemClickListener =
-                AdapterView.OnItemClickListener { _, view, position, _ ->
+            AdapterView.OnItemClickListener { _, view, position, _ ->
 
-                    if (viewModel.selectedId == position) {
-                        viewModel.selectedId = -1
-                        view.setBackgroundColor(ContextCompat.getColor(view.context,
-                                                                       android.R.color.transparent))
-                    } else {
-                        for (i in 0 until hintContainer.childCount) {
-                            val listItem = hintContainer.getChildAt(i)
-                            listItem.setBackgroundColor(Color.WHITE)
-                        }
-                        viewModel.selectedId = position
-                        view.setBackgroundColor(ContextCompat.getColor(view.context,
-                                                                       R.color.colorAccent))
+                if (viewModel.selectedId == position) {
+                    viewModel.selectedId = -1
+                    view.setBackgroundColor(ContextCompat.getColor(view.context,
+                                                                   android.R.color.transparent))
+                } else {
+                    for (i in 0 until hintContainer.childCount) {
+                        val listItem = hintContainer.getChildAt(i)
+                        listItem.setBackgroundColor(Color.WHITE)
                     }
-                    viewModel.notifyPropertyChanged(BR.selectedId)
-                    viewModel.notifyPropertyChanged(BR.creatable)
-                    viewModel.notifyPropertyChanged(BR.deletable)
+                    viewModel.selectedId = position
+                    view.setBackgroundColor(ContextCompat.getColor(view.context,
+                                                                   R.color.colorAccent))
                 }
+                viewModel.notifyPropertyChanged(BR.selectedId)
+                viewModel.notifyPropertyChanged(BR.creatable)
+                viewModel.notifyPropertyChanged(BR.deletable)
+            }
     }
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
@@ -182,13 +188,15 @@ class HintBankFragment : ViewModelFragment<HintBankFragmentViewModel, FragmentHi
                            hintlist[viewModel.selectedId].title,
                            hintlist[viewModel.selectedId].body,
                            false)
-        hintDatabase.push().setValue(newHint)
+
+
+        onSendSelectedHintListener.sendSelectedHint(newHint)
 
         for (i in 0 until hintContainer.childCount) {
             val listItem = hintContainer.getChildAt(i)
             listItem.setBackgroundColor(Color.WHITE)
         }
-        // TODO consider that we are clearing a potential hint request when we send the hint from the bank
+        closeBank()
     }
 
     override fun closeBank() {
@@ -213,4 +221,8 @@ class HintBankFragment : ViewModelFragment<HintBankFragmentViewModel, FragmentHi
 
         }
     }
+}
+
+interface OnSendSelectedHintListener {
+    fun sendSelectedHint(hint: Hint)
 }

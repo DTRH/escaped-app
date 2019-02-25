@@ -23,7 +23,9 @@ import timber.log.Timber
 
 class HintControlsActivity :
     ViewModelActivity<HintControlsActivityViewModel, HintControlsFragmentBinding>(),
-    HintControlsActivityViewModel.Commands {
+    HintControlsActivityViewModel.Commands,
+    OnSendSelectedHintListener {
+
 
     private var gameId: Int = 0
 
@@ -131,6 +133,12 @@ class HintControlsActivity :
         viewModel.notifyPropertyChanged(BR.creatable)
     }
 
+    override fun sendSelectedHint(hint: Hint) {
+        binding.headerInput.setText(hint.title)
+        binding.bodyInput.setText(hint.body)
+        viewModel.notifyPropertyChanged(BR.creatable)
+    }
+
     override fun onBackPressed() {
 
         val count = fragmentManager.backStackEntryCount
@@ -141,7 +149,6 @@ class HintControlsActivity :
         } else {
             fragmentManager.popBackStack()
         }
-
     }
 
 
