@@ -18,7 +18,7 @@
         android:id="@+id/root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/video_overlay"
+        android:background="@drawable/video_overlay_no_button"
         >
 
       <VideoView
@@ -37,7 +37,7 @@
           android:layout_width="100dp"
           android:layout_height="100dp"
           android:layout_marginBottom="72dp"
-          android:background="@drawable/take_phone"
+          android:background="@drawable/video_call_phone_button"
           android:onClick="@{_ -> viewModel.playVideo()}"
           app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintLeft_toRightOf="@+id/hang_up"
