@@ -7,13 +7,13 @@ import android.os.Bundle
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.SeekBar
-
 import com.pedersen.escaped.BR
 import com.pedersen.escaped.R
 import com.pedersen.escaped.databinding.ActivityGameControlsBinding
 import com.pedersen.escaped.utils.AppUtils
 import io.greenerpastures.mvvm.ViewModelActivity
 import kotlinx.android.synthetic.main.activity_game_controls.*
+
 
 class GameControlsActivity : ViewModelActivity<GameControlsActivityViewModel, ActivityGameControlsBinding>(), GameControlsActivityViewModel.Commands {
 
@@ -44,7 +44,7 @@ class GameControlsActivity : ViewModelActivity<GameControlsActivityViewModel, Ac
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 // hide virtual keyboard
                 val imm = this.getSystemService(
-                    Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                        Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(v.windowToken, 0)
 
                 try {
@@ -53,11 +53,10 @@ class GameControlsActivity : ViewModelActivity<GameControlsActivityViewModel, Ac
                     AppUtils.showSnack("Something went wrong!", root)
                 }
 
-                return@setOnEditorActionListener true
-            }
-            false
-        }
-
+                        return@setOnEditorActionListener true
+                    }
+                    false
+                }
     }
 
     private fun showAddTimeDialog(seconds: Long) {
@@ -69,19 +68,22 @@ class GameControlsActivity : ViewModelActivity<GameControlsActivityViewModel, Ac
             binding.deadlineUpdateInput.setText("")
             binding.deadlineUpdateInput.clearFocus()
         }
-
         newDeadlineDialog.show()
     }
 
     override fun showRestartDialog() {
         val restartDialog = AlertDialog.Builder(this@GameControlsActivity).create()
         restartDialog.setTitle("Alert")
-        restartDialog.setMessage("This will delete any current game content, and put the game in READY state!")
-
+        restartDialog.setMessage("This will delete any current game content!")
         restartDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK") { _, _ ->
-            viewModel.startNewGame()
+            val builder = AlertDialog.Builder(this)
+            builder.setMessage("OBS: Select language for the players!")
+                    .setCancelable(false)
+                    .setPositiveButton("English") { _, _ -> viewModel.startNewGame(GameControlsActivityViewModel.SupportedLanguages.ENGLISH) }
+                    .setNegativeButton("Danish") { _, _ -> viewModel.startNewGame(GameControlsActivityViewModel.SupportedLanguages.DANISH) }
+            val alert = builder.create()
+            alert.show()
         }
-
         restartDialog.show()
     }
 

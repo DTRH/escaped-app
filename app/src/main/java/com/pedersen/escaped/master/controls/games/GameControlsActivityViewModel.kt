@@ -26,6 +26,9 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
     @get:Bindable
     var progress by bind(0, BR.progress)
 
+    @get:Bindable
+    var language by bind("", BR.language)
+
     // Local copy of the deadline
     private var deadline: Instant = Instant.now()
         set(value) {
@@ -144,6 +147,21 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
                     Timber.w("Debug: Failed to read value: $e")
                 }
             })
+
+        // Setup language listener
+        databaseReference.child(gameId.toString()).child("language")
+                .addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        if (dataSnapshot.value is String && dataSnapshot.value != null)
+                                language = dataSnapshot.value as String
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        // Failed to read value
+                        val e = error.toException().toString()
+                        Timber.w("Debug: Failed to read value: $e")
+                    }
+                })
     }
 
     private fun setState(data: String) {
@@ -241,7 +259,7 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
         commandHandler?.showRestartDialog()
     }
 
-    fun startNewGame() {
+    fun startNewGame(lang: SupportedLanguages) {
         counter?.cancel()
         Timber.i("Game restarting")
         // Clear UI
@@ -253,6 +271,7 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
         stateUpdate["state"] = READY
         stateUpdate["progress"] = 0.toString()
         stateUpdate["requestHint"] = false
+        stateUpdate["language"] = lang
         databaseReference.child(gameId.toString()).updateChildren(stateUpdate)
         databaseReference.child(gameId.toString()).child("hints").removeValue()
     }
@@ -276,6 +295,10 @@ class GameControlsActivityViewModel : BaseViewModel<GameControlsActivityViewMode
 
     enum class GameState {
         UNKNOWN, READY, PLAYING, PAUSED, ENDED
+    }
+
+    enum class SupportedLanguages {
+        DANISH, ENGLISH
     }
 
     interface Commands {

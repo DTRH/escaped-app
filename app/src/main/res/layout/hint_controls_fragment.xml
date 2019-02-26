@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
 
@@ -16,6 +17,12 @@
       android:background="@drawable/game_master_activity_background"
       android:padding="50dp">
 
+    <LinearLayout
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:layout_width="0px"
+        android:layout_height="0px"/>
+
     <!-- Hint list -->
     <TextView
         android:id="@+id/list_header"
@@ -26,7 +33,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         android:paddingBottom="10dp"
         android:textColor="@color/primaryTextColor"
-        android:textSize="14sp"/>
+        android:textSize="14sp" />
 
     <ListView
         android:id="@+id/list_container"
@@ -65,7 +72,7 @@
             android:layout_height="wrap_content"
             android:labelFor="@+id/header_input"
             android:paddingBottom="10dp"
-            android:text="Overskrift"
+            android:text="Header"
             android:textColor="@color/primaryTextColor"
             android:textSize="14sp" />
 
@@ -83,7 +90,7 @@
             android:layout_height="wrap_content"
             android:labelFor="@+id/body_input"
             android:paddingBottom="10dp"
-            android:text="Tekst"
+            android:text="Body"
             android:textColor="@color/primaryTextColor"
             android:textSize="14sp" />
 
@@ -102,17 +109,21 @@
             style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
+
             android:enabled="@{viewModel.creatable}"
             android:onClick="@{_ -> viewModel.createHint()}"
-            android:text="Create hint" />
+            android:text="Send hint" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
         <Button
             android:id="@+id/edit_hint_button"
             style="@style/Widget.AppCompat.Button.Colored"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
             android:enabled="@{viewModel.isEditable}"
             android:onClick="@{_ -> viewModel.editHint()}"
             android:text="Edit hint" />
@@ -120,12 +131,44 @@
         <Button
             android:id="@+id/delete_hint_button"
             style="@style/Widget.AppCompat.Button.Colored"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:enabled="@{viewModel.isDeletable}"
             android:onClick="@{_ -> viewModel.deleteHint()}"
-            android:text="Delete hint" />
+            android:text="Delete selected hint(s)" />
+
+          <Button
+              android:id="@+id/add_to_bank_button"
+              style="@style/Widget.AppCompat.Button.Colored"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:enabled="@{viewModel.isEditable}"
+              android:onClick="@{_ -> viewModel.addHintToBank()}"
+              android:text="Add to Bank" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/load_from_bank_button"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:onClick="@{_ -> viewModel.openHintBank()}"
+            android:text="Open Hint Bank" />
+
       </LinearLayout>
     </ScrollView>
+
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
   </android.support.constraint.ConstraintLayout>
 </layout>

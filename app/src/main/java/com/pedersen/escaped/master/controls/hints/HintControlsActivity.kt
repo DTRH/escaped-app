@@ -23,7 +23,9 @@ import timber.log.Timber
 
 class HintControlsActivity :
     ViewModelActivity<HintControlsActivityViewModel, HintControlsFragmentBinding>(),
-    HintControlsActivityViewModel.Commands {
+    HintControlsActivityViewModel.Commands,
+    OnSendSelectedHintListener {
+
 
     private var gameId: Int = 0
 
@@ -35,6 +37,7 @@ class HintControlsActivity :
     private var databaseReference = firebaseInstance.getReference("games")
     private lateinit var hintsDatabase: DatabaseReference
     private lateinit var requestListener: DatabaseReference
+    private lateinit var bankDatabase: DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initialize(R.layout.hint_controls_fragment,
@@ -59,19 +62,17 @@ class HintControlsActivity :
         hintsDatabase = databaseReference.child(gameId.toString()).child("hints")
         hintsDatabase.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                if (dataSnapshot.value != null) {
-                    hintlist.clear()
-                    // This method is called once with the initial value and again
-                    // whenever data at this location is updated.
-                    for (hintChild in dataSnapshot.children) {
-                        val hint = hintChild.getValue(Hint::class.java)
-                        hint?.key = hintChild.key
-                        hint?.let { hintlist.add(it) }
-                    }
 
-                    hintAdapter.notifyDataSetChanged()
-
+                hintlist.clear()
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                for (hintChild in dataSnapshot.children) {
+                    val hint = hintChild.getValue(Hint::class.java)
+                    hint?.key = hintChild.key
+                    hint?.let { hintlist.add(it) }
                 }
+
+                hintAdapter.notifyDataSetChanged()
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -80,6 +81,8 @@ class HintControlsActivity :
                 Timber.w("Failed to read value: $e")
             }
         })
+
+        bankDatabase = databaseReference.child("bankhints")
 
         // Setup keyboard behavior
         binding.bodyInput.setOnEditorActionListener { v, actionId, _ ->
@@ -100,22 +103,22 @@ class HintControlsActivity :
         hintContainer = binding.listContainer
         hintContainer.adapter = hintAdapter
         hintContainer.onItemClickListener =
-                AdapterView.OnItemClickListener { _, view, position, _ ->
+            AdapterView.OnItemClickListener { _, view, position, _ ->
 
-                    if (viewModel.selectedId.contains(hintlist[position].id)) {
-                        viewModel.selectedId.remove(hintlist[position].id)
-                        view.setBackgroundColor(ContextCompat.getColor(this,
-                                                                       android.R.color.transparent))
-                    } else {
-                        viewModel.selectedId.add(hintlist[position].id)
-                        view.setBackgroundColor(ContextCompat.getColor(this, R.color.colorAccent))
-                    }
-
-                    viewModel.notifyPropertyChanged(BR.selectedId)
-                    viewModel.notifyPropertyChanged(BR.deletable)
-                    viewModel.notifyPropertyChanged(BR.editable)
-
+                if (viewModel.selectedId.contains(hintlist[position])) {
+                    viewModel.selectedId.remove(hintlist[position])
+                    view.setBackgroundColor(ContextCompat.getColor(this,
+                                                                   android.R.color.transparent))
+                } else {
+                    viewModel.selectedId.add(hintlist[position])
+                    view.setBackgroundColor(ContextCompat.getColor(this, R.color.colorAccent))
                 }
+
+                viewModel.notifyPropertyChanged(BR.selectedId)
+                viewModel.notifyPropertyChanged(BR.deletable)
+                viewModel.notifyPropertyChanged(BR.editable)
+
+            }
     }
 
     override fun createHint() {
@@ -130,6 +133,25 @@ class HintControlsActivity :
         viewModel.notifyPropertyChanged(BR.creatable)
     }
 
+    override fun sendSelectedHint(hint: Hint) {
+        binding.headerInput.setText(hint.title)
+        binding.bodyInput.setText(hint.body)
+        viewModel.notifyPropertyChanged(BR.creatable)
+    }
+
+    override fun onBackPressed() {
+
+        val count = fragmentManager.backStackEntryCount
+
+        if (count == 0) {
+            super.onBackPressed()
+            //additional code
+        } else {
+            fragmentManager.popBackStack()
+        }
+    }
+
+
     private fun resetHintRequest() {
         Timber.i("Debug: Resetting request from player")
         val requestUpdate = HashMap<String, Any>()
@@ -140,7 +162,7 @@ class HintControlsActivity :
     override fun deleteHint() {
         for (selection in viewModel.selectedId) {
             for (hint in hintlist) {
-                if (hint.id.contentEquals(selection)) {
+                if (hint.id.contentEquals(selection.id)) {
                     hintsDatabase.child(hint.key).removeValue()
                 }
             }
@@ -164,6 +186,48 @@ class HintControlsActivity :
 
     override fun checkCreatable(): Boolean =
         (binding.headerInput.length() != 0 && binding.bodyInput.length() != 0)
+
+    override fun addHintToBank() {
+        for (selection in viewModel.selectedId) {
+            for (hint in hintlist) {
+                if (hint.id.contentEquals(selection.id)) {
+
+                    val addHintChallenge = AddHintChallengeFragment.newInstance(hint)
+
+                    try {
+                        fragmentManager.beginTransaction()
+                            .replace(R.id.fragment_container, addHintChallenge)
+                            .commit()
+                    } catch (e: Exception) {
+                        Timber.d("Adding the hintbank fragment threw an exception: $e")
+                    }
+                }
+            }
+            Timber.i("SelectedIds: ${viewModel.selectedId}")
+        }
+
+        for (i in 0 until hintContainer.childCount) {
+            val listItem = hintContainer.getChildAt(i)
+            listItem.setBackgroundColor(Color.WHITE)
+        }
+        viewModel.selectedId.clear()
+        viewModel.notifyPropertyChanged(BR.creatable)
+        viewModel.notifyPropertyChanged(BR.editable)
+        viewModel.notifyPropertyChanged(BR.deletable)
+    }
+
+    override fun openHintBank() {
+        val hintBankFragment = HintBankFragment.newInstance(gameId.toString())
+
+        try {
+            fragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, hintBankFragment)
+                .addToBackStack("bank")
+                .commit()
+        } catch (e: Exception) {
+            Timber.d("Adding the hintbank fragment threw an exception: $e")
+        }
+    }
 
     companion object {
 

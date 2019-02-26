@@ -1,7 +1,7 @@
 package com.pedersen.escaped.data.models
 
 import com.google.gson.annotations.SerializedName
-import org.jetbrains.annotations.NotNull
+import java.io.Serializable
 
 data class Hint(
         @SerializedName("id")
@@ -9,6 +9,8 @@ data class Hint(
         @SerializedName("title")
         val title: String = "",
         @SerializedName("body")
-        val body: String = "", var hasAnimated: Boolean = false,
+        val body: String = "",
+        var hasAnimated: Boolean = false,
+        var challenge: String = "",
         @SerializedName("key")
-        var key: String = "")
+        var key: String = "") : Serializable

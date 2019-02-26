@@ -10,6 +10,7 @@ class VideoFragmentViewModel : BaseViewModel<VideoFragmentViewModel.Commands>() 
 
     fun playVideo() {
         commandHandler?.playVideo()
+
     }
 
     interface Commands {

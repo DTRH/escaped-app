@@ -46,9 +46,9 @@ class HintFragment : ViewModelFragment<HintFragmentViewModel, HintFragmentBindin
     override fun animateHint(header: String, body: String) {
         hintHeaderView.animateText(arguments[HINT_HEADER] as CharSequence)
         bodyTimer = Observable.timer(2000, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
-                .subscribe({
+                .subscribe {
                     hintBodyView.animateText(arguments[HINT_BODY] as CharSequence)
-                })
+                }
     }
 
     override fun closeHint() {

@@ -17,7 +17,7 @@
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/main_activity_bg"
+        android:background="@drawable/player_background"
         tools:context="com.pedersen.escaped.player.PlayerActivity">
 
       <!-- ProgressBar has its own layout -->
@@ -69,7 +69,8 @@
           android:layout_height="match_parent"
           android:layout_marginTop="-150dp"
           android:background="@drawable/main_activity_hint_pull"
-          app:layout_constraintTop_toTopOf="parent" />
+          app:layout_constraintTop_toTopOf="parent"
+          app:layout_constraintStart_toStartOf="parent"/>
 
 
       <FrameLayout
@@ -84,9 +85,9 @@
         <!-- Player Clock -->
         <ImageView
             android:id="@+id/player_clock"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/clock"
+            android:layout_width="380dp"
+            android:layout_height="380dp"
+            android:background="@drawable/player_clock"
             android:scaleType="fitXY"
             android:layout_gravity="center"
             />
@@ -98,7 +99,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/clock_arm"
             android:layout_gravity="center"
-            android:layout_marginTop="10dp"
+            android:layout_marginBottom="48dp"
             />
 
       </FrameLayout>
@@ -110,12 +111,13 @@
           android:layout_width="0dp"
           android:layout_height="0dp"
           android:layout_marginStart="30dp"
+          android:layout_marginTop="100dp"
           android:orientation="vertical"
           android:rotation="10"
           app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintLeft_toRightOf="@id/guideline2"
           app:layout_constraintRight_toLeftOf="@id/verti_two"
-          app:layout_constraintTop_toBottomOf="@id/hori_guide_2" />
+          app:layout_constraintTop_toTopOf="parent" />
 
       <!-- Main layout guidelines -->
       <android.support.constraint.Guideline
