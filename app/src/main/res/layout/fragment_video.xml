@@ -40,35 +40,23 @@
           android:background="@drawable/video_call_phone_button"
           android:onClick="@{_ -> viewModel.playVideo()}"
           app:layout_constraintBottom_toBottomOf="parent"
-          app:layout_constraintLeft_toRightOf="@+id/hang_up"
+          app:layout_constraintLeft_toLeftOf="parent"
           app:layout_constraintRight_toRightOf="parent" />
 
-      <Button
-          android:id="@+id/hang_up"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginBottom="100dp"
-          android:background="@drawable/phone_2"
-          android:enabled="false"
-          android:visibility="gone"
-          android:onClick="@{_ -> viewModel.closeVideo()}"
-          app:layout_constraintBottom_toBottomOf="parent"
-          app:layout_constraintLeft_toLeftOf="parent"
-          app:layout_constraintRight_toLeftOf="@+id/pick_up" />
 
       <android.support.constraint.Guideline
           android:id="@+id/guideline6"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:orientation="horizontal"
-          app:layout_constraintGuide_begin="90dp" />
+          app:layout_constraintGuide_percent="0.15" />
 
       <android.support.constraint.Guideline
           android:id="@+id/guideline7"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:orientation="horizontal"
-          app:layout_constraintGuide_begin="504dp" />
+          app:layout_constraintGuide_percent="0.85" />
 
     </android.support.constraint.ConstraintLayout>
 

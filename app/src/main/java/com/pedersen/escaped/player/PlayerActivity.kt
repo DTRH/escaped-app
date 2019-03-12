@@ -134,7 +134,7 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
 
         try {
             fragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, videoFragment)
+                .replace(R.id.skype_container, videoFragment)
                 .commit()
         } catch (e: Exception) {
             Timber.d("Adding the video fragment threw an exception: $e")
