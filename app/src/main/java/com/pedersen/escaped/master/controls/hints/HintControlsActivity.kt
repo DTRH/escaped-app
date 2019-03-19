@@ -16,16 +16,16 @@ import com.pedersen.escaped.BR
 import com.pedersen.escaped.R
 import com.pedersen.escaped.data.adapters.HintsAdapter
 import com.pedersen.escaped.data.models.Hint
-import com.pedersen.escaped.databinding.HintControlsFragmentBinding
+import com.pedersen.escaped.databinding.ActivityHintControlsBinding
 import io.greenerpastures.mvvm.ViewModelActivity
-import kotlinx.android.synthetic.main.hint_controls_fragment.*
+import kotlinx.android.synthetic.main.activity_hint_controls.*
 import timber.log.Timber
+import java.util.*
 
 class HintControlsActivity :
-    ViewModelActivity<HintControlsActivityViewModel, HintControlsFragmentBinding>(),
+    ViewModelActivity<HintControlsActivityViewModel, ActivityHintControlsBinding>(),
     HintControlsActivityViewModel.Commands,
     OnSendSelectedHintListener {
-
 
     private var gameId: Int = 0
 
@@ -40,7 +40,7 @@ class HintControlsActivity :
     private lateinit var bankDatabase: DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        initialize(R.layout.hint_controls_fragment,
+        initialize(R.layout.activity_hint_controls,
                    BR.viewModel,
                    ({ HintControlsActivityViewModel() }))
         super.onCreate(savedInstanceState)
@@ -119,6 +119,13 @@ class HintControlsActivity :
                 viewModel.notifyPropertyChanged(BR.editable)
 
             }
+    }
+
+    override fun buzzPlayers() {
+        Timber.i("Game master buzzing Game: $gameId !")
+        val update = HashMap<String, Any>()
+        update["buzzNow"] = Calendar.getInstance().time.toString()
+        databaseReference.child(gameId.toString()).updateChildren(update)
     }
 
     override fun createHint() {

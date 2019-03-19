@@ -25,6 +25,7 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
     private var hintListener: DatabaseReference
     private var progressListener: DatabaseReference
     private var stateListener: DatabaseReference
+    private var buzzListener: DatabaseReference
     private var timeListener: DatabaseReference
     private lateinit var introListener: DatabaseReference
 
@@ -105,6 +106,19 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.value is String && dataSnapshot.value != null)
                     setPlayerState(dataSnapshot.value as String)
+            }
+        })
+
+        buzzListener = databaseReference.child(BuildConfig.gameId.toString()).child("buzzNow")
+        buzzListener.addValueEventListener(object : ValueEventListener {
+            override fun onCancelled(error: DatabaseError) {
+                val e = error.toException().toString()
+                Timber.w("Debug: Failed to read value: $e")
+            }
+
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                if (dataSnapshot.value is String && dataSnapshot.value != null)
+                    commandHandler?.buzz()
             }
         })
 
@@ -269,6 +283,8 @@ class PlayerActivityViewModel : BaseViewModel<PlayerActivityViewModel.Commands>(
         fun refreshAdapter()
 
         fun playVideo(videoElement: PlayerActivity.VideoElement, language: GameControlsActivityViewModel.SupportedLanguages)
+
+        fun buzz()
 
     }
 }

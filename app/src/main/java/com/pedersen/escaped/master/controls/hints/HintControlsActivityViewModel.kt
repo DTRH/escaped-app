@@ -31,6 +31,8 @@ class HintControlsActivityViewModel : BaseViewModel<HintControlsActivityViewMode
 
     fun openHintBank() = commandHandler?.openHintBank()
 
+    fun buzzPlayers() = commandHandler?.buzzPlayers()
+
     interface Commands {
 
         fun checkCreatable(): Boolean
@@ -44,6 +46,8 @@ class HintControlsActivityViewModel : BaseViewModel<HintControlsActivityViewMode
         fun addHintToBank()
 
         fun openHintBank()
+
+        fun buzzPlayers()
 
     }
 }
