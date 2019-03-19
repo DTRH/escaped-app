@@ -44,7 +44,7 @@ class VideoFragment : ViewModelFragment<VideoFragmentViewModel, FragmentVideoBin
 
     override fun closeVideo() {
         fragmentManager.beginTransaction()
-            .remove(fragmentManager.findFragmentById(R.id.fragment_container)).commit()
+            .remove(fragmentManager.findFragmentById(R.id.skype_container)).commit()
     }
 
     override fun playVideo() {
@@ -54,8 +54,6 @@ class VideoFragment : ViewModelFragment<VideoFragmentViewModel, FragmentVideoBin
         videoView.visibility = View.VISIBLE
         videoView.start()
         videoView.setOnCompletionListener {
-            hang_up.alpha = 1f
-            hang_up.isEnabled = true
             Observable.timer(2000, TimeUnit.MILLISECONDS, Schedulers.io()).subscribe {
                 closeVideo()
             }
