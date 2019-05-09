@@ -156,6 +156,15 @@
             android:layout_marginBottom="8dp"
             android:onClick="@{_ -> viewModel.openHintBank()}"
             android:text="Open Hint Bank" />
+        
+        <Button
+            android:id="@+id/buzz_button"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:onClick="@{_ -> viewModel.buzzPlayers()}"
+            android:text="Alert the players!"/>
 
       </LinearLayout>
     </ScrollView>

@@ -36,8 +36,9 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
     private lateinit var clockArm: ImageView
     private var clockArmAngle: Float = 0.0f
 
-    // Mediaplayer - Notification
-    private lateinit var mp: MediaPlayer
+    // Mediaplayers
+    private lateinit var notificationPlayer: MediaPlayer
+    private lateinit var buzzerPlayer: MediaPlayer
 
     // Adapter for the hint list
     private lateinit var hintAdapter: BaseAdapter
@@ -46,7 +47,9 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
         initialize(R.layout.activity_player, BR.viewModel, ({ PlayerActivityViewModel() }))
         super.onCreate(savedInstanceState)
 
-        mp = MediaPlayer.create(applicationContext, R.raw.notification)
+        // IF THIS DOES NOT WORK; USE APPLICATION CONTEXT
+        notificationPlayer = MediaPlayer.create(this, R.raw.notification)
+        buzzerPlayer = MediaPlayer.create(this, R.raw.buzzer)
 
         clockArm = binding.playerClockArm
 
@@ -103,7 +106,7 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
     override fun refreshAdapter() {
         hintAdapter.notifyDataSetChanged()
         if (!hintAdapter.isEmpty && (viewModel.playerState == PlayerActivityViewModel.PlayerState.PLAYING || viewModel.playerState == PlayerActivityViewModel.PlayerState.PAUSED)) {
-            mp.start()
+            notificationPlayer.start()
             val hintFragment = HintFragment.newInstance(viewModel.hintList.last())
             fragmentManager.beginTransaction().replace(R.id.fragment_container, hintFragment)
                 .commit()
@@ -139,6 +142,10 @@ class PlayerActivity : ViewModelActivity<PlayerActivityViewModel, ActivityPlayer
         } catch (e: Exception) {
             Timber.d("Adding the video fragment threw an exception: $e")
         }
+    }
+
+    override fun buzz() {
+        buzzerPlayer.start()
     }
 
     enum class VideoElement {
